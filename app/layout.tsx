@@ -24,8 +24,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${bonaNova.className} antialiased`}>{children}</body>
+    <html lang='en' suppressHydrationWarning>
+      <body className={`${bonaNova.className} antialiased`}>
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='light'
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

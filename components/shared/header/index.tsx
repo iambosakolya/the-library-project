@@ -1,43 +1,35 @@
-import { ShoppingCart, UserIcon } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { BookOpen } from 'lucide-react';
 import { APP_NAME } from '@/lib/constants';
+import Link from 'next/link';
+import Menu from './menu';
+// import Image from 'next/image';
 
 const Header = () => {
   return (
-    <header className="w-full border-b">
-      <div className="wrapper flex justify-between items-center">
-        <div className="flex items-center">
-          <Link href="/" className="flex items-start">
-            <Image
+    <header className='w-full border-b'>
+      <div className='wrapper flex items-center justify-between'>
+        <div className='flex items-center'>
+          <Link href='/' className='flex items-start'>
+            {/* <Image  
               src="/images/read-book-icon.svg"
               alt={APP_NAME}
               width={50}
               height={50}
               priority={true}
-            />
+            /> */}
+            <BookOpen width={60} height={60} />
           </Link>
-          <div className="ml-6">
-            <span className="hidden lg:block font-bold text-2xl">
+          <div className='ml-4'>
+            <span className='hidden text-2xl font-bold lg:block'>
               {APP_NAME}
             </span>
-            <span className="hidden lg:block text-lg">
+            <span className='hidden text-lg lg:block'>
               for visual culture & critical thinking
             </span>
           </div>
         </div>
-        <div className="space-x-2">
-          <Button asChild variant="ghost" className="text-lg">
-            <Link href="/cart">
-              <ShoppingCart /> Cart
-            </Link>
-          </Button>
-          <Button asChild variant="ghost" className="text-lg">
-            <Link href="/signin">
-              <UserIcon /> Log in
-            </Link>
-          </Button>
+        <div className='space-x-2'>
+          <Menu />
         </div>
       </div>
     </header>
