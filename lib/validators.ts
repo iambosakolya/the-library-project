@@ -43,8 +43,23 @@ export const productInsertSchema = z.object({
   banner: z.string().nullable(),
 });
 
-// for signing users
+// for signing
 export const signInInsertSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(5, 'Password must be at least 5 characters'),
 });
+
+// for registaring
+export const registerInsertSchema = z
+  .object({
+    name: z.string().min(1, 'Name must be at least 1 character'),
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(5, 'Password must be at least 5 characters'),
+    confirmPassword: z
+      .string()
+      .min(5, 'Password must be at least 5 characters'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords aren't the same",
+    path: ['confirmPassword'],
+  });
