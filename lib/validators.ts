@@ -42,3 +42,9 @@ export const productInsertSchema = z.object({
   isFeatured: z.boolean(),
   banner: z.string().nullable(),
 });
+
+// for signing users
+export const signInInsertSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(5, 'Password must be at least 5 characters'),
+});
