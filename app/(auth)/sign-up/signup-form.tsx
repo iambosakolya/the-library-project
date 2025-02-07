@@ -27,7 +27,7 @@ const SignUpForm = () => {
           name='name'
           id='name'
           placeholder='Your name'
-          required
+          // required
         />
       </div>
       <div className='grid w-full max-w-lg items-center gap-1.5'>
@@ -36,7 +36,7 @@ const SignUpForm = () => {
           type='email'
           name='email'
           id='email'
-          required
+          // required
           placeholder='Your email'
         />
       </div>
@@ -52,7 +52,7 @@ const SignUpForm = () => {
       <div className='grid w-full max-w-lg items-center gap-1.5'>
         <Label htmlFor='confirmPassword'>Confirm password</Label>
         <Input
-          type='confirmPassword'
+          type='password'
           name='confirmPassword'
           id='confirmPassword'
           placeholder='Confirm password'
