@@ -23,7 +23,7 @@ const Menu = () => {
         </Button>
         <UserButton />
       </nav>
-      
+
       <nav className='md:hidden'>
         <Sheet>
           <SheetTrigger className='align-middle'>
@@ -37,6 +37,7 @@ const Menu = () => {
                 <ShoppingCart /> Cart
               </Link>
             </Button>
+            <UserButton />
             {/* <Button asChild variant='ghost' className='text-lg'>
               <Link href='/sign-in'>
                 <UserIcon /> Log in
