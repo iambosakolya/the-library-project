@@ -1,10 +1,10 @@
 import { getProductBySlug } from '@/lib/actions/product.actions';
 import { notFound } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingBag } from 'lucide-react';
 import ProductPrice from '@/components/shared/product/product-price';
 import ProductImage from '@/components/shared/product/product-img';
+import AddToCart from '@/components/shared/product/cart-add';
+import { getMyCart } from '@/lib/actions/cart.actions';
 
 const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
   const { slug } = await props.params;
@@ -12,11 +12,15 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
   const product = await getProductBySlug(slug);
   if (!product) notFound();
 
+  const cart = await getMyCart();
+
   return (
     <section>
       <div className='grid grid-cols-1 md:grid-cols-4'>
         {/* images */}
-        <div className='col-span-2'><ProductImage images={product.images}/></div>
+        <div className='col-span-2'>
+          <ProductImage images={product.images} />
+        </div>
         {/* detailes */}
         <div className='col-span-2 p-6 text-lg'>
           <div className='flex flex-col gap-6'>
@@ -34,10 +38,21 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
               className='h1-bold w-24 text-green-600'
             />
             {product.stock > 0 ? (
-              <Button className='w-full rounded-3xl text-lg'>
-                <ShoppingBag />
-                Add to cart
-              </Button>
+              // <Button className='w-full rounded-3xl text-lg'>
+              //   <ShoppingBag />
+              //   Add to cart
+              // </Button>
+              <AddToCart
+                cart={cart}
+                item={{
+                  productId: product.id,
+                  name: product.name,
+                  slug: product.slug,
+                  quantity: 1,
+                  image: product.images![0],
+                  price: product.price,
+                }}
+              />
             ) : (
               <Badge
                 className='w-full justify-center text-lg'
