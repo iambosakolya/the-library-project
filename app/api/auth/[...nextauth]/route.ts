@@ -1,12 +1,14 @@
-import { handlers } from '@/auth';
+// import { handlers } from '@/auth';
+
+// export const { GET, POST } = handlers;
+
+// export const runtime = 'nodejs';
+
 export const runtime = 'nodejs';
 
-export const { GET, POST } = handlers;
+import NextAuth from 'next-auth';
+import { config } from '@/auth';
 
-// import NextAuth from "next-auth"
+const handler = NextAuth(config);
 
-// const handler = NextAuth({
-//   ...
-// })
-
-// export { handler as GET, handler as POST }
+export { handler as GET, handler as POST };
