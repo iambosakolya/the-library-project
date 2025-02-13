@@ -18,15 +18,13 @@ const Header = () => {
               priority={true}
             /> */}
             <BookOpen width={60} height={60} />
+            <div className='ml-4'>
+              <span className='block text-2xl font-bold'>{APP_NAME}</span>
+              <span className='block text-lg'>
+                for visual culture & critical thinking
+              </span>
+            </div>
           </Link>
-          <div className='ml-4'>
-            <span className='hidden text-2xl font-bold lg:block'>
-              {APP_NAME}
-            </span>
-            <span className='hidden text-lg lg:block'>
-              for visual culture & critical thinking
-            </span>
-          </div>
         </div>
         <div className='space-x-2'>
           <Menu />

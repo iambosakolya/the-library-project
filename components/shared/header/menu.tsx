@@ -32,12 +32,12 @@ const Menu = () => {
           <SheetContent className='align-center flex flex-col'>
             <SheetTitle>Menu</SheetTitle>
             <SheetDescription></SheetDescription>
+            <UserButton />
             <Button asChild variant='ghost' className='text-lg'>
               <Link href='/cart'>
                 <ShoppingCart /> Cart
               </Link>
             </Button>
-            <UserButton />
             {/* <Button asChild variant='ghost' className='text-lg'>
               <Link href='/sign-in'>
                 <UserIcon /> Log in
