@@ -36,7 +36,7 @@ const AddToCart = ({ cart, item }: { cart: Cart; item: CartItem }) => {
           altText='Go to cart'
           onClick={() => router.push('/cart')}
         >
-          Go to cart
+          Go to cart - 
         </ToastAction>
       ),
     });
