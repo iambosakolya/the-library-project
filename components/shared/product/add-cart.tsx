@@ -20,10 +20,7 @@ const AddToCart = ({ item }: { item: CartItem }) => {
     const res = await addItemToCart(item);
 
     if (!res.success) {
-      toast({
-        variant: 'destructive',
-        description: res.message,
-      });
+      toast({ variant: 'destructive', description: res.message });
       return;
     }
 
