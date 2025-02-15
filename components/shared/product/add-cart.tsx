@@ -6,7 +6,7 @@ import { Plus, Minus, Loader } from 'lucide-react';
 import { Cart, CartItem } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 import { ToastAction } from '@/components/ui/toast';
-import { addItemToCart, removeItemFromCart } from '@/lib/actions/cart.actions';
+import { addItemToCart} from '@/lib/actions/cart.actions';
 import { useTransition } from 'react';
 
 const AddToCart = ({ cart, item }: { cart?: Cart; item: CartItem }) => {
@@ -43,19 +43,19 @@ const AddToCart = ({ cart, item }: { cart?: Cart; item: CartItem }) => {
     });
   };
 
-  // Handle remove from cart
-  const handleRemoveFromCart = async () => {
-    startTransition(async () => {
-      const res = await removeItemFromCart(item.productId);
+  // // Handle remove from cart
+  // const handleRemoveFromCart = async () => {
+  //   startTransition(async () => {
+  //     const res = await removeItemFromCart(item.productId);
 
-      toast({
-        variant: res.success ? 'default' : 'destructive',
-        description: res.message,
-      });
+  //     toast({
+  //       variant: res.success ? 'default' : 'destructive',
+  //       description: res.message,
+  //     });
 
-      return;
-    });
-  };
+  //     return;
+  //   });
+  // };
 
   // Check if item is in cart
   const existItem =
@@ -63,7 +63,7 @@ const AddToCart = ({ cart, item }: { cart?: Cart; item: CartItem }) => {
 
   return existItem ? (
     <div>
-      <Button type='button' variant='outline' onClick={handleRemoveFromCart}>
+      <Button type='button' variant='outline'>
         {isPending ? (
           <Loader className='h-4 w-4 animate-spin' />
         ) : (

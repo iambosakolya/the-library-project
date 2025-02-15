@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import ProductPrice from '@/components/shared/product/product-price';
 import ProductImage from '@/components/shared/product/product-img';
 import AddToCart from '@/components/shared/product/add-cart';
-import { getMyCart } from '@/lib/actions/cart.actions';
+// import { getMyCart } from '@/lib/actions/cart.actions';
 
 const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
   const { slug } = await props.params;
@@ -13,7 +13,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
   const product = await getProductBySlug(slug);
   if (!product) notFound();
 
-  const cart = await getMyCart();
+  // const cart = await getMyCart();
 
   return (
     <section>
@@ -40,7 +40,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
             />
             {product.stock > 0 ? (
               <AddToCart
-                cart={cart}
+                // cart={cart}
                 item={{
                   productId: product.id,
                   name: product.name,
