@@ -5,12 +5,15 @@ import { Badge } from '@/components/ui/badge';
 import ProductPrice from '@/components/shared/product/product-price';
 import ProductImage from '@/components/shared/product/product-img';
 import AddToCart from '@/components/shared/product/add-cart';
+import { getMyCart } from '@/lib/actions/cart.actions';
 
 const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
   const { slug } = await props.params;
 
   const product = await getProductBySlug(slug);
   if (!product) notFound();
+
+  const cart = await getMyCart();
 
   return (
     <section>
@@ -36,20 +39,22 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
               className='h1-bold w-24 text-green-600'
             />
             {product.stock > 0 ? (
-              <AddToCart item={{
+              <AddToCart
+                cart={cart}
+                item={{
                   productId: product.id,
                   name: product.name,
                   slug: product.slug,
                   price: product.price,
                   quantity: 1,
                   image: product.images![0],
-
-              }}/>
+                }}
+              />
+            ) : (
               // <Button className='w-full rounded-3xl text-lg'>
               //   <ShoppingBag />
               //   Add to cart
               // </Button>
-            ) : (
               <Badge
                 className='w-full justify-center text-lg'
                 variant='destructive'
