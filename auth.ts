@@ -8,14 +8,13 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 export const config = {
-  trustHost: true,
   pages: {
     signIn: '/sign-in',
     error: '/sign-in',
   },
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 30 * 24 * 60 * 60, // 30 
   },
   adapter: PrismaAdapter(prisma),
   providers: [
