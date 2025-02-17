@@ -15,3 +15,11 @@ export const signInDefaultValues = {
   email: '',
   password: '',
 };
+
+export const shippingDetailesDefault = {
+  fullName: '',
+  streetAddress: '',
+  city: '',
+  postalCode: '',
+  country: '',
+};
