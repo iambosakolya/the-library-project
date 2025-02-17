@@ -88,11 +88,11 @@ export const config = {
           const sessionCartId = cookiesObject.get('sessionCartId')?.value;
 
           if (sessionCartId) {
-            const sessinCart = await prisma.cart.findFirst({
+            const sessionCart = await prisma.cart.findFirst({
               where: { sessionCartId },
             });
 
-            if (sessinCart) {
+            if (sessionCart) {
               // delete current user cart
               await prisma.cart.deleteMany({
                 where: { userId: user.id },
@@ -100,7 +100,7 @@ export const config = {
 
               // assign new cart
               await prisma.cart.update({
-                where: { id: sessinCart.id },
+                where: { id: sessionCart.id },
                 data: { userId: user.id },
               });
             }
