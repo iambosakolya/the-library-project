@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { Shipping } from '@/types';
 import { getUserById } from '@/lib/actions/user.actions';
 import ShippingForm from './shipping-form';
+import CheckOutSteps from '@/components/shared/checkout-steps';
 
 export const metadata: Metadata = {
   title: 'Shipping',
@@ -12,7 +13,6 @@ export const metadata: Metadata = {
 
 const ShippingPage = async () => {
   const cart = await getMyCart();
-
   if (!cart || cart.items.length === 0) redirect('/cart');
 
   const session = await auth();
@@ -24,6 +24,7 @@ const ShippingPage = async () => {
 
   return (
     <>
+      <CheckOutSteps current={1}/>
       <ShippingForm address={user.address as Shipping} />
     </>
   );
