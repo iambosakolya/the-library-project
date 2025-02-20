@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: 'Order Detailes',
 };
 
+const PAYPAL_CLIENT_ID =
+  'AVjQgSGgae0j3BkNjkMJKV4r54mdCNtaUdm5YWe3kE112yXpF-2DS9Qdcf03wcIrL5CDs3cl9j3mIWNy';
+
 const OrderPage = async (props: {
   params: Promise<{
     id: string;
@@ -24,7 +27,7 @@ const OrderPage = async (props: {
         ...order,
         Shipping: order.Shipping as Shipping,
       }}
-      paypalClientId={process.env.PAYPAL_CLIENT_ID || 'sb'}
+      paypalClientId={process.env.PAYPAL_CLIENT_ID || PAYPAL_CLIENT_ID}
     />
   );
 };
