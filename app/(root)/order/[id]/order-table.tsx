@@ -2,20 +2,36 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { Order } from '@/types';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useToast } from '@/hooks/use-toast';
+import { formatCurrency, formatDateTime, formatId } from '@/lib/utils';
 import {
-    Table,
+  Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { formatCurrency, formatDateTime, formatId } from '@/lib/utils';
-import { Order } from '@/types';
-import Link from 'next/link';
-import Image from 'next/image';
+import {
+  PayPalButtons,
+  PayPalScriptProvider,
+  usePayPalScriptReducer,
+} from '@paypal/react-paypal-js';
+import {
+  createPayPalOrder,
+  approvePayPalOrder,
+} from '@/lib/actions/order.actions';
 
-const OrderTable = ({ order }: { order: Order }) => {
+const OrderTable = ({
+  order,
+  paypalClientId,
+}: {
+  order: Order;
+  paypalClientId: string;
+}) => {
   const {
     shippingAddress,
     orderitems,
@@ -30,14 +46,47 @@ const OrderTable = ({ order }: { order: Order }) => {
     paidAt,
   } = order;
 
+  const { toast } = useToast();
+
+  const PrintLoadingState = () => {
+    const [{ isPending, isRejected }] = usePayPalScriptReducer();
+    let status = '';
+
+    if (isPending) {
+      status = 'Loading PayPal...';
+    } else if (isRejected) {
+      status = 'Error loading PayPal';
+    }
+    return status;
+  };
+
+  const handleCreatePayPalOrder = async () => {
+    const res = await createPayPalOrder(order.id);
+    if (!res.success) {
+      toast({
+        variant: 'destructive',
+        description: res.message,
+      });
+    }
+    return res.data;
+  };
+
+  const handleApprovePayPalOrder = async (data: { orderID: string }) => {
+    const res = await approvePayPalOrder(order.id, data);
+    toast({
+      variant: res.message ? 'default' : 'destructive',
+      description: res.message,
+    });
+  };
+
   return (
     <>
       <h1 className='py-4 text-2xl'>Order {formatId(order.id)}</h1>
       <div className='grid md:grid-cols-3 md:gap-5'>
-        <div className='col-span-2 space-4-y overlow-x-auto'>
+        <div className='space-4-y overlow-x-auto col-span-2'>
           <Card>
-            <CardContent className='p-4 gap-4'>
-              <h2 className='text-xl pb-4'>Payment Method</h2>
+            <CardContent className='gap-4 p-4'>
+              <h2 className='pb-4 text-xl'>Payment Method</h2>
               <p className='mb-2'>{paymentMethod}</p>
               {isPaid ? (
                 <Badge variant='secondary'>
@@ -49,8 +98,8 @@ const OrderTable = ({ order }: { order: Order }) => {
             </CardContent>
           </Card>
           <Card className='my-2'>
-            <CardContent className='p-4 gap-4'>
-              <h2 className='text-xl pb-4'>Shipping Address</h2>
+            <CardContent className='gap-4 p-4'>
+              <h2 className='pb-4 text-xl'>Shipping Address</h2>
               <p>{shippingAddress.fullName}</p>
               <p className='mb-2'>
                 {shippingAddress.streetAddress}, {shippingAddress.city}
@@ -66,8 +115,8 @@ const OrderTable = ({ order }: { order: Order }) => {
             </CardContent>
           </Card>
           <Card>
-            <CardContent className='p-4 gap-4'>
-              <h2 className='text-xl pb-4'>Order Items</h2>
+            <CardContent className='gap-4 p-4'>
+              <h2 className='pb-4 text-xl'>Order Items</h2>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -108,7 +157,7 @@ const OrderTable = ({ order }: { order: Order }) => {
         </div>
         <div>
           <Card>
-            <CardContent className='p-4 gap-4 space-y-4'>
+            <CardContent className='gap-4 space-y-4 p-4'>
               <div className='flex justify-between'>
                 <div>Items</div>
                 <div>{formatCurrency(itemsPrice)}</div>
@@ -125,6 +174,19 @@ const OrderTable = ({ order }: { order: Order }) => {
                 <div>Total</div>
                 <div>{formatCurrency(totalPrice)}</div>
               </div>
+
+              {/*paypal*/}
+              {!isPaid && paymentMethod === 'PayPal' && (
+                <div>
+                  <PayPalScriptProvider options={{ clientId: paypalClientId }}>
+                    <PrintLoadingState />
+                    <PayPalButtons
+                      createOrder={handleCreatePayPalOrder}
+                      onApprove={handleApprovePayPalOrder}
+                    />
+                  </PayPalScriptProvider>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

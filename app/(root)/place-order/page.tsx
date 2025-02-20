@@ -92,7 +92,7 @@ const PlaceOrderPage = async () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {cart.items.map((item:CartItem) => (
+                  {cart.items.map((item: CartItem) => (
                     <TableRow key={item.slug}>
                       <TableCell>
                         <Link
