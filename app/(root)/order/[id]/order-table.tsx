@@ -2,11 +2,6 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Order } from '@/types';
-import Link from 'next/link';
-import Image from 'next/image';
-import { useToast } from '@/hooks/use-toast';
-import { formatCurrency, formatDateTime, formatId } from '@/lib/utils';
 import {
   Table,
   TableBody,
@@ -15,6 +10,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { formatCurrency, formatDateTime, formatId } from '@/lib/utils';
+import { Order } from '@/types';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useToast } from '@/hooks/use-toast';
 import {
   PayPalButtons,
   PayPalScriptProvider,
@@ -33,6 +33,7 @@ const OrderTable = ({
   paypalClientId: string;
 }) => {
   const {
+    id,
     shippingAddress,
     orderitems,
     itemsPrice,
@@ -41,9 +42,9 @@ const OrderTable = ({
     totalPrice,
     paymentMethod,
     idDelivered,
-    deliveredAt,
     isPaid,
     paidAt,
+    deliveredAt,
   } = order;
 
   const { toast } = useToast();
@@ -55,33 +56,36 @@ const OrderTable = ({
     if (isPending) {
       status = 'Loading PayPal...';
     } else if (isRejected) {
-      status = 'Error loading PayPal';
+      status = 'Error Loading PayPal';
     }
     return status;
   };
 
   const handleCreatePayPalOrder = async () => {
     const res = await createPayPalOrder(order.id);
+
     if (!res.success) {
       toast({
         variant: 'destructive',
         description: res.message,
       });
     }
+
     return res.data;
   };
 
   const handleApprovePayPalOrder = async (data: { orderID: string }) => {
     const res = await approvePayPalOrder(order.id, data);
+
     toast({
-      variant: res.message ? 'default' : 'destructive',
+      variant: res.success ? 'default' : 'destructive',
       description: res.message,
     });
   };
 
   return (
     <>
-      <h1 className='py-4 text-2xl'>Order {formatId(order.id)}</h1>
+      <h1 className='py-4 text-2xl'>Order {formatId(id)}</h1>
       <div className='grid md:grid-cols-3 md:gap-5'>
         <div className='space-4-y overlow-x-auto col-span-2'>
           <Card>
@@ -107,7 +111,7 @@ const OrderTable = ({
               </p>
               {idDelivered ? (
                 <Badge variant='secondary'>
-                  Delivered at {formatDateTime(deliveredAt!).dateTime}
+                  Paid at {formatDateTime(deliveredAt!).dateTime}
                 </Badge>
               ) : (
                 <Badge variant='destructive'>Not Delivered</Badge>
@@ -174,7 +178,7 @@ const OrderTable = ({
                 <div>Total</div>
                 <div>{formatCurrency(totalPrice)}</div>
               </div>
-
+              
               {/*paypal*/}
               {!isPaid && paymentMethod === 'PayPal' && (
                 <div>

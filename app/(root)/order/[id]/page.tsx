@@ -19,15 +19,13 @@ const OrderPage = async (props: {
   if (!order) notFound();
 
   return (
-    <>
-      <OrderTable
-        order={{
-          ...order,
-          Shipping: order.Shipping as Shipping,
-        }}
-        paypalClientId={process.env.PAYPAL_CLIENT_ID || 'sb'}
-      />
-    </>
+    <OrderTable
+      order={{
+        ...order,
+        Shipping: order.Shipping as Shipping,
+      }}
+      paypalClientId={process.env.PAYPAL_CLIENT_ID || 'sb'}
+    />
   );
 };
 
