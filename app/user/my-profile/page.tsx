@@ -1,6 +1,6 @@
 const UserProfile = () => {
     return ( <>
-    prifle
+    profile
     </> );
 }
  
