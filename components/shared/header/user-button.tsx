@@ -48,6 +48,15 @@ const UserButton = async () => {
               My profile
             </Link>
           </DropdownMenuItem>
+
+          {session?.user?.role === 'admin' && (
+            <DropdownMenuItem>
+              <Link className='w-full' href={'/admin/overview'}>
+                Admin panel
+              </Link>
+            </DropdownMenuItem>
+          )}
+
           <DropdownMenuItem>
             <form className='w-full' action={signingOut}>
               <Button

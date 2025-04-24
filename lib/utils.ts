@@ -135,3 +135,10 @@ export function formUrlQuery({
     },
   );
 }
+
+// format number
+const NUMBER_FORMATTER = new Intl.NumberFormat('en-US');
+
+export function formatNumDashboard(number: number) {
+  return NUMBER_FORMATTER.format(number);
+}

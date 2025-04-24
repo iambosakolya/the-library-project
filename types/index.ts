@@ -27,7 +27,7 @@ export type Order = z.infer<typeof insertOrderSchema> & {
   isPaid: Boolean;
   paidAt: Date | null;
   // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
-  idDelivered: Boolean;
+  isDelivered: Boolean;
   deliveredAt: Date | null;
   orderitems: OrderItem[];
   user: { name: string; email: string };

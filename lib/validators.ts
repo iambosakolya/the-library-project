@@ -44,6 +44,11 @@ export const productInsertSchema = z.object({
   banner: z.string().nullable(),
 });
 
+// Schema for updating products
+export const updateProductSchema = productInsertSchema.extend({
+  id: z.string().min(1, 'Id is required'),
+});
+
 // for signing
 export const signInInsertSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -136,4 +141,10 @@ export const paymentResultSchema = z.object({
   status: z.string(),
   email_address: z.string(),
   pricePaid: z.string(),
+});
+
+// schema for updating user profile
+export const updateProfileSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  email: z.string().min(3, 'Email must be at least 2 characters'),
 });
