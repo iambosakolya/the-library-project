@@ -32,7 +32,7 @@ export async function getAllProducts({
   query,
   limit = 12,
   page,
-  
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   category,
 }: {
@@ -117,4 +117,14 @@ export async function updateProduct(data: z.infer<typeof updateProductSchema>) {
   } catch (error) {
     return { success: false, message: formatError(error) };
   }
+}
+
+// get all categories
+export async function getAllCategories() {
+  const data = await prisma.product.groupBy({
+    by: ['category'],
+    _count: true,
+  });
+
+  return data;
 }
