@@ -6,6 +6,7 @@ import { LATEST_PRODUCTS_LIMIT } from '../constants';
 import { revalidatePath } from 'next/cache';
 import { productInsertSchema, updateProductSchema } from '../validators';
 import { z } from 'zod';
+import { Prisma } from '@prisma/client';
 
 // get latest products
 export async function getLatestProducts() {
@@ -28,20 +29,73 @@ export async function getProductBySlug(slug: string) {
 
 // Get all products
 export async function getAllProducts({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   query,
   limit = 12,
   page,
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   category,
+  price,
+  rating,
+  sort,
 }: {
   query: string;
   limit?: number;
   page: number;
   category?: string;
+  price?: string;
+  rating?: string;
+  sort?: string;
 }) {
+  // query filter
+  const queryFilter: Prisma.ProductWhereInput =
+    query && query !== 'all'
+      ? {
+          name: {
+            contains: query,
+            mode: 'insensitive',
+          } as Prisma.StringFilter,
+        }
+      : {};
+
+  // category filter
+  const categoryFilter = category && category !== 'all' ? { category } : {};
+
+  // price filter
+  const priceFilter: Prisma.ProductWhereInput =
+    price && price !== 'all'
+      ? {
+          price: {
+            gte: Number(price.split('-')[0]),
+            lte: Number(price.split('-')[1]),
+          },
+        }
+      : {};
+
+  // rating filter
+  const ratingFilter =
+    rating && rating !== 'all'
+      ? {
+          rating: {
+            gte: Number(rating),
+          },
+        }
+      : {};
+
   const data = await prisma.product.findMany({
+    where: {
+      ...queryFilter,
+      ...categoryFilter,
+      ...priceFilter,
+      ...ratingFilter,
+    },
+    orderBy:
+      sort === 'lowest'
+        ? { price: 'asc' }
+        : sort === 'highest'
+          ? { price: 'desc' }
+          : sort === 'rating'
+            ? { rating: 'desc' }
+            : { createdAt: 'desc' },
+
     skip: (page - 1) * limit,
     take: limit,
   });

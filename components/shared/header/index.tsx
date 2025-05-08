@@ -2,14 +2,17 @@ import { BookOpen } from 'lucide-react';
 import { APP_NAME } from '@/lib/constants';
 import Link from 'next/link';
 import Menu from './menu';
+import CategoryDrawer from './caregory-drawer';
 // import Image from 'next/image';
+import Search from './search';
 
 const Header = () => {
   return (
     <header className='w-full border-b'>
       <div className='wrapper flex items-center justify-between'>
         <div className='flex items-center'>
-          <Link href='/' className='flex items-start'>
+          <CategoryDrawer />
+          <Link href='/' className='ml-4 flex items-start'>
             {/* <Image  
               src="/images/read-book-icon.svg"
               alt={APP_NAME}
@@ -25,6 +28,9 @@ const Header = () => {
               </span>
             </div>
           </Link>
+        </div>
+        <div className='hidden md:block'>
+          <Search />
         </div>
         <div className='space-x-2'>
           <Menu />

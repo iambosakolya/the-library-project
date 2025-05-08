@@ -6,16 +6,16 @@ async function main() {
 
   try {
     await prisma.product.deleteMany();
-    await prisma.account.deleteMany();
-    await prisma.session.deleteMany();
-    await prisma.verificationToken.deleteMany();
-    await prisma.user.deleteMany();
-    await prisma.order.deleteMany();
-    await prisma.orderItem.deleteMany();
-    await prisma.cart.deleteMany();
+    // await prisma.account.deleteMany();
+    // await prisma.session.deleteMany();
+    // await prisma.verificationToken.deleteMany();
+    // await prisma.user.deleteMany();
+    // await prisma.order.deleteMany();
+    // await prisma.orderItem.deleteMany();
+    // await prisma.cart.deleteMany();
 
     await prisma.product.createMany({ data: sampleData.products });
-    await prisma.user.createMany({ data: sampleData.users });
+    // await prisma.user.createMany({ data: sampleData.users });
 
     console.log('Sample data has been added to the database');
   } catch (error) {
@@ -26,3 +26,5 @@ async function main() {
 }
 
 main();
+
+// npx tsx ./db/seed
