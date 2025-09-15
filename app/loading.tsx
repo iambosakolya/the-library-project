@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import loading from '@/assets/loading.gif';
+import loading from '@/assets/loading1.gif';
 
 const Loading = () => {
   return (
