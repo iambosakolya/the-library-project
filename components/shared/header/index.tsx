@@ -5,14 +5,15 @@ import Menu from './menu';
 import CategoryDrawer from './caregory-drawer';
 // import Image from 'next/image';
 import Search from './search';
+import { headerStyles } from './header.styles';
 
 const Header = () => {
   return (
-    <header className='w-full border-b'>
-      <div className='wrapper flex items-center justify-between'>
-        <div className='flex items-center'>
+    <header className={headerStyles.root}>
+      <div className={headerStyles.wrapper}>
+        <div className={headerStyles.left}>
           <CategoryDrawer />
-          <Link href='/' className='ml-4 flex items-start'>
+          <Link href='/' className={headerStyles.logoLink}>
             {/* <Image  
               src="/images/read-book-icon.svg"
               alt={APP_NAME}
@@ -20,19 +21,19 @@ const Header = () => {
               height={50}
               priority={true}
             /> */}
-            <BookOpen width={60} height={60} />
-            <div className='ml-4'>
-              <span className='block text-2xl font-bold'>{APP_NAME}</span>
-              <span className='block text-lg'>
+            <BookOpen className={headerStyles.icon} />
+            <div className={headerStyles.logoTextWrapper}>
+              <span className={headerStyles.appName}>{APP_NAME}</span>
+              <span className={headerStyles.tagline}>
                 for visual culture & critical thinking
               </span>
             </div>
           </Link>
         </div>
-        <div className='hidden md:block'>
+        <div className={headerStyles.searchWrapper}>
           <Search />
         </div>
-        <div className='space-x-2'>
+        <div className={headerStyles.actions}>
           <Menu />
         </div>
       </div>
