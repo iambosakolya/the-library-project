@@ -1,6 +1,6 @@
 import ProductList from '@/components/shared/product/product-list';
 import { getLatestProducts } from '@/lib/actions/product.actions';
-import BannerMain from '@/components/shared/product/banner';
+import BannerMain from '@/components/shared/product/banner/banner';
 import ViewAllProductsButton from '@/components/view-all-products-btn';
 
 const HomePage = async () => {
