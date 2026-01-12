@@ -7,79 +7,97 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-// Extends the PrismaClient with a custom result transformer to convert the price and rating fields to strings.
-export const prisma = new PrismaClient().$extends({
-  result: {
-    product: {
-      price: {
-        compute(product) {
-          return product.price.toString();
+// Create a singleton function for PrismaClient
+const prismaClientSingleton = () => {
+  return new PrismaClient().$extends({
+    result: {
+      product: {
+        price: {
+          needs: { price: true },
+          compute(product) {
+            return product.price.toString();
+          },
+        },
+        rating: {
+          needs: { rating: true },
+          compute(product) {
+            return product.rating.toString();
+          },
         },
       },
-      rating: {
-        compute(product) {
-          return product.rating.toString();
+      cart: {
+        itemsPrice: {
+          needs: { itemsPrice: true },
+          compute(cart) {
+            return cart.itemsPrice.toString();
+          },
+        },
+        taxPrice: {
+          needs: { taxPrice: true },
+          compute(cart) {
+            return cart.taxPrice.toString();
+          },
+        },
+        shippingPrice: {
+          needs: { shippingPrice: true },
+          compute(cart) {
+            return cart.shippingPrice.toString();
+          },
+        },
+        totalPrice: {
+          needs: { totalPrice: true },
+          compute(cart) {
+            return cart.totalPrice.toString();
+          },
+        },
+      },
+      order: {
+        itemsPrice: {
+          needs: { itemsPrice: true },
+          compute(order) {
+            return order.itemsPrice.toString();
+          },
+        },
+        taxPrice: {
+          needs: { taxPrice: true },
+          compute(order) {
+            return order.taxPrice.toString();
+          },
+        },
+        shippingPrice: {
+          needs: { shippingPrice: true },
+          compute(order) {
+            return order.shippingPrice.toString();
+          },
+        },
+        totalPrice: {
+          needs: { totalPrice: true },
+          compute(order) {
+            return order.totalPrice.toString();
+          },
+        },
+      },
+      orderItem: {
+        price: {
+          needs: { price: true },
+          compute(orderItem) {
+            return orderItem.price.toString();
+          },
         },
       },
     },
-    cart: {
-      itemsPrice: {
-        needs: { itemsPrice: true },
-        compute(cart) {
-          return cart.itemsPrice.toString();
-        },
-      },
-      taxPrice: {
-        needs: { taxPrice: true },
-        compute(cart) {
-          return cart.taxPrice.toString();
-        },
-      },
-      shippingPrice: {
-        needs: { shippingPrice: true },
-        compute(cart) {
-          return cart.shippingPrice.toString();
-        },
-      },
-      totalPrice: {
-        needs: { totalPrice: true },
-        compute(cart) {
-          return cart.totalPrice.toString();
-        },
-      },
-    },
-    order: {
-      itemsPrice: {
-        needs: { itemsPrice: true },
-        compute(cart) {
-          return cart.itemsPrice.toString();
-        },
-      },
-      taxPrice: {
-        needs: { taxPrice: true },
-        compute(cart) {
-          return cart.taxPrice.toString();
-        },
-      },
-      shippingPrice: {
-        needs: { shippingPrice: true },
-        compute(cart) {
-          return cart.shippingPrice.toString();
-        },
-      },
-      totalPrice: {
-        needs: { totalPrice: true },
-        compute(cart) {
-          return cart.totalPrice.toString();
-        },
-      },
-    },
-    orderItem: {
-      price: {
-        compute(cart) {
-          return cart.price.toString();
-        },
-      },
-    },
-  },
-});
+  });
+};
+
+type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>;
+
+declare global {
+  // eslint-disable-next-line no-var
+  var prismaGlobal: PrismaClientSingleton | undefined;
+}
+
+export const prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
+
+if (process.env.NODE_ENV !== 'production') {
+  globalThis.prismaGlobal = prisma;
+}
