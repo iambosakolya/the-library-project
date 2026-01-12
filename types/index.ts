@@ -7,6 +7,7 @@ import {
   insertOrderItemSchema,
   insertOrderSchema,
   paymentResultSchema,
+  clubEventRequestSchema,
 } from '@/lib/validators';
 
 export type Product = z.infer<typeof productInsertSchema> & {
@@ -34,3 +35,17 @@ export type Order = z.infer<typeof insertOrderSchema> & {
 };
 
 export type PaymentResult = z.infer<typeof paymentResultSchema>;
+
+export type ClubEventRequest = z.infer<typeof clubEventRequestSchema> & {
+  id: string;
+  userId: string;
+  status: 'pending' | 'approved' | 'rejected';
+  rejectionReason: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+  };
+};

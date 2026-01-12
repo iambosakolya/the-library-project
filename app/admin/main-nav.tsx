@@ -22,6 +22,10 @@ const links = [
     title: 'Users',
     href: '/admin/users',
   },
+  {
+    title: 'Club Requests',
+    href: '/admin/club-requests',
+  },
 ];
 
 const UserNavHeader = ({
