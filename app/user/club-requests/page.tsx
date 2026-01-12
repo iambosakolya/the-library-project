@@ -48,7 +48,7 @@ export default async function ClubRequestsPage() {
         <Card>
           <CardContent className='py-12 text-center'>
             <p className='text-muted-foreground'>
-              You haven't created any club or event requests yet.
+              You have not created any club or event requests yet.
             </p>
             <Link href='/user/create-club-event'>
               <Button className='mt-4'>Create Your First Request</Button>
