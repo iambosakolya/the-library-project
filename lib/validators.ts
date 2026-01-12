@@ -148,3 +148,92 @@ export const updateProfileSchema = z.object({
   name: z.string().min(1, 'Name must be at least 1 character'),
   email: z.string().min(3, 'Email must be at least 3 characters'),
 });
+
+// schema for creating club/event request
+export const clubEventRequestSchema = z
+  .object({
+    type: z.enum(['club', 'event'], {
+      required_error: 'Type is required',
+      invalid_type_error: 'Type must be either club or event',
+    }),
+    title: z
+      .string()
+      .min(3, 'Title must be at least 3 characters')
+      .max(100, 'Title must be at most 100 characters'),
+    purpose: z
+      .string()
+      .min(10, 'Purpose must be at least 10 characters')
+      .max(500, 'Purpose must be at most 500 characters'),
+    description: z
+      .string()
+      .min(20, 'Description must be at least 20 characters')
+      .max(2000, 'Description must be at most 2000 characters'),
+    startDate: z.coerce.date().refine((date) => date > new Date(), {
+      message: 'Start date must be in the future',
+    }),
+    endDate: z.coerce.date().optional().nullable(),
+    capacity: z.coerce
+      .number()
+      .int()
+      .min(2, 'Capacity must be at least 2 people')
+      .max(100, 'Capacity must be at most 100 people'),
+    format: z.enum(['online', 'offline'], {
+      required_error: 'Format is required',
+      invalid_type_error: 'Format must be either online or offline',
+    }),
+    address: z.string().optional().nullable(),
+    onlineLink: z
+      .string()
+      .optional()
+      .nullable()
+      .refine(
+        (val) => !val || val === '' || /^https?:\/\/.+/.test(val),
+        'Must be a valid URL',
+      ),
+    sessionCount: z.coerce
+      .number()
+      .int()
+      .min(1, 'Session count must be at least 1')
+      .max(52, 'Session count must be at most 52'),
+    bookIds: z
+      .array(z.string().uuid('Invalid book ID'))
+      .min(1, 'At least one book must be selected')
+      .max(10, 'Maximum 10 books can be selected'),
+  })
+  .refine(
+    (data) => {
+      if (data.type === 'club' && data.endDate) {
+        return data.endDate > data.startDate;
+      }
+      return true;
+    },
+    {
+      message: 'End date must be after start date',
+      path: ['endDate'],
+    },
+  )
+  .refine(
+    (data) => {
+      if (data.format === 'offline') {
+        return !!data.address && data.address.length >= 10;
+      }
+      return true;
+    },
+    {
+      message:
+        'Address is required for offline events and must be at least 10 characters',
+      path: ['address'],
+    },
+  )
+  .refine(
+    (data) => {
+      if (data.format === 'online') {
+        return !!data.onlineLink;
+      }
+      return true;
+    },
+    {
+      message: 'Online link is required for online events',
+      path: ['onlineLink'],
+    },
+  );

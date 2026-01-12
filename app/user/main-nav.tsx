@@ -14,6 +14,10 @@ const links = [
     title: 'Orders',
     href: '/user/orders',
   },
+  {
+    title: 'My Clubs & Events',
+    href: '/user/club-requests',
+  },
 ];
 
 const UserNavHeader = ({

@@ -5,8 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -43,12 +42,15 @@ model User {
   address       Json?     @db.Json
   paymentMethod String?
 
-  createdAt DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt DateTime  @updatedAt
-  Account   Account[]
-  Session   Session[]
-  Cart      Cart[]
-  Order     Order[]
+  createdAt       DateTime      @default(now()) @db.Timestamp(6)
+  updatedAt       DateTime      @updatedAt
+  Account         Account[]
+  Session         Session[]
+  Cart            Cart[]
+  Order           Order[]
+  ClubRequest     ClubRequest[]
+  createdClubs    ReadingClub[] @relation("ClubCreator")
+  organizedEvents Event[]       @relation("EventOrganizer")
 }
 
 model Account {
@@ -134,4 +136,88 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@id([orderId, productId], map: "orderitems_orderId_productId_pk")
+}
+
+enum ClubEventType {
+  club
+  event
+}
+
+enum ClubEventStatus {
+  pending
+  approved
+  rejected
+}
+
+enum ClubEventFormat {
+  online
+  offline
+}
+
+model ClubRequest {
+  id              String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String          @db.Uuid
+  type            ClubEventType
+  title           String
+  purpose         String
+  description     String
+  startDate       DateTime        @db.Timestamp(6)
+  endDate         DateTime?       @db.Timestamp(6)
+  capacity        Int
+  format          ClubEventFormat
+  address         String?
+  onlineLink      String?
+  sessionCount    Int
+  bookIds         String[]
+  status          ClubEventStatus @default(pending)
+  rejectionReason String?
+  createdAt       DateTime        @default(now()) @db.Timestamp(6)
+  updatedAt       DateTime        @updatedAt
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  readingClub     ReadingClub?
+  event           Event?
+}
+
+model ReadingClub {
+  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clubRequestId String          @unique @db.Uuid
+  title         String
+  purpose       String
+  description   String
+  startDate     DateTime        @db.Timestamp(6)
+  endDate       DateTime?       @db.Timestamp(6)
+  capacity      Int
+  format        ClubEventFormat
+  address       String?
+  onlineLink    String?
+  sessionCount  Int
+  bookIds       String[]
+  creatorId     String          @db.Uuid
+  memberIds     String[]        @default([])
+  isActive      Boolean         @default(true)
+  createdAt     DateTime        @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime        @updatedAt
+  clubRequest   ClubRequest     @relation(fields: [clubRequestId], references: [id], onDelete: Cascade)
+  creator       User            @relation("ClubCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+}
+
+model Event {
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventRequestId String          @unique @db.Uuid
+  title          String
+  purpose        String
+  description    String
+  eventDate      DateTime        @db.Timestamp(6)
+  capacity       Int
+  format         ClubEventFormat
+  address        String?
+  onlineLink     String?
+  bookIds        String[]
+  organizerId    String          @db.Uuid
+  attendeeIds    String[]        @default([])
+  isActive       Boolean         @default(true)
+  createdAt      DateTime        @default(now()) @db.Timestamp(6)
+  updatedAt      DateTime        @updatedAt
+  eventRequest   ClubRequest     @relation(fields: [eventRequestId], references: [id], onDelete: Cascade)
+  organizer      User            @relation("EventOrganizer", fields: [organizerId], references: [id], onDelete: Cascade)
 }
