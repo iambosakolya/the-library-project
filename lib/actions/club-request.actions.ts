@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { clubEventRequestSchema } from '../validators';
 import { z } from 'zod';
 import { auth } from '@/auth';
+import { Prisma } from '@/src/generated/prisma';
 
 // Create a new club or event request
 export async function createClubRequest(
@@ -316,6 +317,248 @@ export async function rejectClubRequest(id: string, reason: string) {
     return {
       success: true,
       message: 'Request rejected successfully',
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: formatError(error),
+    };
+  }
+}
+
+// Get all approved reading clubs with filtering and pagination
+export async function getReadingClubs({
+  page = 1,
+  limit = 10,
+  format,
+  search,
+  startDate,
+  endDate,
+}: {
+  page?: number;
+  limit?: number;
+  format?: 'online' | 'offline';
+  search?: string;
+  startDate?: Date;
+  endDate?: Date;
+}) {
+  try {
+    const skip = (page - 1) * limit;
+
+    // Build where clause
+    const where: Prisma.ReadingClubWhereInput = {
+      isActive: true,
+    };
+
+    if (format) {
+      where.format = format;
+    }
+
+    if (search) {
+      where.OR = [
+        { title: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+        { purpose: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    if (startDate || endDate) {
+      where.startDate = {};
+      if (startDate) {
+        where.startDate.gte = startDate;
+      }
+      if (endDate) {
+        where.startDate.lte = endDate;
+      }
+    }
+
+    const [clubs, totalCount] = await Promise.all([
+      prisma.readingClub.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: {
+          startDate: 'asc',
+        },
+        include: {
+          creator: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      }),
+      prisma.readingClub.count({ where }),
+    ]);
+
+    return {
+      success: true,
+      data: convertToPlainObj(clubs),
+      pagination: {
+        page,
+        limit,
+        totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+      },
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: formatError(error),
+    };
+  }
+}
+
+// Get all approved events with filtering and pagination
+export async function getEvents({
+  page = 1,
+  limit = 10,
+  format,
+  search,
+  startDate,
+  endDate,
+}: {
+  page?: number;
+  limit?: number;
+  format?: 'online' | 'offline';
+  search?: string;
+  startDate?: Date;
+  endDate?: Date;
+}) {
+  try {
+    const skip = (page - 1) * limit;
+
+    // Build where clause
+    const where: Prisma.EventWhereInput = {
+      isActive: true,
+    };
+
+    if (format) {
+      where.format = format;
+    }
+
+    if (search) {
+      where.OR = [
+        { title: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+        { purpose: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    if (startDate || endDate) {
+      where.eventDate = {};
+      if (startDate) {
+        where.eventDate.gte = startDate;
+      }
+      if (endDate) {
+        where.eventDate.lte = endDate;
+      }
+    }
+
+    const [events, totalCount] = await Promise.all([
+      prisma.event.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: {
+          eventDate: 'asc',
+        },
+        include: {
+          organizer: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      }),
+      prisma.event.count({ where }),
+    ]);
+
+    return {
+      success: true,
+      data: convertToPlainObj(events),
+      pagination: {
+        page,
+        limit,
+        totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+      },
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: formatError(error),
+    };
+  }
+}
+
+// Get a single reading club by ID
+export async function getReadingClubById(id: string) {
+  try {
+    const club = await prisma.readingClub.findUnique({
+      where: { id },
+      include: {
+        creator: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+          },
+        },
+      },
+    });
+
+    if (!club) {
+      return {
+        success: false,
+        message: 'Reading club not found',
+      };
+    }
+
+    return {
+      success: true,
+      data: convertToPlainObj(club),
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: formatError(error),
+    };
+  }
+}
+
+// Get a single event by ID
+export async function getEventById(id: string) {
+  try {
+    const event = await prisma.event.findUnique({
+      where: { id },
+      include: {
+        organizer: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+          },
+        },
+      },
+    });
+
+    if (!event) {
+      return {
+        success: false,
+        message: 'Event not found',
+      };
+    }
+
+    return {
+      success: true,
+      data: convertToPlainObj(event),
     };
   } catch (error) {
     return {
