@@ -23,8 +23,8 @@ const links = [
     href: '/admin/users',
   },
   {
-    title: 'Club Requests',
-    href: '/admin/club-requests',
+    title: 'Moderate Requests',
+    href: '/admin/requests',
   },
 ];
 

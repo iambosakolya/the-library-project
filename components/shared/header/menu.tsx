@@ -1,6 +1,6 @@
 import ModeToggle from './mode-toggle';
 import { Button } from '@/components/ui/button';
-import { EllipsisVertical, ShoppingCart } from 'lucide-react';
+import { EllipsisVertical, ShoppingCart, Users, Calendar } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -16,9 +16,19 @@ const Menu = () => {
     <div className='flex justify-end gap-3'>
       <nav className='hidden w-full max-w-xs gap-1 md:flex'>
         <ModeToggle />
-        <Button asChild variant='ghost' className='text-lg'>
+        <Button asChild variant='ghost'>
+          <Link href='/clubs'>
+            <Users className='h-4 w-4' /> Clubs
+          </Link>
+        </Button>
+        <Button asChild variant='ghost'>
+          <Link href='/events'>
+            <Calendar className='h-4 w-4' /> Events
+          </Link>
+        </Button>
+        <Button asChild variant='ghost'>
           <Link href='/cart'>
-            <ShoppingCart /> Cart
+            <ShoppingCart className='h-4 w-4' /> Cart
           </Link>
         </Button>
         <UserButton />
@@ -33,16 +43,21 @@ const Menu = () => {
             <SheetTitle>Menu</SheetTitle>
             <SheetDescription></SheetDescription>
             <UserButton />
-            <Button asChild variant='ghost' className='text-lg'>
-              <Link href='/cart'>
-                <ShoppingCart /> Cart
+            <Button asChild variant='ghost'>
+              <Link href='/clubs'>
+                <Users className='h-4 w-4' /> Clubs
               </Link>
             </Button>
-            {/* <Button asChild variant='ghost' className='text-lg'>
-              <Link href='/sign-in'>
-                <UserIcon /> Log in
+            <Button asChild variant='ghost'>
+              <Link href='/events'>
+                <Calendar className='h-4 w-4' /> Events
               </Link>
-            </Button> */}
+            </Button>
+            <Button asChild variant='ghost'>
+              <Link href='/cart'>
+                <ShoppingCart className='h-4 w-4' /> Cart
+              </Link>
+            </Button>
           </SheetContent>
         </Sheet>
       </nav>
