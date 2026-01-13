@@ -21,13 +21,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 type EventDetailPageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 const EventDetailPage = async ({ params }: EventDetailPageProps) => {
-  const result = await getEventById(params.id);
+  const { id } = await params;
+  const result = await getEventById(id);
 
   if (!result.success || !result.data) {
     notFound();

@@ -22,13 +22,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 type ClubDetailPageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 const ClubDetailPage = async ({ params }: ClubDetailPageProps) => {
-  const result = await getReadingClubById(params.id);
+  const { id } = await params;
+  const result = await getReadingClubById(id);
 
   if (!result.success || !result.data) {
     notFound();

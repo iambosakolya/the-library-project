@@ -17,22 +17,19 @@ type SearchParams = {
 };
 
 type ClubsPageProps = {
-  searchParams: SearchParams;
+  searchParams: Promise<SearchParams>;
 };
 
 const ClubsPage = async ({ searchParams }: ClubsPageProps) => {
-  const page = Number(searchParams.page) || 1;
+  const params = await searchParams;
+  const page = Number(params.page) || 1;
   const limit = 12;
 
   // Parse filters
-  const format = searchParams.format;
-  const search = searchParams.search;
-  const startDate = searchParams.startDate
-    ? new Date(searchParams.startDate)
-    : undefined;
-  const endDate = searchParams.endDate
-    ? new Date(searchParams.endDate)
-    : undefined;
+  const format = params.format;
+  const search = params.search;
+  const startDate = params.startDate ? new Date(params.startDate) : undefined;
+  const endDate = params.endDate ? new Date(params.endDate) : undefined;
 
   const result = await getReadingClubs({
     page,

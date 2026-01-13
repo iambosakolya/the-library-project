@@ -12,10 +12,10 @@ export const metadata: Metadata = {
 };
 
 type AdminRequestsPageProps = {
-  searchParams: {
+  searchParams: Promise<{
     search?: string;
     type?: string;
-  };
+  }>;
 };
 
 export default async function AdminRequestsPage({
@@ -27,12 +27,13 @@ export default async function AdminRequestsPage({
     redirect('/');
   }
 
+  const params = await searchParams;
   const requests = await getPendingClubRequests();
 
   // Filter by search if provided
   let filteredRequests = requests;
-  if (searchParams.search) {
-    const searchLower = searchParams.search.toLowerCase();
+  if (params.search) {
+    const searchLower = params.search.toLowerCase();
     filteredRequests = requests.filter(
       (req: ClubEventRequest) =>
         req.title.toLowerCase().includes(searchLower) ||
