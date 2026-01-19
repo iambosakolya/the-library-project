@@ -1,0 +1,17 @@
+export const footerStyles = {
+  footer: 'border-t bg-background',
+  container: 'container mx-auto px-4 py-8 md:py-12',
+  grid: 'grid grid-cols-1 gap-8 md:grid-cols-4',
+  infoSection: 'space-y-3',
+  title: 'text-lg font-semibold',
+  description: 'text-sm text-muted-foreground',
+  sectionTitle: 'mb-3 text-sm font-semibold uppercase',
+  linkList: 'space-y-2 text-sm',
+  link: 'hover:underline',
+  socialButtons: 'flex space-x-4',
+  socialIcon: 'h-4 w-4',
+  srOnly: 'sr-only',
+  newsletterButton: 'mt-4',
+  newsletterButtonInner: 'w-full',
+  copyright: 'mt-8 pt-8 text-center text-sm text-muted-foreground',
+};

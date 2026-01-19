@@ -49,3 +49,67 @@ export type ClubEventRequest = z.infer<typeof clubEventRequestSchema> & {
     email: string;
   };
 };
+
+export type ReadingClub = {
+  id: string;
+  clubRequestId: string;
+  title: string;
+  purpose: string;
+  description: string;
+  startDate: Date;
+  endDate: Date | null;
+  capacity: number;
+  format: 'online' | 'offline';
+  address: string | null;
+  onlineLink: string | null;
+  sessionCount: number;
+  bookIds: string[];
+  creatorId: string;
+  memberIds: string[];
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  creator?: {
+    id: string;
+    name: string;
+    email: string;
+    image?: string | null;
+  };
+};
+
+export type Event = {
+  id: string;
+  eventRequestId: string;
+  title: string;
+  purpose: string;
+  description: string;
+  eventDate: Date;
+  capacity: number;
+  format: 'online' | 'offline';
+  address: string | null;
+  onlineLink: string | null;
+  bookIds: string[];
+  organizerId: string;
+  attendeeIds: string[];
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  organizer?: {
+    id: string;
+    name: string;
+    email: string;
+    image?: string | null;
+  };
+};
+
+export type PaginationResult<T> = {
+  success: boolean;
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    totalCount: number;
+    totalPages: number;
+  };
+  message?: string;
+};

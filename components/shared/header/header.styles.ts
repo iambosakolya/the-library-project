@@ -12,5 +12,5 @@ export const headerStyles = {
     'hidden sm:block text-xs md:text-sm lg:text-base text-muted-foreground',
   searchWrapper: 'hidden md:block flex-1 max-w-md',
   actions: 'space-x-2 flex-shrink-0',
-} as const;
+};
 
