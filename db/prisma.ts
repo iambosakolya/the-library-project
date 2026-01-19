@@ -28,52 +28,52 @@ const prismaClientSingleton = () => {
       cart: {
         itemsPrice: {
           needs: { itemsPrice: true },
-          compute(cart) {
-            return cart.itemsPrice.toString();
+          compute(cart: { itemsPrice: unknown }) {
+            return String(cart.itemsPrice);
           },
         },
         taxPrice: {
           needs: { taxPrice: true },
-          compute(cart) {
-            return cart.taxPrice.toString();
+          compute(cart: { taxPrice: unknown }) {
+            return String(cart.taxPrice);
           },
         },
         shippingPrice: {
           needs: { shippingPrice: true },
-          compute(cart) {
-            return cart.shippingPrice.toString();
+          compute(cart: { shippingPrice: unknown }) {
+            return String(cart.shippingPrice);
           },
         },
         totalPrice: {
           needs: { totalPrice: true },
-          compute(cart) {
-            return cart.totalPrice.toString();
+          compute(cart: { totalPrice: unknown }) {
+            return String(cart.totalPrice);
           },
         },
       },
       order: {
         itemsPrice: {
           needs: { itemsPrice: true },
-          compute(order) {
-            return order.itemsPrice.toString();
+          compute(order: { itemsPrice: unknown }) {
+            return String(order.itemsPrice);
           },
         },
         taxPrice: {
           needs: { taxPrice: true },
-          compute(order) {
-            return order.taxPrice.toString();
+          compute(order: { taxPrice: unknown }) {
+            return String(order.taxPrice);
           },
         },
         shippingPrice: {
           needs: { shippingPrice: true },
-          compute(order) {
-            return order.shippingPrice.toString();
+          compute(order: { shippingPrice: unknown }) {
+            return String(order.shippingPrice);
           },
         },
         totalPrice: {
           needs: { totalPrice: true },
-          compute(order) {
-            return order.totalPrice.toString();
+          compute(order: { totalPrice: unknown }) {
+            return String(order.totalPrice);
           },
         },
       },
