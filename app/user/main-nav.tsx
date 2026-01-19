@@ -18,6 +18,10 @@ const links = [
     title: 'My Clubs & Events',
     href: '/user/club-requests',
   },
+  {
+    title: 'My Registrations',
+    href: '/user/my-registrations',
+  },
 ];
 
 const UserNavHeader = ({

@@ -237,3 +237,20 @@ export const clubEventRequestSchema = z
       path: ['onlineLink'],
     },
   );
+
+// schema for registration
+export const registrationSchema = z
+  .object({
+    clubId: z.string().uuid('Invalid club ID').optional().nullable(),
+    eventId: z.string().uuid('Invalid event ID').optional().nullable(),
+  })
+  .refine(
+    (data) => {
+      // Either clubId or eventId must be provided, but not both
+      return (data.clubId && !data.eventId) || (!data.clubId && data.eventId);
+    },
+    {
+      message: 'Either clubId or eventId must be provided, but not both',
+      path: ['clubId'],
+    },
+  );

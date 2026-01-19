@@ -8,6 +8,7 @@ import {
   insertOrderSchema,
   paymentResultSchema,
   clubEventRequestSchema,
+  registrationSchema,
 } from '@/lib/validators';
 
 export type Product = z.infer<typeof productInsertSchema> & {
@@ -112,4 +113,26 @@ export type PaginationResult<T> = {
     totalPages: number;
   };
   message?: string;
+};
+
+export type RegistrationInput = z.infer<typeof registrationSchema>;
+
+export type Registration = {
+  id: string;
+  userId: string;
+  clubId: string | null;
+  eventId: string | null;
+  status: 'active' | 'cancelled';
+  registeredAt: Date;
+  cancelledAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+  club?: ReadingClub | null;
+  event?: Event | null;
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+    image?: string | null;
+  };
 };

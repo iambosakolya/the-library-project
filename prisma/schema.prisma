@@ -43,15 +43,16 @@ model User {
   address       Json?     @db.Json
   paymentMethod String?
 
-  createdAt       DateTime      @default(now()) @db.Timestamp(6)
-  updatedAt       DateTime      @updatedAt
+  createdAt       DateTime       @default(now()) @db.Timestamp(6)
+  updatedAt       DateTime       @updatedAt
   Account         Account[]
   Session         Session[]
   Cart            Cart[]
   Order           Order[]
   ClubRequest     ClubRequest[]
-  createdClubs    ReadingClub[] @relation("ClubCreator")
-  organizedEvents Event[]       @relation("EventOrganizer")
+  createdClubs    ReadingClub[]  @relation("ClubCreator")
+  organizedEvents Event[]        @relation("EventOrganizer")
+  registrations   Registration[]
 }
 
 model Account {
@@ -200,6 +201,7 @@ model ReadingClub {
   updatedAt     DateTime        @updatedAt
   clubRequest   ClubRequest     @relation(fields: [clubRequestId], references: [id], onDelete: Cascade)
   creator       User            @relation("ClubCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  registrations Registration[]  @relation("ClubRegistrations")
 }
 
 model Event {
@@ -221,4 +223,31 @@ model Event {
   updatedAt      DateTime        @updatedAt
   eventRequest   ClubRequest     @relation(fields: [eventRequestId], references: [id], onDelete: Cascade)
   organizer      User            @relation("EventOrganizer", fields: [organizerId], references: [id], onDelete: Cascade)
+  registrations  Registration[]  @relation("EventRegistrations")
+}
+
+enum RegistrationStatus {
+  active
+  cancelled
+}
+
+model Registration {
+  id           String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId       String             @db.Uuid
+  clubId       String?            @db.Uuid
+  eventId      String?            @db.Uuid
+  status       RegistrationStatus @default(active)
+  registeredAt DateTime           @default(now()) @db.Timestamp(6)
+  cancelledAt  DateTime?          @db.Timestamp(6)
+  createdAt    DateTime           @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime           @updatedAt
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  club         ReadingClub?       @relation("ClubRegistrations", fields: [clubId], references: [id], onDelete: Cascade)
+  event        Event?             @relation("EventRegistrations", fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([clubId])
+  @@index([eventId])
+  @@index([userId, clubId, status])
+  @@index([userId, eventId, status])
 }
