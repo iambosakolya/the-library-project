@@ -9,6 +9,7 @@ import {
   paymentResultSchema,
   clubEventRequestSchema,
   registrationSchema,
+  bookSubmissionSchema,
 } from '@/lib/validators';
 
 export type Product = z.infer<typeof productInsertSchema> & {
@@ -134,5 +135,23 @@ export type Registration = {
     name: string;
     email: string;
     image?: string | null;
+  };
+};
+
+export type BookSubmissionInput = z.infer<typeof bookSubmissionSchema>;
+
+export type BookSubmission = BookSubmissionInput & {
+  id: string;
+  userId: string;
+  status: 'pending' | 'approved' | 'rejected';
+  rejectionReason: string | null;
+  adminNotes: string | null;
+  productId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  user?: {
+    id: string;
+    name: string;
+    email: string;
   };
 };

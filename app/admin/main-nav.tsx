@@ -26,6 +26,10 @@ const links = [
     title: 'Moderate Requests',
     href: '/admin/requests',
   },
+  {
+    title: 'Book Submissions',
+    href: '/admin/book-submissions',
+  },
 ];
 
 const UserNavHeader = ({
