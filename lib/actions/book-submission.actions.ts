@@ -428,3 +428,445 @@ export async function searchCatalog(query: string) {
     return { success: false, message: formatError(error) };
   }
 }
+
+// Admin: Get all pending book submissions with filters
+export async function getPendingBookSubmissions({
+  page = 1,
+  limit = 20,
+  sortBy = 'oldest', // oldest, newest, priority
+}: {
+  page?: number;
+  limit?: number;
+  sortBy?: 'oldest' | 'newest' | 'priority';
+} = {}) {
+  try {
+    const session = await auth();
+    if (!session?.user || session.user.role !== 'admin') {
+      return {
+        success: false,
+        message: 'Unauthorized',
+      };
+    }
+
+    // Determine sort order
+    let orderBy: Record<string, string> = { createdAt: 'asc' }; // oldest first (SLA priority)
+    if (sortBy === 'newest') {
+      orderBy = { createdAt: 'desc' };
+    }
+    // Priority: oldest pending first (SLA compliance)
+
+    const [submissions, totalCount] = await Promise.all([
+      prisma.bookSubmission.findMany({
+        where: {
+          status: 'pending',
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+        orderBy,
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.bookSubmission.count({
+        where: {
+          status: 'pending',
+        },
+      }),
+    ]);
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return {
+      success: true,
+      data: convertToPlainObj(submissions),
+      pagination: {
+        page,
+        limit,
+        totalPages,
+        totalCount,
+      },
+    };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
+}
+
+// Admin: Get all book submissions (all statuses) with filters
+export async function getAllBookSubmissions({
+  page = 1,
+  limit = 20,
+  status,
+}: {
+  page?: number;
+  limit?: number;
+  status?: 'pending' | 'approved' | 'rejected';
+} = {}) {
+  try {
+    const session = await auth();
+    if (!session?.user || session.user.role !== 'admin') {
+      return {
+        success: false,
+        message: 'Unauthorized',
+      };
+    }
+
+    const where = {
+      ...(status && { status }),
+    };
+
+    const [submissions, totalCount] = await Promise.all([
+      prisma.bookSubmission.findMany({
+        where,
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.bookSubmission.count({ where }),
+    ]);
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return {
+      success: true,
+      data: convertToPlainObj(submissions),
+      pagination: {
+        page,
+        limit,
+        totalPages,
+        totalCount,
+      },
+    };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
+}
+
+// Admin: Approve book submission and create product
+export async function approveBookSubmission(id: string, price?: string, stock?: number) {
+  try {
+    const session = await auth();
+    if (!session?.user || session.user.role !== 'admin') {
+      return {
+        success: false,
+        message: 'Unauthorized',
+      };
+    }
+
+    const submission = await prisma.bookSubmission.findUnique({
+      where: { id },
+    });
+
+    if (!submission) {
+      return {
+        success: false,
+        message: 'Submission not found',
+      };
+    }
+
+    if (submission.status !== 'pending') {
+      return {
+        success: false,
+        message: 'This submission has already been processed',
+      };
+    }
+
+    // Create slug from title
+    const slug = submission.title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+
+    // Create the product in the catalog
+    const product = await prisma.product.create({
+      data: {
+        name: submission.title,
+        slug,
+        category: submission.categories[0] || 'Other',
+        description: submission.description,
+        images: submission.coverImage ? [submission.coverImage] : [],
+        price: price || '0',
+        author: submission.author,
+        stock: stock || 0,
+        isFeatured: false,
+        banner: null,
+      },
+    });
+
+    // Update submission status and link to product
+    await prisma.bookSubmission.update({
+      where: { id },
+      data: {
+        status: 'approved',
+        productId: product.id,
+      },
+    });
+
+    revalidatePath('/admin/book-submissions');
+    revalidatePath('/user/book-submissions');
+    revalidatePath('/admin/products');
+
+    return {
+      success: true,
+      message: 'Book approved and added to catalog successfully',
+      data: convertToPlainObj(product),
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: formatError(error),
+    };
+  }
+}
+
+// Admin: Reject book submission
+export async function rejectBookSubmission(id: string, reason: string) {
+  try {
+    const session = await auth();
+    if (!session?.user || session.user.role !== 'admin') {
+      return {
+        success: false,
+        message: 'Unauthorized',
+      };
+    }
+
+    const submission = await prisma.bookSubmission.findUnique({
+      where: { id },
+    });
+
+    if (!submission) {
+      return {
+        success: false,
+        message: 'Submission not found',
+      };
+    }
+
+    if (submission.status !== 'pending') {
+      return {
+        success: false,
+        message: 'This submission has already been processed',
+      };
+    }
+
+    await prisma.bookSubmission.update({
+      where: { id },
+      data: {
+        status: 'rejected',
+        rejectionReason: reason,
+      },
+    });
+
+    revalidatePath('/admin/book-submissions');
+    revalidatePath('/user/book-submissions');
+
+    return {
+      success: true,
+      message: 'Book submission rejected',
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: formatError(error),
+    };
+  }
+}
+
+// Admin: Merge book submission with existing product
+export async function mergeBookSubmission(submissionId: string, productId: string) {
+  try {
+    const session = await auth();
+    if (!session?.user || session.user.role !== 'admin') {
+      return {
+        success: false,
+        message: 'Unauthorized',
+      };
+    }
+
+    const submission = await prisma.bookSubmission.findUnique({
+      where: { id: submissionId },
+    });
+
+    if (!submission) {
+      return {
+        success: false,
+        message: 'Submission not found',
+      };
+    }
+
+    if (submission.status !== 'pending') {
+      return {
+        success: false,
+        message: 'This submission has already been processed',
+      };
+    }
+
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+    });
+
+    if (!product) {
+      return {
+        success: false,
+        message: 'Product not found',
+      };
+    }
+
+    // Mark submission as approved and link to existing product
+    await prisma.bookSubmission.update({
+      where: { id: submissionId },
+      data: {
+        status: 'approved',
+        productId: product.id,
+        adminNotes: `Merged with existing product: ${product.name}`,
+      },
+    });
+
+    revalidatePath('/admin/book-submissions');
+    revalidatePath('/user/book-submissions');
+
+    return {
+      success: true,
+      message: 'Book submission merged with existing product',
+      data: convertToPlainObj(product),
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: formatError(error),
+    };
+  }
+}
+
+// Admin: Bulk approve submissions
+export async function bulkApproveSubmissions(ids: string[]) {
+  try {
+    const session = await auth();
+    if (!session?.user || session.user.role !== 'admin') {
+      return {
+        success: false,
+        message: 'Unauthorized',
+      };
+    }
+
+    const results = [];
+    for (const id of ids) {
+      const result = await approveBookSubmission(id);
+      results.push(result);
+    }
+
+    const successCount = results.filter((r) => r.success).length;
+
+    return {
+      success: true,
+      message: `${successCount} of ${ids.length} submissions approved`,
+      results,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: formatError(error),
+    };
+  }
+}
+
+// Admin: Bulk reject submissions
+export async function bulkRejectSubmissions(ids: string[], reason: string) {
+  try {
+    const session = await auth();
+    if (!session?.user || session.user.role !== 'admin') {
+      return {
+        success: false,
+        message: 'Unauthorized',
+      };
+    }
+
+    const results = [];
+    for (const id of ids) {
+      const result = await rejectBookSubmission(id, reason);
+      results.push(result);
+    }
+
+    const successCount = results.filter((r) => r.success).length;
+
+    return {
+      success: true,
+      message: `${successCount} of ${ids.length} submissions rejected`,
+      results,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: formatError(error),
+    };
+  }
+}
+
+// Admin: Get SLA metrics for book submissions
+export async function getBookSubmissionSLAMetrics() {
+  try {
+    const session = await auth();
+    if (!session?.user || session.user.role !== 'admin') {
+      return {
+        success: false,
+        message: 'Unauthorized',
+      };
+    }
+
+    const now = new Date();
+    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+
+    const [totalPending, overduePending, recentPending] = await Promise.all([
+      prisma.bookSubmission.count({
+        where: { status: 'pending' },
+      }),
+      prisma.bookSubmission.count({
+        where: {
+          status: 'pending',
+          createdAt: {
+            lt: threeDaysAgo,
+          },
+        },
+      }),
+      prisma.bookSubmission.count({
+        where: {
+          status: 'pending',
+          createdAt: {
+            gte: oneDayAgo,
+          },
+        },
+      }),
+    ]);
+
+    return {
+      success: true,
+      data: {
+        totalPending,
+        overduePending, // older than 3 days
+        recentPending, // within last 24 hours
+        onTimePending: totalPending - overduePending,
+      },
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: formatError(error),
+    };
+  }
+}
