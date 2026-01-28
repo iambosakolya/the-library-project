@@ -22,6 +22,14 @@ const links = [
     title: 'My Registrations',
     href: '/user/my-registrations',
   },
+  {
+    title: 'Submit Book',
+    href: '/user/submit-book',
+  },
+  {
+    title: 'My Submissions',
+    href: '/user/book-submissions',
+  },
 ];
 
 const UserNavHeader = ({

@@ -254,3 +254,75 @@ export const registrationSchema = z
       path: ['clubId'],
     },
   );
+
+// schema for book submission
+export const bookSubmissionSchema = z.object({
+  title: z
+    .string()
+    .min(1, 'Title must be at least 1 character')
+    .max(255, 'Title must be at most 255 characters'),
+  author: z
+    .string()
+    .min(1, 'Author must be at least 1 character')
+    .max(128, 'Author must be at most 128 characters'),
+  isbn: z
+    .string()
+    .optional()
+    .nullable()
+    .refine(
+      (val) => {
+        if (!val) return true;
+        // ISBN-10 or ISBN-13 validation (basic)
+        const cleaned = val.replace(/[-\s]/g, '');
+        return /^(\d{10}|\d{13})$/.test(cleaned);
+      },
+      { message: 'ISBN must be 10 or 13 digits' },
+    ),
+  isbn13: z
+    .string()
+    .optional()
+    .nullable()
+    .refine(
+      (val) => {
+        if (!val) return true;
+        const cleaned = val.replace(/[-\s]/g, '');
+        return /^\d{13}$/.test(cleaned);
+      },
+      { message: 'ISBN-13 must be 13 digits' },
+    ),
+  publisher: z
+    .string()
+    .max(128, 'Publisher must be at most 128 characters')
+    .optional()
+    .nullable(),
+  publishedDate: z
+    .string()
+    .max(64, 'Published date must be at most 64 characters')
+    .optional()
+    .nullable(),
+  description: z
+    .string()
+    .min(10, 'Description must be at least 10 characters')
+    .max(2000, 'Description must be at most 2000 characters'),
+  pageCount: z.coerce
+    .number()
+    .int()
+    .min(1, 'Page count must be at least 1')
+    .max(10000, 'Page count must be at most 10000')
+    .optional()
+    .nullable(),
+  language: z
+    .string()
+    .max(16, 'Language must be at most 16 characters')
+    .optional()
+    .nullable(),
+  categories: z.array(z.string()).min(1, 'At least one category is required'),
+  coverImage: z
+    .string()
+    .url('Cover image must be a valid URL')
+    .optional()
+    .nullable(),
+  thumbnailImage: z.string().optional().nullable(),
+  previewLink: z.string().url('Preview link must be a valid URL').optional().nullable(),
+  googleBooksId: z.string().optional().nullable(),
+});

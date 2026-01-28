@@ -43,16 +43,17 @@ model User {
   address       Json?     @db.Json
   paymentMethod String?
 
-  createdAt       DateTime       @default(now()) @db.Timestamp(6)
-  updatedAt       DateTime       @updatedAt
-  Account         Account[]
-  Session         Session[]
-  Cart            Cart[]
-  Order           Order[]
-  ClubRequest     ClubRequest[]
-  createdClubs    ReadingClub[]  @relation("ClubCreator")
-  organizedEvents Event[]        @relation("EventOrganizer")
-  registrations   Registration[]
+  createdAt         DateTime          @default(now()) @db.Timestamp(6)
+  updatedAt         DateTime          @updatedAt
+  Account           Account[]
+  Session           Session[]
+  Cart              Cart[]
+  Order             Order[]
+  ClubRequest       ClubRequest[]
+  createdClubs      ReadingClub[]     @relation("ClubCreator")
+  organizedEvents   Event[]           @relation("EventOrganizer")
+  registrations     Registration[]
+  bookSubmissions   BookSubmission[]
 }
 
 model Account {
@@ -250,4 +251,41 @@ model Registration {
   @@index([eventId])
   @@index([userId, clubId, status])
   @@index([userId, eventId, status])
+}
+
+enum BookSubmissionStatus {
+  pending
+  approved
+  rejected
+}
+
+model BookSubmission {
+  id              String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String               @db.Uuid
+  title           String
+  author          String
+  isbn            String?
+  isbn13          String?
+  publisher       String?
+  publishedDate   String?
+  description     String
+  pageCount       Int?
+  language        String?
+  categories      String[]             @default([])
+  coverImage      String?
+  thumbnailImage  String?
+  previewLink     String?
+  googleBooksId   String?
+  status          BookSubmissionStatus @default(pending)
+  rejectionReason String?
+  adminNotes      String?
+  productId       String?              @db.Uuid
+  createdAt       DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt       DateTime             @updatedAt
+  user            User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([isbn])
+  @@index([isbn13])
 }
