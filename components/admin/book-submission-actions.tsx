@@ -27,7 +27,6 @@ import {
   Search,
   Loader2,
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 
 interface BookSubmissionActionsProps {
@@ -184,7 +183,7 @@ export default function BookSubmissionActions({
           });
         }
       }
-    } catch (error) {
+    } catch {
       toast({
         variant: 'destructive',
         description: 'Error searching catalog',
