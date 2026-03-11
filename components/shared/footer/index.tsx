@@ -14,7 +14,7 @@ const Footer = () => {
           <div className={styles.infoSection}>
             <h3 className={styles.title}>{APP_NAME}</h3>
             <p className={styles.description}>
-              Discover a world of stories at The Library Project. Your journey
+              Discover a world of stories at The  LibProj. Your journey
               through literature starts here.
             </p>
           </div>

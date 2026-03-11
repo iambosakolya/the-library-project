@@ -74,6 +74,3 @@ const UserButton = async () => {
 };
 
 export default UserButton;
-
-{
-}

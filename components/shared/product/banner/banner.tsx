@@ -14,7 +14,7 @@ const BannerMain = () => {
           className={bannerStyles.mainImage}
         />
         <div className={bannerStyles.textWrapper}>
-          <h2 className={bannerStyles.title}>Welcome to the Library project</h2>
+          <h2 className={bannerStyles.title}>Welcome to the LibProj</h2>
           <p className={bannerStyles.subtitle}>Dive into reading with us</p>
         </div>
       </div>

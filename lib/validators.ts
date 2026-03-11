@@ -255,6 +255,112 @@ export const registrationSchema = z
     },
   );
 
+// schema for editing an existing club/event (organizer only)
+export const editClubEventSchema = z
+  .object({
+    title: z
+      .string()
+      .min(3, 'Title must be at least 3 characters')
+      .max(100, 'Title must be at most 100 characters'),
+    purpose: z
+      .string()
+      .min(10, 'Purpose must be at least 10 characters')
+      .max(500, 'Purpose must be at most 500 characters'),
+    description: z
+      .string()
+      .min(20, 'Description must be at least 20 characters')
+      .max(2000, 'Description must be at most 2000 characters'),
+    startDate: z.coerce.date(),
+    endDate: z.coerce.date().optional().nullable(),
+    capacity: z.coerce
+      .number()
+      .int()
+      .min(2, 'Capacity must be at least 2 people')
+      .max(100, 'Capacity must be at most 100 people'),
+    format: z.enum(['online', 'offline'], {
+      required_error: 'Format is required',
+    }),
+    address: z.string().optional().nullable(),
+    onlineLink: z
+      .string()
+      .optional()
+      .nullable()
+      .refine(
+        (val) => !val || val === '' || /^https?:\/\/.+/.test(val),
+        'Must be a valid URL',
+      ),
+    sessionCount: z.coerce
+      .number()
+      .int()
+      .min(1, 'Session count must be at least 1')
+      .max(52, 'Session count must be at most 52'),
+    bookIds: z
+      .array(z.string().uuid('Invalid book ID'))
+      .min(1, 'At least one book must be selected')
+      .max(10, 'Maximum 10 books can be selected'),
+  })
+  .refine(
+    (data) => {
+      if (data.endDate) {
+        return data.endDate > data.startDate;
+      }
+      return true;
+    },
+    {
+      message: 'End date must be after start date',
+      path: ['endDate'],
+    },
+  )
+  .refine(
+    (data) => {
+      if (data.format === 'offline') {
+        return !!data.address && data.address.length >= 10;
+      }
+      return true;
+    },
+    {
+      message: 'Address is required for offline format (min 10 characters)',
+      path: ['address'],
+    },
+  )
+  .refine(
+    (data) => {
+      if (data.format === 'online') {
+        return !!data.onlineLink;
+      }
+      return true;
+    },
+    {
+      message: 'Online link is required for online format',
+      path: ['onlineLink'],
+    },
+  );
+
+// schema for attendance tracking
+export const attendanceSchema = z.object({
+  userId: z.string().uuid('Invalid user ID'),
+  clubId: z.string().uuid('Invalid club ID').optional().nullable(),
+  eventId: z.string().uuid('Invalid event ID').optional().nullable(),
+  sessionNumber: z.coerce
+    .number()
+    .int()
+    .min(1, 'Session number must be at least 1'),
+  status: z.enum(['present', 'absent', 'excused']),
+  notes: z.string().max(500).optional().nullable(),
+});
+
+// schema for sending message to participants
+export const participantMessageSchema = z.object({
+  subject: z
+    .string()
+    .min(3, 'Subject must be at least 3 characters')
+    .max(200, 'Subject must be at most 200 characters'),
+  message: z
+    .string()
+    .min(10, 'Message must be at least 10 characters')
+    .max(2000, 'Message must be at most 2000 characters'),
+});
+
 // schema for book submission
 export const bookSubmissionSchema = z.object({
   title: z

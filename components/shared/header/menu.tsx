@@ -13,8 +13,9 @@ import UserButton from './user-button';
 
 const Menu = () => {
   return (
-    <div className='flex justify-end gap-3'>
-      <nav className='hidden w-full max-w-xs gap-1 md:flex'>
+    <div className='flex items-center gap-2'>
+      {/* Desktop nav — only at lg (1024px+) */}
+      <nav className='hidden items-center gap-1 lg:flex'>
         <ModeToggle />
         <Button asChild variant='ghost'>
           <Link href='/clubs'>
@@ -34,15 +35,19 @@ const Menu = () => {
         <UserButton />
       </nav>
 
-      <nav className='md:hidden'>
+      {/* Mobile/tablet nav — below lg */}
+      <nav className='flex items-center gap-2 lg:hidden'>
+        <UserButton />
         <Sheet>
-          <SheetTrigger className='align-middle'>
-            <EllipsisVertical />
+          <SheetTrigger asChild>
+            <Button variant='ghost' size='icon' className='h-9 w-9'>
+              <EllipsisVertical className='h-5 w-5' />
+            </Button>
           </SheetTrigger>
-          <SheetContent className='align-center flex flex-col'>
+          <SheetContent className='flex flex-col'>
             <SheetTitle>Menu</SheetTitle>
             <SheetDescription></SheetDescription>
-            <UserButton />
+            <ModeToggle />
             <Button asChild variant='ghost'>
               <Link href='/clubs'>
                 <Users className='h-4 w-4' /> Clubs
