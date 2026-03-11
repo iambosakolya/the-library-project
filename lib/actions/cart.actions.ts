@@ -96,7 +96,7 @@ export async function addItemToCart(data: CartItem) {
       await prisma.cart.update({
         where: { id: cart.id },
         data: {
-          items: cart.items as Prisma.CartUpdateitemsInput[],
+          items: cart.items as Prisma.InputJsonValue[],
           ...calcPrice(cart.items as CartItem[]),
         },
       });
@@ -178,7 +178,7 @@ export async function removeItemFromCart(productId: string) {
     await prisma.cart.update({
       where: { id: cart.id },
       data: {
-        items: cart.items as Prisma.CartUpdateitemsInput[],
+        items: cart.items as Prisma.InputJsonValue[],
         ...calcPrice(cart.items as CartItem[]),
       },
     });

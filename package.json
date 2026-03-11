@@ -12,6 +12,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.43",
     "@auth/prisma-adapter": "^2.7.4",
     "@hookform/resolvers": "^4.1.0",
     "@neondatabase/serverless": "^1.0.2",
@@ -31,6 +32,7 @@
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-toast": "^1.2.6",
     "@uploadthing/react": "^7.3.0",
+    "ai": "^6.0.116",
     "bcrypt-ts-edge": "^3.0.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

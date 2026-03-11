@@ -36,6 +36,7 @@ import { X, Search, Loader2, BookOpen, AlertCircle, CheckCircle, DollarSign } fr
 import { Switch } from '../ui/switch';
 import { searchBookByISBN, searchBookByTitleAndAuthor, ParsedBookData, detectLanguageFromTitle } from '@/lib/google-books';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import AIDescriptionGenerator from './ai-description-generator';
 
 interface CatalogBook {
   id: string;
@@ -68,6 +69,8 @@ const BookSubmissionForm = () => {
   const watchedCategories = form.watch('categories');
   const watchedCoverImage = form.watch('coverImage');
   const watchedIsForSale = form.watch('isForSale');
+  const watchedDescription = form.watch('description');
+  const watchedLanguage = form.watch('language');
 
   // Auto-detect language from title
   useEffect(() => {
@@ -522,6 +525,21 @@ const BookSubmissionForm = () => {
                       <FormMessage />
                     </FormItem>
                   )}
+                />
+
+                {/* AI Description Generator */}
+                <AIDescriptionGenerator
+                  book={{
+                    title: watchedTitle,
+                    author: watchedAuthor,
+                    categories: watchedCategories || [],
+                    language: watchedLanguage || undefined,
+                    publishedDate: form.getValues('publishedDate') || undefined,
+                    pageCount: form.getValues('pageCount'),
+                    publisher: form.getValues('publisher') || undefined,
+                  }}
+                  currentDescription={watchedDescription || ''}
+                  onApply={(text) => form.setValue('description', text, { shouldValidate: true })}
                 />
 
                 {/* Page Count and Language */}
