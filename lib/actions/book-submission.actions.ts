@@ -79,6 +79,10 @@ export async function createBookSubmission(
         thumbnailImage: validatedData.thumbnailImage || null,
         previewLink: validatedData.previewLink || null,
         googleBooksId: validatedData.googleBooksId || null,
+        isForSale: validatedData.isForSale,
+        suggestedPrice: validatedData.isForSale && validatedData.suggestedPrice
+          ? validatedData.suggestedPrice.toString()
+          : null,
         status: 'pending',
       },
     });
@@ -259,6 +263,10 @@ export async function updateBookSubmission(
         thumbnailImage: validatedData.thumbnailImage || null,
         previewLink: validatedData.previewLink || null,
         googleBooksId: validatedData.googleBooksId || null,
+        isForSale: validatedData.isForSale,
+        suggestedPrice: validatedData.isForSale && validatedData.suggestedPrice
+          ? validatedData.suggestedPrice.toString()
+          : null,
       },
     });
 
@@ -593,7 +601,11 @@ export async function approveBookSubmission(id: string, price?: string, stock?: 
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
 
-    // Create the product in the catalog
+    const effectivePrice = price
+      || (submission.isForSale && submission.suggestedPrice
+        ? submission.suggestedPrice.toString()
+        : '0');
+
     const product = await prisma.product.create({
       data: {
         name: submission.title,
@@ -601,7 +613,7 @@ export async function approveBookSubmission(id: string, price?: string, stock?: 
         category: submission.categories[0] || 'Other',
         description: submission.description,
         images: submission.coverImage ? [submission.coverImage] : [],
-        price: price || '0',
+        price: effectivePrice,
         author: submission.author,
         stock: stock || 0,
         isFeatured: false,

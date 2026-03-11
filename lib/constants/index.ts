@@ -112,4 +112,6 @@ export const bookSubmissionDefaultValues = {
   thumbnailImage: '',
   previewLink: '',
   googleBooksId: '',
+  isForSale: false,
+  suggestedPrice: null,
 };

@@ -431,4 +431,22 @@ export const bookSubmissionSchema = z.object({
   thumbnailImage: z.string().optional().nullable(),
   previewLink: z.string().url('Preview link must be a valid URL').optional().nullable(),
   googleBooksId: z.string().optional().nullable(),
-});
+  isForSale: z.boolean().default(false),
+  suggestedPrice: z.coerce
+    .number()
+    .min(0.01, 'Price must be at least 0.01')
+    .max(99999, 'Price must be at most 99999')
+    .optional()
+    .nullable(),
+}).refine(
+  (data) => {
+    if (data.isForSale && (!data.suggestedPrice || data.suggestedPrice <= 0)) {
+      return false;
+    }
+    return true;
+  },
+  {
+    message: 'Price is required when the book is for sale',
+    path: ['suggestedPrice'],
+  },
+);

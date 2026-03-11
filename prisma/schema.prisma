@@ -308,6 +308,8 @@ model BookSubmission {
   thumbnailImage  String?
   previewLink     String?
   googleBooksId   String?
+  isForSale       Boolean              @default(false)
+  suggestedPrice  Decimal?             @db.Decimal(12, 2)
   status          BookSubmissionStatus @default(pending)
   rejectionReason String?
   adminNotes      String?
