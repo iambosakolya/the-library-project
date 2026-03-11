@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import { getUserBookSubmissions } from '@/lib/actions/book-submission.actions';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { BookPlus, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { BookPlus, Clock, CheckCircle, XCircle, DollarSign } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -168,6 +168,15 @@ const BookSubmissionsPage = async ({ searchParams }: PageProps) => {
                       {category}
                     </Badge>
                   ))}
+                  {submission.isForSale && (
+                    <Badge variant='secondary' className='flex items-center gap-1'>
+                      <DollarSign className='h-3 w-3' />
+                      For Sale
+                      {submission.suggestedPrice != null && (
+                        <span> — ${Number(submission.suggestedPrice).toFixed(2)}</span>
+                      )}
+                    </Badge>
+                  )}
                 </div>
                 {submission.status === 'rejected' && submission.rejectionReason && (
                   <div className='mt-4 rounded-md bg-destructive/10 p-3'>

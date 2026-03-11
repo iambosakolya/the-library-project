@@ -54,6 +54,7 @@ model User {
   organizedEvents   Event[]           @relation("EventOrganizer")
   registrations     Registration[]
   bookSubmissions   BookSubmission[]
+  attendances       Attendance[]
 }
 
 model Account {
@@ -198,11 +199,13 @@ model ReadingClub {
   creatorId     String          @db.Uuid
   memberIds     String[]        @default([])
   isActive      Boolean         @default(true)
+  changeHistory Json[]          @default([]) @db.Json
   createdAt     DateTime        @default(now()) @db.Timestamp(6)
   updatedAt     DateTime        @updatedAt
   clubRequest   ClubRequest     @relation(fields: [clubRequestId], references: [id], onDelete: Cascade)
   creator       User            @relation("ClubCreator", fields: [creatorId], references: [id], onDelete: Cascade)
   registrations Registration[]  @relation("ClubRegistrations")
+  attendances   Attendance[]    @relation("ClubAttendances")
 }
 
 model Event {
@@ -220,11 +223,13 @@ model Event {
   organizerId    String          @db.Uuid
   attendeeIds    String[]        @default([])
   isActive       Boolean         @default(true)
+  changeHistory  Json[]          @default([]) @db.Json
   createdAt      DateTime        @default(now()) @db.Timestamp(6)
   updatedAt      DateTime        @updatedAt
   eventRequest   ClubRequest     @relation(fields: [eventRequestId], references: [id], onDelete: Cascade)
   organizer      User            @relation("EventOrganizer", fields: [organizerId], references: [id], onDelete: Cascade)
   registrations  Registration[]  @relation("EventRegistrations")
+  attendances    Attendance[]    @relation("EventAttendances")
 }
 
 enum RegistrationStatus {
@@ -253,6 +258,33 @@ model Registration {
   @@index([userId, eventId, status])
 }
 
+enum AttendanceStatus {
+  present
+  absent
+  excused
+}
+
+model Attendance {
+  id            String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String           @db.Uuid
+  clubId        String?          @db.Uuid
+  eventId       String?          @db.Uuid
+  sessionNumber Int              @default(1)
+  status        AttendanceStatus @default(present)
+  notes         String?
+  markedAt      DateTime         @default(now()) @db.Timestamp(6)
+  createdAt     DateTime         @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime         @updatedAt
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  club          ReadingClub?     @relation("ClubAttendances", fields: [clubId], references: [id], onDelete: Cascade)
+  event         Event?           @relation("EventAttendances", fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, clubId, sessionNumber])
+  @@unique([userId, eventId, sessionNumber])
+  @@index([clubId])
+  @@index([eventId])
+}
+
 enum BookSubmissionStatus {
   pending
   approved
@@ -276,6 +308,8 @@ model BookSubmission {
   thumbnailImage  String?
   previewLink     String?
   googleBooksId   String?
+  isForSale       Boolean              @default(false)
+  suggestedPrice  Decimal?             @db.Decimal(12, 2)
   status          BookSubmissionStatus @default(pending)
   rejectionReason String?
   adminNotes      String?

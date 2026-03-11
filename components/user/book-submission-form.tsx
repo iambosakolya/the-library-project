@@ -32,7 +32,8 @@ import {
   SelectValue,
 } from '../ui/select';
 import { Badge } from '../ui/badge';
-import { X, Search, Loader2, BookOpen, AlertCircle, CheckCircle } from 'lucide-react';
+import { X, Search, Loader2, BookOpen, AlertCircle, CheckCircle, DollarSign } from 'lucide-react';
+import { Switch } from '../ui/switch';
 import { searchBookByISBN, searchBookByTitleAndAuthor, ParsedBookData, detectLanguageFromTitle } from '@/lib/google-books';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 
@@ -66,6 +67,7 @@ const BookSubmissionForm = () => {
   const watchedIsbn = form.watch('isbn');
   const watchedCategories = form.watch('categories');
   const watchedCoverImage = form.watch('coverImage');
+  const watchedIsForSale = form.watch('isForSale');
 
   // Auto-detect language from title
   useEffect(() => {
@@ -667,6 +669,77 @@ const BookSubmissionForm = () => {
                     </FormItem>
                   )}
                 />
+
+                {/* For Sale Section */}
+                <Card className='border-dashed'>
+                  <CardHeader>
+                    <CardTitle className='flex items-center gap-2 text-base'>
+                      <DollarSign className='h-4 w-4' />
+                      Selling Information
+                    </CardTitle>
+                    <CardDescription>
+                      Is this book available for sale?
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className='space-y-4'>
+                    <FormField
+                      control={form.control}
+                      name='isForSale'
+                      render={({ field }) => (
+                        <FormItem className='flex items-center justify-between rounded-lg border p-4'>
+                          <div className='space-y-0.5'>
+                            <FormLabel className='text-base'>For Sale</FormLabel>
+                            <FormDescription>
+                              Toggle this if the book is available for purchase
+                            </FormDescription>
+                          </div>
+                          <FormControl>
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {watchedIsForSale && (
+                      <FormField
+                        control={form.control}
+                        name='suggestedPrice'
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Suggested Price *</FormLabel>
+                            <FormControl>
+                              <div className='relative'>
+                                <DollarSign className='text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2' />
+                                <Input
+                                  type='number'
+                                  step='0.01'
+                                  min='0.01'
+                                  placeholder='Enter suggested price'
+                                  className='pl-9'
+                                  {...field}
+                                  value={field.value ?? ''}
+                                  onChange={(e) =>
+                                    field.onChange(
+                                      e.target.value ? Number(e.target.value) : null,
+                                    )
+                                  }
+                                />
+                              </div>
+                            </FormControl>
+                            <FormDescription>
+                              Enter the amount you would like to sell this book for
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
+                  </CardContent>
+                </Card>
               </div>
 
               {/* Submit Button */}

@@ -12,7 +12,7 @@ const bonaNova = Bona_Nova({
 
 export const metadata: Metadata = {
   title: {
-    template: `%s | The Library Project`,
+    template: `%s | LibProj`,
     default: APP_NAME,
   },
   description: APP_DESCRIPTION,

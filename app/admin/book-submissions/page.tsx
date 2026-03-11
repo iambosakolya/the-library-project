@@ -16,7 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import BookSubmissionActions from '@/components/admin/book-submission-actions';
 import { BookSubmission } from '@/types';
 import Image from 'next/image';
-import { Clock, CheckCircle, AlertTriangle, BookOpen } from 'lucide-react';
+import { Clock, CheckCircle, AlertTriangle, BookOpen, DollarSign } from 'lucide-react';
 import { formatDistance } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
@@ -301,6 +301,17 @@ export default async function AdminBookSubmissionsPage({ searchParams }: PagePro
                         </p>
                       </div>
                     )}
+                    <div>
+                      <h3 className='text-sm font-semibold'>For Sale</h3>
+                      {submission.isForSale ? (
+                        <p className='flex items-center gap-1 text-sm text-green-600'>
+                          <DollarSign className='h-3 w-3' />
+                          Yes — Suggested price: ${Number(submission.suggestedPrice ?? 0).toFixed(2)}
+                        </p>
+                      ) : (
+                        <p className='text-sm text-muted-foreground'>No</p>
+                      )}
+                    </div>
                   </div>
 
                   {/* Description */}

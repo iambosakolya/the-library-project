@@ -10,6 +10,9 @@ import {
   clubEventRequestSchema,
   registrationSchema,
   bookSubmissionSchema,
+  editClubEventSchema,
+  attendanceSchema,
+  participantMessageSchema,
 } from '@/lib/validators';
 
 export type Product = z.infer<typeof productInsertSchema> & {
@@ -69,6 +72,7 @@ export type ReadingClub = {
   creatorId: string;
   memberIds: string[];
   isActive: boolean;
+  changeHistory?: ChangeHistoryEntry[];
   createdAt: Date;
   updatedAt: Date;
   creator?: {
@@ -94,6 +98,7 @@ export type Event = {
   organizerId: string;
   attendeeIds: string[];
   isActive: boolean;
+  changeHistory?: ChangeHistoryEntry[];
   createdAt: Date;
   updatedAt: Date;
   organizer?: {
@@ -136,6 +141,62 @@ export type Registration = {
     email: string;
     image?: string | null;
   };
+};
+
+export type EditClubEventInput = z.infer<typeof editClubEventSchema>;
+export type AttendanceInput = z.infer<typeof attendanceSchema>;
+export type ParticipantMessageInput = z.infer<typeof participantMessageSchema>;
+
+export type ChangeHistoryEntry = {
+  field: string;
+  oldValue: string;
+  newValue: string;
+  changedAt: string;
+  changedBy: string;
+};
+
+export type Attendance = {
+  id: string;
+  userId: string;
+  clubId: string | null;
+  eventId: string | null;
+  sessionNumber: number;
+  status: 'present' | 'absent' | 'excused';
+  notes: string | null;
+  markedAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+    image?: string | null;
+  };
+};
+
+export type EngagementMetrics = {
+  totalRegistrations: number;
+  activeRegistrations: number;
+  cancelledRegistrations: number;
+  capacityUtilization: number;
+  attendanceRate: number;
+  totalSessions: number;
+  sessionsCompleted: number;
+};
+
+export type MyClubOrEvent = {
+  id: string;
+  title: string;
+  type: 'club' | 'event';
+  isActive: boolean;
+  format: 'online' | 'offline';
+  startDate: Date;
+  endDate?: Date | null;
+  capacity: number;
+  participantCount: number;
+  registrationCount: number;
+  requestStatus: 'pending' | 'approved' | 'rejected';
+  createdAt: Date;
 };
 
 export type BookSubmissionInput = z.infer<typeof bookSubmissionSchema>;
