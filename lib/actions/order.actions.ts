@@ -11,7 +11,7 @@ import { CartItem, PaymentResult } from '@/types';
 import { paypal } from '../paypal';
 import { revalidatePath } from 'next/cache';
 import { PAGE_SIZE } from '../constants';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@/src/generated/prisma';
 
 // to create the order and order items
 export async function createOrder() {
