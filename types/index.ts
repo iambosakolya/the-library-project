@@ -13,6 +13,9 @@ import {
   editClubEventSchema,
   attendanceSchema,
   participantMessageSchema,
+  reviewSchema,
+  reviewReplySchema,
+  reviewReportSchema,
 } from '@/lib/validators';
 
 export type Product = z.infer<typeof productInsertSchema> & {
@@ -196,6 +199,48 @@ export type MyClubOrEvent = {
   participantCount: number;
   registrationCount: number;
   requestStatus: 'pending' | 'approved' | 'rejected';
+  createdAt: Date;
+};
+
+export type ReviewInput = z.infer<typeof reviewSchema>;
+
+export type Review = ReviewInput & {
+  id: string;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  user?: {
+    id: string;
+    name: string;
+    image: string | null;
+  };
+  replies?: ReviewReply[];
+};
+
+export type ReviewReplyInput = z.infer<typeof reviewReplySchema>;
+
+export type ReviewReply = {
+  id: string;
+  userId: string;
+  reviewId: string;
+  parentId: string | null;
+  depth: number;
+  comment: string;
+  createdAt: Date;
+  updatedAt: Date;
+  user?: {
+    id: string;
+    name: string;
+    image: string | null;
+  };
+  children?: ReviewReply[];
+};
+
+export type ReviewReportInput = z.infer<typeof reviewReportSchema>;
+
+export type ReviewReport = ReviewReportInput & {
+  id: string;
+  userId: string;
   createdAt: Date;
 };
 
