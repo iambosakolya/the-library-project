@@ -116,7 +116,7 @@ const ReviewSummary = ({
             </div>
             <p className='text-xs text-muted-foreground'>
               Based on {summary.reviewCount} reviews &middot; Last updated{' '}
-              {formatDateTime(summary.generatedAt).dateOnly}
+              {formatDateTime(new Date(summary.generatedAt)).dateOnly}
             </p>
           </CardHeader>
 
