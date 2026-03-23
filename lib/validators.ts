@@ -361,6 +361,50 @@ export const participantMessageSchema = z.object({
     .max(2000, 'Message must be at most 2000 characters'),
 });
 
+// schema for book review
+export const reviewSchema = z.object({
+  productId: z.string().uuid('Invalid product ID'),
+  rating: z.coerce
+    .number()
+    .int()
+    .min(1, 'Rating must be at least 1 star')
+    .max(5, 'Rating must be at most 5 stars'),
+  comment: z
+    .string()
+    .min(50, 'Review must be at least 50 characters')
+    .max(2000, 'Review must be at most 2000 characters'),
+});
+
+// schema for review reply
+export const reviewReplySchema = z.object({
+  reviewId: z.string().uuid('Invalid review ID'),
+  parentId: z.string().uuid('Invalid parent reply ID').optional().nullable(),
+  comment: z
+    .string()
+    .min(1, 'Reply must be at least 1 character')
+    .max(1000, 'Reply must be at most 1000 characters'),
+});
+
+// schema for reporting a review or reply
+export const reviewReportSchema = z.object({
+  reviewId: z.string().uuid('Invalid review ID').optional().nullable(),
+  replyId: z.string().uuid('Invalid reply ID').optional().nullable(),
+  reason: z.enum(['spam', 'harassment', 'inappropriate', 'misinformation', 'other'], {
+    required_error: 'Reason is required',
+  }),
+  description: z
+    .string()
+    .max(500, 'Description must be at most 500 characters')
+    .optional()
+    .nullable(),
+}).refine(
+  (data) => (data.reviewId && !data.replyId) || (!data.reviewId && data.replyId),
+  {
+    message: 'Either reviewId or replyId must be provided, but not both',
+    path: ['reviewId'],
+  },
+);
+
 // schema for book submission
 export const bookSubmissionSchema = z.object({
   title: z

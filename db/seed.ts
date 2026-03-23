@@ -1,8 +1,12 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@/src/generated/prisma';
+import { PrismaNeon } from '@prisma/adapter-neon';
 import sampleData from './sample-data';
 
 async function main() {
-  const prisma = new PrismaClient();
+  const adapter = new PrismaNeon({
+    connectionString: process.env.DATABASE_URL!,
+  });
+  const prisma = new PrismaClient({ adapter });
 
   try {
     await prisma.product.deleteMany();

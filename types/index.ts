@@ -13,6 +13,9 @@ import {
   editClubEventSchema,
   attendanceSchema,
   participantMessageSchema,
+  reviewSchema,
+  reviewReplySchema,
+  reviewReportSchema,
 } from '@/lib/validators';
 
 export type Product = z.infer<typeof productInsertSchema> & {
@@ -197,6 +200,85 @@ export type MyClubOrEvent = {
   registrationCount: number;
   requestStatus: 'pending' | 'approved' | 'rejected';
   createdAt: Date;
+};
+
+export type ReviewInput = z.infer<typeof reviewSchema>;
+
+export type UserBadge = {
+  type: 'club' | 'event';
+  id: string;
+  title: string;
+};
+
+export type ReviewUser = {
+  id: string;
+  name: string;
+  image: string | null;
+  badges?: UserBadge[];
+};
+
+export type Review = ReviewInput & {
+  id: string;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  user?: ReviewUser;
+  replies?: ReviewReply[];
+  helpfulCount?: number;
+  notHelpfulCount?: number;
+  currentUserVote?: boolean | null;
+};
+
+export type ReviewReplyInput = z.infer<typeof reviewReplySchema>;
+
+export type ReviewReply = {
+  id: string;
+  userId: string;
+  reviewId: string;
+  parentId: string | null;
+  depth: number;
+  comment: string;
+  createdAt: Date;
+  updatedAt: Date;
+  user?: ReviewUser;
+  children?: ReviewReply[];
+};
+
+export type ReviewReportInput = z.infer<typeof reviewReportSchema>;
+
+export type ReviewReport = ReviewReportInput & {
+  id: string;
+  userId: string;
+  createdAt: Date;
+};
+
+export type ReviewVote = {
+  id: string;
+  userId: string;
+  reviewId: string;
+  isHelpful: boolean;
+  createdAt: Date;
+};
+
+export type UserPublicProfile = {
+  id: string;
+  name: string;
+  image: string | null;
+  createdAt: Date;
+  clubs: { id: string; title: string; isActive: boolean }[];
+  organizedEvents: { id: string; title: string; isActive: boolean }[];
+  registeredEvents: { id: string; title: string; eventDate: Date }[];
+  totalReviews: number;
+  recentReviews: {
+    id: string;
+    rating: number;
+    comment: string;
+    createdAt: Date;
+    product: { slug: string; name: string };
+  }[];
+  followerCount: number;
+  followingCount: number;
+  isFollowedByCurrentUser: boolean;
 };
 
 export type BookSubmissionInput = z.infer<typeof bookSubmissionSchema>;
