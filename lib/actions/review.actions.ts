@@ -3,7 +3,11 @@
 import { prisma } from '@/db/prisma';
 import { convertToPlainObj, formatError } from '../utils';
 import { revalidatePath } from 'next/cache';
-import { reviewSchema, reviewReplySchema, reviewReportSchema } from '../validators';
+import {
+  reviewSchema,
+  reviewReplySchema,
+  reviewReportSchema,
+} from '../validators';
 import { z } from 'zod';
 import { auth } from '@/auth';
 
@@ -162,26 +166,84 @@ export async function deleteReview(reviewId: string) {
 
 export async function getProductReviews(productId: string) {
   try {
+    const session = await auth();
+    const currentUserId = session?.user?.id;
+
     const reviews = await prisma.review.findMany({
       where: { productId },
       include: {
         user: {
-          select: { id: true, name: true, image: true },
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            registrations: {
+              where: { status: 'active' },
+              select: {
+                club: { select: { id: true, title: true, isActive: true } },
+                event: { select: { id: true, title: true, isActive: true } },
+              },
+            },
+          },
         },
+        votes: true,
         replies: {
           include: {
             user: {
-              select: { id: true, name: true, image: true },
+              select: {
+                id: true,
+                name: true,
+                image: true,
+                registrations: {
+                  where: { status: 'active' },
+                  select: {
+                    club: { select: { id: true, title: true, isActive: true } },
+                    event: {
+                      select: { id: true, title: true, isActive: true },
+                    },
+                  },
+                },
+              },
             },
             children: {
               include: {
                 user: {
-                  select: { id: true, name: true, image: true },
+                  select: {
+                    id: true,
+                    name: true,
+                    image: true,
+                    registrations: {
+                      where: { status: 'active' },
+                      select: {
+                        club: {
+                          select: { id: true, title: true, isActive: true },
+                        },
+                        event: {
+                          select: { id: true, title: true, isActive: true },
+                        },
+                      },
+                    },
+                  },
                 },
                 children: {
                   include: {
                     user: {
-                      select: { id: true, name: true, image: true },
+                      select: {
+                        id: true,
+                        name: true,
+                        image: true,
+                        registrations: {
+                          where: { status: 'active' },
+                          select: {
+                            club: {
+                              select: { id: true, title: true, isActive: true },
+                            },
+                            event: {
+                              select: { id: true, title: true, isActive: true },
+                            },
+                          },
+                        },
+                      },
                     },
                   },
                   orderBy: { createdAt: 'asc' },
@@ -197,13 +259,93 @@ export async function getProductReviews(productId: string) {
       orderBy: { createdAt: 'desc' },
     });
 
+    const reviewsWithBadgesAndVotes = reviews.map((review) => {
+      const helpfulCount = review.votes.filter((v) => v.isHelpful).length;
+      const notHelpfulCount = review.votes.filter((v) => !v.isHelpful).length;
+      const currentUserVote = currentUserId
+        ? (review.votes.find((v) => v.userId === currentUserId)?.isHelpful ??
+          null)
+        : null;
+
+      return {
+        ...review,
+        votes: undefined,
+        user: review.user ? transformUserWithBadges(review.user) : undefined,
+        replies: review.replies.map((reply) => transformReplyWithBadges(reply)),
+        helpfulCount,
+        notHelpfulCount,
+        currentUserVote,
+      };
+    });
+
     return {
       success: true,
-      data: convertToPlainObj(reviews),
+      data: convertToPlainObj(reviewsWithBadgesAndVotes),
     };
   } catch (error) {
     return { success: false, message: formatError(error) };
   }
+}
+
+type UserWithRegistrations = {
+  id: string;
+  name: string;
+  image: string | null;
+  registrations: {
+    club: { id: string; title: string; isActive: boolean } | null;
+    event: { id: string; title: string; isActive: boolean } | null;
+  }[];
+};
+
+function transformUserWithBadges(user: UserWithRegistrations) {
+  const badges: { type: 'club' | 'event'; id: string; title: string }[] = [];
+  const seenIds = new Set<string>();
+
+  for (const reg of user.registrations) {
+    if (reg.club?.isActive && !seenIds.has(reg.club.id)) {
+      seenIds.add(reg.club.id);
+      badges.push({ type: 'club', id: reg.club.id, title: reg.club.title });
+    }
+    if (reg.event?.isActive && !seenIds.has(reg.event.id)) {
+      seenIds.add(reg.event.id);
+      badges.push({ type: 'event', id: reg.event.id, title: reg.event.title });
+    }
+  }
+
+  return {
+    id: user.id,
+    name: user.name,
+    image: user.image,
+    badges,
+  };
+}
+
+type ReplyWithRegistrations = {
+  id: string;
+  userId: string;
+  reviewId: string;
+  parentId: string | null;
+  depth: number;
+  comment: string;
+  createdAt: Date;
+  updatedAt: Date;
+  user: UserWithRegistrations | null;
+  children?: ReplyWithRegistrations[];
+};
+
+type TransformedReply = Omit<ReplyWithRegistrations, 'user' | 'children'> & {
+  user: ReturnType<typeof transformUserWithBadges> | undefined;
+  children?: TransformedReply[];
+};
+
+function transformReplyWithBadges(
+  reply: ReplyWithRegistrations,
+): TransformedReply {
+  return {
+    ...reply,
+    user: reply.user ? transformUserWithBadges(reply.user) : undefined,
+    children: reply.children?.map((child) => transformReplyWithBadges(child)),
+  };
 }
 
 export async function getUserReviewForProduct(productId: string) {
@@ -284,7 +426,10 @@ export async function createReply(data: z.infer<typeof reviewReplySchema>) {
       }
 
       if (parentReply.reviewId !== validatedData.reviewId) {
-        return { success: false, message: 'Parent reply does not belong to this review' };
+        return {
+          success: false,
+          message: 'Parent reply does not belong to this review',
+        };
       }
 
       depth = parentReply.depth + 1;
@@ -324,10 +469,7 @@ export async function createReply(data: z.infer<typeof reviewReplySchema>) {
   }
 }
 
-export async function updateReply(
-  replyId: string,
-  data: { comment: string },
-) {
+export async function updateReply(replyId: string, data: { comment: string }) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
@@ -451,7 +593,10 @@ export async function reportContent(data: z.infer<typeof reviewReportSchema>) {
         },
       });
       if (existing) {
-        return { success: false, message: 'You have already reported this review' };
+        return {
+          success: false,
+          message: 'You have already reported this review',
+        };
       }
     }
 
@@ -475,7 +620,10 @@ export async function reportContent(data: z.infer<typeof reviewReportSchema>) {
         },
       });
       if (existing) {
-        return { success: false, message: 'You have already reported this reply' };
+        return {
+          success: false,
+          message: 'You have already reported this reply',
+        };
       }
     }
 
@@ -492,6 +640,82 @@ export async function reportContent(data: z.infer<typeof reviewReportSchema>) {
     return {
       success: true,
       message: 'Report submitted. Our team will review it shortly.',
+    };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
+}
+
+// ─── Votes (Helpful/Not Helpful) ───────────────────────────────────
+
+export async function voteReview(reviewId: string, isHelpful: boolean) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        message: 'You must be signed in to vote',
+      };
+    }
+
+    const review = await prisma.review.findUnique({
+      where: { id: reviewId },
+      include: { product: { select: { slug: true } } },
+    });
+
+    if (!review) {
+      return { success: false, message: 'Review not found' };
+    }
+
+    if (review.userId === session.user.id) {
+      return { success: false, message: 'You cannot vote on your own review' };
+    }
+
+    const existingVote = await prisma.reviewVote.findUnique({
+      where: {
+        userId_reviewId: {
+          userId: session.user.id,
+          reviewId,
+        },
+      },
+    });
+
+    if (existingVote) {
+      if (existingVote.isHelpful === isHelpful) {
+        // Same vote - remove it (toggle off)
+        await prisma.reviewVote.delete({
+          where: { id: existingVote.id },
+        });
+        revalidatePath(`/product/${review.product.slug}`);
+        return { success: true, message: 'Vote removed' };
+      } else {
+        // Different vote - update it
+        await prisma.reviewVote.update({
+          where: { id: existingVote.id },
+          data: { isHelpful },
+        });
+        revalidatePath(`/product/${review.product.slug}`);
+        return {
+          success: true,
+          message: isHelpful ? 'Marked as helpful' : 'Marked as not helpful',
+        };
+      }
+    }
+
+    // New vote
+    await prisma.reviewVote.create({
+      data: {
+        userId: session.user.id,
+        reviewId,
+        isHelpful,
+      },
+    });
+
+    revalidatePath(`/product/${review.product.slug}`);
+
+    return {
+      success: true,
+      message: isHelpful ? 'Marked as helpful' : 'Marked as not helpful',
     };
   } catch (error) {
     return { success: false, message: formatError(error) };

@@ -1,13 +1,15 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import StarRating from './star-rating';
 import ReviewForm from './review-form';
 import ReplyThread, { ReplyForm } from './reply-thread';
 import ReportDialog from './report-dialog';
+import UserBadges from '@/components/shared/user-badges';
 import { Review } from '@/types';
-import { deleteReview } from '@/lib/actions/review.actions';
+import { deleteReview, voteReview } from '@/lib/actions/review.actions';
 import { useToast } from '@/hooks/use-toast';
 import { formatDateTime } from '@/lib/utils';
 import {
@@ -20,7 +22,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { MessageSquare, Pencil, Trash2, User } from 'lucide-react';
+import { MessageSquare, Pencil, Trash2, User, ThumbsUp, ThumbsDown } from 'lucide-react';
 
 const ReviewList = ({
   reviews,
@@ -121,6 +123,7 @@ const ReviewCard = ({
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [isVoting, setIsVoting] = useState(false);
   const { toast } = useToast();
 
   const replyCount = countReplies(review.replies ?? []);
@@ -133,6 +136,18 @@ const ReviewCard = ({
       } else {
         setDeleteOpen(false);
         toast({ description: res.message });
+      }
+    });
+  };
+
+  const handleVote = (isHelpful: boolean) => {
+    if (!userId || isOwner || isVoting) return;
+    setIsVoting(true);
+    startTransition(async () => {
+      const res = await voteReview(review.id, isHelpful);
+      setIsVoting(false);
+      if (!res.success) {
+        toast({ variant: 'destructive', description: res.message });
       }
     });
   };
@@ -154,13 +169,24 @@ const ReviewCard = ({
     <div className='rounded-lg border p-4'>
       <div className='flex items-start justify-between'>
         <div className='flex items-center gap-3'>
-          <div className='flex h-9 w-9 items-center justify-center rounded-full bg-muted'>
+          <Link
+            href={review.user ? `/profile/${review.user.id}` : '#'}
+            className='flex h-9 w-9 items-center justify-center rounded-full bg-muted transition-colors hover:bg-accent'
+          >
             <User className='h-4 w-4 text-muted-foreground' />
-          </div>
+          </Link>
           <div>
-            <p className='font-medium'>
-              {review.user?.name ?? 'Anonymous'}
-            </p>
+            <div className='flex items-center gap-2'>
+              <Link
+                href={review.user ? `/profile/${review.user.id}` : '#'}
+                className='font-medium hover:underline'
+              >
+                {review.user?.name ?? 'Anonymous'}
+              </Link>
+              {review.user?.badges && review.user.badges.length > 0 && (
+                <UserBadges badges={review.user.badges} />
+              )}
+            </div>
             <p className='text-xs text-muted-foreground'>
               {formatDateTime(review.createdAt).dateOnly}
             </p>
@@ -223,6 +249,50 @@ const ReviewCard = ({
       <p className='mt-3 text-sm leading-relaxed'>{review.comment}</p>
 
       <div className='mt-3 flex items-center gap-3'>
+        {/* Helpful/Not Helpful buttons */}
+        {userId && !isOwner && (
+          <div className='flex items-center gap-1'>
+            <Button
+              size='sm'
+              variant={review.currentUserVote === true ? 'default' : 'ghost'}
+              className='h-8 px-2 text-xs'
+              onClick={() => handleVote(true)}
+              disabled={isVoting}
+            >
+              <ThumbsUp className='mr-1 h-3.5 w-3.5' />
+              Helpful
+              {(review.helpfulCount ?? 0) > 0 && ` (${review.helpfulCount})`}
+            </Button>
+            <Button
+              size='sm'
+              variant={review.currentUserVote === false ? 'default' : 'ghost'}
+              className='h-8 px-2 text-xs'
+              onClick={() => handleVote(false)}
+              disabled={isVoting}
+            >
+              <ThumbsDown className='mr-1 h-3.5 w-3.5' />
+              Not Helpful
+              {(review.notHelpfulCount ?? 0) > 0 && ` (${review.notHelpfulCount})`}
+            </Button>
+          </div>
+        )}
+        {/* Display vote counts for owner or non-logged in users */}
+        {(!userId || isOwner) && ((review.helpfulCount ?? 0) > 0 || (review.notHelpfulCount ?? 0) > 0) && (
+          <div className='flex items-center gap-2 text-xs text-muted-foreground'>
+            {(review.helpfulCount ?? 0) > 0 && (
+              <span className='flex items-center gap-1'>
+                <ThumbsUp className='h-3.5 w-3.5' />
+                {review.helpfulCount} found helpful
+              </span>
+            )}
+            {(review.notHelpfulCount ?? 0) > 0 && (
+              <span className='flex items-center gap-1'>
+                <ThumbsDown className='h-3.5 w-3.5' />
+                {review.notHelpfulCount} found not helpful
+              </span>
+            )}
+          </div>
+        )}
         {userId && (
           <Button
             size='sm'

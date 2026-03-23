@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ReviewReply } from '@/types';
@@ -23,6 +24,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { MessageSquare, Pencil, Trash2, User } from 'lucide-react';
 import ReportDialog from './report-dialog';
+import UserBadges from '@/components/shared/user-badges';
 
 const MAX_DEPTH = 3;
 
@@ -82,12 +84,21 @@ const ReplyCard = ({
         <>
           <div className='flex items-start justify-between'>
             <div className='flex items-center gap-2'>
-              <div className='flex h-7 w-7 items-center justify-center rounded-full bg-muted'>
+              <Link
+                href={reply.user ? `/profile/${reply.user.id}` : '#'}
+                className='flex h-7 w-7 items-center justify-center rounded-full bg-muted transition-colors hover:bg-accent'
+              >
                 <User className='h-3 w-3 text-muted-foreground' />
-              </div>
-              <span className='text-sm font-medium'>
+              </Link>
+              <Link
+                href={reply.user ? `/profile/${reply.user.id}` : '#'}
+                className='text-sm font-medium hover:underline'
+              >
                 {reply.user?.name ?? 'Anonymous'}
-              </span>
+              </Link>
+              {reply.user?.badges && reply.user.badges.length > 0 && (
+                <UserBadges badges={reply.user.badges} />
+              )}
               <span className='text-xs text-muted-foreground'>
                 {formatDateTime(reply.createdAt).dateOnly}
               </span>
