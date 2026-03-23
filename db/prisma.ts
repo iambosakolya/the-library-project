@@ -1,15 +1,17 @@
 import { PrismaClient } from '@/src/generated/prisma';
+import { PrismaNeon } from '@prisma/adapter-neon';
 
-// Validate that DATABASE_URL is set
 if (!process.env.DATABASE_URL) {
   throw new Error(
     'DATABASE_URL environment variable is not set. Please check your .env file.',
   );
 }
 
-// Create a singleton function for PrismaClient
 const prismaClientSingleton = () => {
-  return new PrismaClient().$extends({
+  const adapter = new PrismaNeon({
+    connectionString: process.env.DATABASE_URL!,
+  });
+  return new PrismaClient({ adapter }).$extends({
     result: {
       product: {
         price: {

@@ -1,7 +1,11 @@
 import { PrismaClient } from '@/src/generated/prisma';
+import { PrismaNeon } from '@prisma/adapter-neon';
 
 async function main() {
-  const prisma = new PrismaClient();
+  const adapter = new PrismaNeon({
+    connectionString: process.env.DATABASE_URL!,
+  });
+  const prisma = new PrismaClient({ adapter });
 
   try {
     const users = await prisma.user.findMany({
