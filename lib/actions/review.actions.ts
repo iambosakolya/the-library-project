@@ -33,22 +33,6 @@ export async function createReview(data: z.infer<typeof reviewSchema>) {
       return { success: false, message: 'Product not found' };
     }
 
-    const existingReview = await prisma.review.findUnique({
-      where: {
-        userId_productId: {
-          userId: session.user.id,
-          productId: validatedData.productId,
-        },
-      },
-    });
-
-    if (existingReview) {
-      return {
-        success: false,
-        message: 'You have already reviewed this book',
-      };
-    }
-
     const review = await prisma.review.create({
       data: {
         userId: session.user.id,
@@ -355,13 +339,12 @@ export async function getUserReviewForProduct(productId: string) {
       return { success: true, data: null };
     }
 
-    const review = await prisma.review.findUnique({
+    const review = await prisma.review.findFirst({
       where: {
-        userId_productId: {
-          userId: session.user.id,
-          productId,
-        },
+        userId: session.user.id,
+        productId,
       },
+      orderBy: { createdAt: 'desc' },
     });
 
     return {

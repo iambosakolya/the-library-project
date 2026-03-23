@@ -7,6 +7,7 @@ import ProductPrice from '@/components/shared/product/product-price';
 import ProductImage from '@/components/shared/product/product-img';
 import AddToCart from '@/components/shared/product/cart-add';
 import ReviewList from '@/components/shared/product/review-list';
+import ReviewSummary from '@/components/shared/product/review-summary';
 import { getMyCart } from '@/lib/actions/cart.actions';
 
 const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
@@ -74,7 +75,8 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
         </div>
       </div>
 
-      <div className='mt-10 border-t pt-8'>
+      <div className='mt-10 border-t pt-8 space-y-6'>
+        <ReviewSummary productId={product.id} numReviews={product.numReviews} />
         <ReviewList
           reviews={reviews}
           userId={session?.user?.id}

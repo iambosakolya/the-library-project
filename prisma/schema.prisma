@@ -22,8 +22,9 @@ model Product {
   isFeatured  Boolean     @default(false)
   banner      String?
   createdAt   DateTime    @default(now()) @db.Timestamp(6)
-  OrderItem   OrderItem[]
-  reviews     Review[]
+  OrderItem     OrderItem[]
+  reviews       Review[]
+  reviewSummary ReviewSummary?
 }
 
 model Review {
@@ -40,7 +41,7 @@ model Review {
   reports   ReviewReport[] @relation("ReviewReports")
   votes     ReviewVote[]
 
-  @@unique([userId, productId])
+  @@index([userId, productId])
   @@index([productId])
 }
 
@@ -391,6 +392,23 @@ enum AttendanceStatus {
   present
   absent
   excused
+}
+
+model ReviewSummary {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId       String   @unique @db.Uuid
+  sentiment       String
+  positiveAspects String[]
+  negativeAspects String[]
+  themes          String[]
+  summaryText     String
+  reviewCount     Int
+  generatedAt     DateTime @default(now()) @db.Timestamp(6)
+  createdAt       DateTime @default(now()) @db.Timestamp(6)
+  updatedAt       DateTime @updatedAt
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
 }
 
 enum BookSubmissionStatus {

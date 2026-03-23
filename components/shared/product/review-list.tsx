@@ -33,11 +33,6 @@ const ReviewList = ({
   userId?: string;
   productId: string;
 }) => {
-  const userReview = userId
-    ? reviews.find((r) => r.userId === userId)
-    : null;
-  const hasReviewed = !!userReview;
-
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
 
@@ -62,14 +57,14 @@ const ReviewList = ({
             </div>
           )}
         </div>
-        {userId && !hasReviewed && !showForm && (
+        {userId && !showForm && (
           <Button onClick={() => setShowForm(true)}>
             Write a Review
           </Button>
         )}
       </div>
 
-      {showForm && !hasReviewed && (
+      {showForm && (
         <div className='rounded-lg border p-4'>
           <h3 className='mb-3 font-semibold'>Write Your Review</h3>
           <ReviewForm
