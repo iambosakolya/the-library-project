@@ -30,6 +30,10 @@ const links = [
     title: 'Book Submissions',
     href: '/admin/book-submissions',
   },
+  {
+    title: 'Analytics',
+    href: '/admin/analytics',
+  },
 ];
 
 const UserNavHeader = ({
