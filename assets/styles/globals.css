@@ -4,7 +4,7 @@
 
 @layer utilities {
   .wrapper {
-    @apply w-full max-w-7xl p-5 md:px-10 lg:mx-auto;
+    @apply w-full p-5 md:px-10 xl:px-16 2xl:px-24;
   }
 
   .flex-start {
@@ -89,6 +89,9 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-background text-foreground;
   }

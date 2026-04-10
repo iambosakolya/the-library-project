@@ -14,15 +14,15 @@ const Footer = () => {
           <div className={styles.infoSection}>
             <h3 className={styles.title}>{APP_NAME}</h3>
             <p className={styles.description}>
-              Discover a world of stories at The  LibProj. Your journey
-              through literature starts here.
+              Discover a world of stories at The LibProj. Your journey through
+              literature starts here.
             </p>
           </div>
           <div>
             <h4 className={styles.sectionTitle}>Quick Links</h4>
             <ul className={styles.linkList}>
               <li>
-                <Link href='/' className={styles.link}>
+                <Link href='/shop' className={styles.link}>
                   Home
                 </Link>
               </li>

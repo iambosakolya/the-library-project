@@ -1,18 +1,54 @@
-import ProductList from '@/components/shared/product/product-list';
-import { getLatestProducts } from '@/lib/actions/product.actions';
-import BannerMain from '@/components/shared/product/banner/banner';
-import ViewAllProductsButton from '@/components/view-all-products-btn';
+import dynamic from 'next/dynamic';
+import { getLandingPageData } from '@/lib/actions/landing.actions';
 
-const HomePage = async () => {
-  const latestProducts = await getLatestProducts();
+// Lazy-load sections below the fold for performance
+const HeroSection = dynamic(() => import('@/components/landing/hero-section'), {
+  ssr: true,
+});
+const FeaturesSection = dynamic(
+  () => import('@/components/landing/features-section'),
+  { ssr: true },
+);
+const HowItWorksSection = dynamic(
+  () => import('@/components/landing/how-it-works-section'),
+  { ssr: true },
+);
+const CommunityStatsSection = dynamic(
+  () => import('@/components/landing/community-stats-section'),
+  { ssr: true },
+);
+const EventsPreviewSection = dynamic(
+  () => import('@/components/landing/events-preview-section'),
+  { ssr: true },
+);
+const TestimonialsSection = dynamic(
+  () => import('@/components/landing/testimonials-section'),
+  { ssr: true },
+);
+const CTASection = dynamic(() => import('@/components/landing/cta-section'), {
+  ssr: true,
+});
+
+export default async function LandingPage() {
+  const { events, clubs, stats } = await getLandingPageData();
 
   return (
     <>
-      <BannerMain />
-      <ProductList data={latestProducts} title='Featured Books' limit={4} />
-      <ViewAllProductsButton />
+      <HeroSection />
+      <div id='features'>
+        <FeaturesSection />
+      </div>
+      <div id='how-it-works'>
+        <HowItWorksSection />
+      </div>
+      <div id='community'>
+        <CommunityStatsSection data={stats} />
+      </div>
+      <div id='events'>
+        <EventsPreviewSection events={events} clubs={clubs} />
+      </div>
+      <TestimonialsSection />
+      <CTASection />
     </>
   );
-};
-
-export default HomePage;
+}

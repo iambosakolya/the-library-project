@@ -1,6 +1,12 @@
 import ModeToggle from './mode-toggle';
 import { Button } from '@/components/ui/button';
-import { EllipsisVertical, ShoppingCart, Users, Calendar } from 'lucide-react';
+import {
+  EllipsisVertical,
+  ShoppingCart,
+  Users,
+  Calendar,
+  BarChart3,
+} from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -17,6 +23,11 @@ const Menu = () => {
       {/* Desktop nav — only at lg (1024px+) */}
       <nav className='hidden items-center gap-1 lg:flex'>
         <ModeToggle />
+        <Button asChild variant='ghost'>
+          <Link href='/community'>
+            <BarChart3 className='h-4 w-4' /> Community
+          </Link>
+        </Button>
         <Button asChild variant='ghost'>
           <Link href='/clubs'>
             <Users className='h-4 w-4' /> Clubs
@@ -48,6 +59,11 @@ const Menu = () => {
             <SheetTitle>Menu</SheetTitle>
             <SheetDescription></SheetDescription>
             <ModeToggle />
+            <Button asChild variant='ghost'>
+              <Link href='/community'>
+                <BarChart3 className='h-4 w-4' /> Community
+              </Link>
+            </Button>
             <Button asChild variant='ghost'>
               <Link href='/clubs'>
                 <Users className='h-4 w-4' /> Clubs
