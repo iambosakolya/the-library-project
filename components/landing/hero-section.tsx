@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { BookOpen, Users, Sparkles, ArrowRight } from 'lucide-react';
+import { BookOpen, Users, ArrowRight } from 'lucide-react';
 
 /* ---------- floating book element ---------- */
 function FloatingBook({
@@ -161,19 +161,6 @@ export default function HeroSection() {
         style={{ y: textY, opacity }}
         className='relative z-10 mx-auto flex w-full flex-col items-center justify-center px-6 pt-36 text-center md:px-12 md:pt-44 lg:pt-52 xl:px-20 2xl:px-32'
       >
-        {/* badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className='mb-6 inline-flex items-center gap-2 rounded-full border bg-background/70 px-4 py-1.5 text-sm backdrop-blur'
-        >
-          <Sparkles className='h-4 w-4 text-chart-4' />
-          <span className='text-muted-foreground'>
-            A community for book&nbsp;lovers
-          </span>
-        </motion.div>
-
         {/* headline */}
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
@@ -182,7 +169,7 @@ export default function HeroSection() {
           className='text-4xl font-bold leading-tight tracking-tight sm:text-5xl md:text-6xl lg:text-7xl'
         >
           Where Book Lovers{' '}
-          <span className='bg-gradient-to-r from-chart-1 via-chart-4 to-chart-2 bg-clip-text text-transparent'>
+          <span className='bg-gradient-to-r from-blue-300 via-blue-500 to-blue-700 bg-clip-text text-transparent'>
             Unite
           </span>
         </motion.h1>
@@ -235,93 +222,7 @@ export default function HeroSection() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, delay: 0.6 }}
           className='mt-16 w-full max-w-5xl'
-        >
-          <div className='relative mx-auto aspect-[16/8] w-full overflow-hidden rounded-2xl border bg-gradient-to-br from-secondary/40 to-background shadow-2xl'>
-            {/* illustration composition */}
-            <div className='absolute inset-0 flex items-end justify-center gap-6 p-8'>
-              {/* person 1 – seated reader */}
-              <motion.div
-                animate={{ y: [0, -6, 0] }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-                className='flex flex-col items-center'
-              >
-                <div className='h-10 w-10 rounded-full bg-chart-1/70 sm:h-14 sm:w-14' />
-                <div className='mt-1 h-14 w-12 rounded-lg bg-chart-1/30 sm:h-20 sm:w-16' />
-                <div className='-mt-2 h-5 w-8 rotate-12 rounded bg-primary/20 sm:h-7 sm:w-10' />
-              </motion.div>
-
-              {/* bookshelf */}
-              <div className='hidden flex-col items-center gap-1 md:flex'>
-                {[...Array(4)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className='h-16 rounded bg-chart-3/30'
-                    style={{ width: 12 + i * 4 }}
-                    animate={{ height: [64, 58, 64] }}
-                    transition={{
-                      duration: 3,
-                      delay: i * 0.3,
-                      repeat: Infinity,
-                      ease: 'easeInOut',
-                    }}
-                  />
-                ))}
-              </div>
-
-              {/* person 2 – standing reader */}
-              <motion.div
-                animate={{ y: [0, -8, 0] }}
-                transition={{
-                  duration: 5,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                  delay: 1,
-                }}
-                className='flex flex-col items-center'
-              >
-                <div className='h-10 w-10 rounded-full bg-chart-4/70 sm:h-14 sm:w-14' />
-                <div className='h-18 mt-1 w-10 rounded-lg bg-chart-4/30 sm:h-24 sm:w-14' />
-                <div className='-mt-3 h-5 w-7 -rotate-6 rounded bg-primary/20 sm:h-7 sm:w-9' />
-              </motion.div>
-
-              {/* laptop / online reader */}
-              <motion.div
-                animate={{ y: [0, -5, 0] }}
-                transition={{
-                  duration: 4.5,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                  delay: 0.5,
-                }}
-                className='flex flex-col items-center'
-              >
-                <div className='h-10 w-10 rounded-full bg-chart-2/70 sm:h-14 sm:w-14' />
-                <div className='mt-1 h-12 w-12 rounded-lg bg-chart-2/30 sm:h-16 sm:w-16' />
-                <div className='-mt-1 h-3 w-16 rounded bg-muted sm:w-20' />
-              </motion.div>
-
-              {/* person 3 – bean-bag reader */}
-              <motion.div
-                animate={{ y: [0, -6, 0] }}
-                transition={{
-                  duration: 4.2,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                  delay: 1.8,
-                }}
-                className='hidden flex-col items-center sm:flex'
-              >
-                <div className='h-10 w-10 rounded-full bg-chart-5/70 sm:h-14 sm:w-14' />
-                <div className='mt-1 h-10 w-14 rounded-full bg-chart-5/30 sm:h-14 sm:w-20' />
-                <div className='-mt-2 h-5 w-7 rotate-6 rounded bg-primary/20 sm:h-7 sm:w-9' />
-              </motion.div>
-            </div>
-          </div>
-        </motion.div>
+        ></motion.div>
       </motion.div>
     </section>
   );
