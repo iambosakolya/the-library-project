@@ -108,37 +108,38 @@ model UserFollow {
 }
 
 model User {
-  id              String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name            String                   @default("No_Name")
-  email           String                   @unique(map: "user_email_idx")
-  emailVerified   DateTime?                @db.Timestamp(6)
-  image           String?
-  password        String?
-  role            String                   @default("user")
-  address         Json?                    @db.Json
-  paymentMethod   String?
-  createdAt       DateTime                 @default(now()) @db.Timestamp(6)
-  updatedAt       DateTime                 @updatedAt
-  Account         Account[]
-  attendances     Attendance[]
-  bookSubmissions BookSubmission[]
-  Cart            Cart[]
-  ClubRequest     ClubRequest[]
-  organizedEvents Event[]                  @relation("EventOrganizer")
-  Order           Order[]
-  createdClubs    ReadingClub[]            @relation("ClubCreator")
-  registrations   Registration[]
-  Session         Session[]
-  reviews         Review[]
-  reviewReplies   ReviewReply[]
-  reviewReports   ReviewReport[]
-  reviewVotes     ReviewVote[]
-  followers       UserFollow[]             @relation("UserFollowing")
-  following       UserFollow[]             @relation("UserFollowers")
-  readingGoals    ReadingGoal[]
-  readingStreak   ReadingStreak?
-  achievements    UserAchievement[]
-  analyticsPrefs  UserAnalyticsPreference?
+  id                      String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                    String                   @default("No_Name")
+  email                   String                   @unique(map: "user_email_idx")
+  emailVerified           DateTime?                @db.Timestamp(6)
+  image                   String?
+  password                String?
+  role                    String                   @default("user")
+  address                 Json?                    @db.Json
+  paymentMethod           String?
+  createdAt               DateTime                 @default(now()) @db.Timestamp(6)
+  updatedAt               DateTime                 @updatedAt
+  Account                 Account[]
+  attendances             Attendance[]
+  bookSubmissions         BookSubmission[]
+  Cart                    Cart[]
+  ClubRequest             ClubRequest[]
+  organizedEvents         Event[]                  @relation("EventOrganizer")
+  Order                   Order[]
+  createdClubs            ReadingClub[]            @relation("ClubCreator")
+  registrations           Registration[]
+  Session                 Session[]
+  reviews                 Review[]
+  reviewReplies           ReviewReply[]
+  reviewReports           ReviewReport[]
+  reviewVotes             ReviewVote[]
+  followers               UserFollow[]             @relation("UserFollowing")
+  following               UserFollow[]             @relation("UserFollowers")
+  analyticsReports        AnalyticsReport[]
+  readingGoals            ReadingGoal[]
+  readingStreak           ReadingStreak?
+  userAchievements        UserAchievement[]
+  userAnalyticsPreference UserAnalyticsPreference?
 }
 
 model Account {
@@ -516,4 +517,40 @@ enum VisibilityLevel {
   public
   friends_only
   private
+  // ── Analytics Reports ──────────────────────────────
+}
+
+model AnalyticsReport {
+  id        String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  category  AnalyticsCategory
+  title     String
+  period    String // e.g. "last_7", "last_30", "last_90", "custom"
+  startDate DateTime              @db.Timestamp(6)
+  endDate   DateTime              @db.Timestamp(6)
+  data      Json                  @db.Json
+  status    AnalyticsReportStatus @default(pending)
+  progress  Int                   @default(0)
+  version   Int                   @default(1)
+  createdBy String                @db.Uuid
+  createdAt DateTime              @default(now()) @db.Timestamp(6)
+  updatedAt DateTime              @updatedAt
+  user      User                  @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+
+  @@index([category])
+  @@index([createdBy])
+  @@index([createdAt])
+}
+
+enum AnalyticsCategory {
+  reading_trends
+  community_engagement
+  events_clubs
+  user_behavior
+}
+
+enum AnalyticsReportStatus {
+  pending
+  processing
+  completed
+  failed
 }
