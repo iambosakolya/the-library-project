@@ -12,7 +12,7 @@ const Header = () => {
       <div className={headerStyles.wrapper}>
         <div className={headerStyles.left}>
           <CategoryDrawer />
-          <Link href='/shop' className={headerStyles.logoLink}>
+          <Link href='/' className={headerStyles.logoLink}>
             <BookOpen className={headerStyles.icon} />
             <div className={headerStyles.logoTextWrapper}>
               <span className={headerStyles.appName}>{APP_NAME}</span>

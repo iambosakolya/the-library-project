@@ -6,6 +6,7 @@ import {
   Users,
   Calendar,
   BarChart3,
+  Lightbulb,
 } from 'lucide-react';
 import {
   Sheet,
@@ -26,6 +27,11 @@ const Menu = () => {
         <Button asChild variant='ghost'>
           <Link href='/community'>
             <BarChart3 className='h-4 w-4' /> Community
+          </Link>
+        </Button>
+        <Button asChild variant='ghost'>
+          <Link href='/reading-insights'>
+            <Lightbulb className='h-4 w-4' /> Insights
           </Link>
         </Button>
         <Button asChild variant='ghost'>
@@ -62,6 +68,11 @@ const Menu = () => {
             <Button asChild variant='ghost'>
               <Link href='/community'>
                 <BarChart3 className='h-4 w-4' /> Community
+              </Link>
+            </Button>
+            <Button asChild variant='ghost'>
+              <Link href='/reading-insights'>
+                <Lightbulb className='h-4 w-4' /> Insights
               </Link>
             </Button>
             <Button asChild variant='ghost'>

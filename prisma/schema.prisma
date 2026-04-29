@@ -108,34 +108,38 @@ model UserFollow {
 }
 
 model User {
-  id               String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name             String            @default("No_Name")
-  email            String            @unique(map: "user_email_idx")
-  emailVerified    DateTime?         @db.Timestamp(6)
-  image            String?
-  password         String?
-  role             String            @default("user")
-  address          Json?             @db.Json
-  paymentMethod    String?
-  createdAt        DateTime          @default(now()) @db.Timestamp(6)
-  updatedAt        DateTime          @updatedAt
-  Account          Account[]
-  attendances      Attendance[]
-  bookSubmissions  BookSubmission[]
-  Cart             Cart[]
-  ClubRequest      ClubRequest[]
-  organizedEvents  Event[]           @relation("EventOrganizer")
-  Order            Order[]
-  createdClubs     ReadingClub[]     @relation("ClubCreator")
-  registrations    Registration[]
-  Session          Session[]
-  reviews          Review[]
-  reviewReplies    ReviewReply[]
-  reviewReports    ReviewReport[]
-  reviewVotes      ReviewVote[]
-  followers        UserFollow[]      @relation("UserFollowing")
-  following        UserFollow[]      @relation("UserFollowers")
-  analyticsReports AnalyticsReport[]
+  id                      String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                    String                   @default("No_Name")
+  email                   String                   @unique(map: "user_email_idx")
+  emailVerified           DateTime?                @db.Timestamp(6)
+  image                   String?
+  password                String?
+  role                    String                   @default("user")
+  address                 Json?                    @db.Json
+  paymentMethod           String?
+  createdAt               DateTime                 @default(now()) @db.Timestamp(6)
+  updatedAt               DateTime                 @updatedAt
+  Account                 Account[]
+  attendances             Attendance[]
+  bookSubmissions         BookSubmission[]
+  Cart                    Cart[]
+  ClubRequest             ClubRequest[]
+  organizedEvents         Event[]                  @relation("EventOrganizer")
+  Order                   Order[]
+  createdClubs            ReadingClub[]            @relation("ClubCreator")
+  registrations           Registration[]
+  Session                 Session[]
+  reviews                 Review[]
+  reviewReplies           ReviewReply[]
+  reviewReports           ReviewReport[]
+  reviewVotes             ReviewVote[]
+  followers               UserFollow[]             @relation("UserFollowing")
+  following               UserFollow[]             @relation("UserFollowers")
+  analyticsReports        AnalyticsReport[]
+  readingGoals            ReadingGoal[]
+  readingStreak           ReadingStreak?
+  userAchievements        UserAchievement[]
+  userAnalyticsPreference UserAnalyticsPreference?
 }
 
 model Account {
@@ -419,7 +423,102 @@ enum BookSubmissionStatus {
   rejected
 }
 
-// ── Analytics Reports ──────────────────────────────
+// ── Personal Analytics Models ──
+
+model ReadingGoal {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String    @db.Uuid
+  type      GoalType
+  target    Int
+  current   Int       @default(0)
+  year      Int
+  startDate DateTime  @default(now()) @db.Timestamp(6)
+  endDate   DateTime? @db.Timestamp(6)
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type, year])
+  @@index([userId])
+}
+
+model ReadingStreak {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId           String    @unique @db.Uuid
+  currentStreak    Int       @default(0)
+  longestStreak    Int       @default(0)
+  lastActivityDate DateTime? @db.Timestamp(6)
+  streakStartDate  DateTime? @db.Timestamp(6)
+  createdAt        DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt        DateTime  @updatedAt
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserAchievement {
+  id          String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String          @db.Uuid
+  type        AchievementType
+  title       String
+  description String
+  icon        String
+  earnedAt    DateTime        @default(now()) @db.Timestamp(6)
+  metadata    Json?           @db.Json
+  createdAt   DateTime        @default(now()) @db.Timestamp(6)
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type])
+  @@index([userId])
+}
+
+model UserAnalyticsPreference {
+  id                 String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId             String          @unique @db.Uuid
+  profileVisibility  VisibilityLevel @default(public)
+  goalsVisibility    VisibilityLevel @default(friends_only)
+  streakVisibility   VisibilityLevel @default(public)
+  reviewsVisibility  VisibilityLevel @default(public)
+  activityVisibility VisibilityLevel @default(friends_only)
+  dashboardLayout    Json?           @db.Json
+  createdAt          DateTime        @default(now()) @db.Timestamp(6)
+  updatedAt          DateTime        @updatedAt
+  user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum GoalType {
+  books_to_read
+  reviews_to_write
+  events_to_attend
+}
+
+enum AchievementType {
+  first_review
+  five_reviews
+  ten_reviews
+  twenty_five_reviews
+  fifty_reviews
+  first_club
+  five_clubs
+  first_event
+  five_events
+  ten_events
+  streak_seven
+  streak_thirty
+  streak_ninety
+  streak_year
+  genre_explorer
+  social_butterfly
+  top_reviewer
+  bookworm
+  year_in_books
+}
+
+enum VisibilityLevel {
+  public
+  friends_only
+  private
+  // ── Analytics Reports ──────────────────────────────
+}
 
 model AnalyticsReport {
   id        String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid

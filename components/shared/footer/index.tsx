@@ -22,7 +22,7 @@ const Footer = () => {
             <h4 className={styles.sectionTitle}>Quick Links</h4>
             <ul className={styles.linkList}>
               <li>
-                <Link href='/shop' className={styles.link}>
+                <Link href='/' className={styles.link}>
                   Home
                 </Link>
               </li>

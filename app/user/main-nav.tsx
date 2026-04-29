@@ -14,6 +14,7 @@ import {
   BookMarkedIcon,
   MenuIcon,
   ChevronDownIcon,
+  BarChart3Icon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -38,6 +39,11 @@ const navGroups = [
     items: [
       { title: 'Profile', href: '/user/my-profile', icon: UserIcon },
       { title: 'Orders', href: '/user/orders', icon: PackageIcon },
+      {
+        title: 'Reading Dashboard',
+        href: '/user/reading-dashboard',
+        icon: BarChart3Icon,
+      },
     ],
   },
   {
