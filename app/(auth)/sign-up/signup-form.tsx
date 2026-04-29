@@ -27,7 +27,6 @@ const SignUpForm = () => {
           name='name'
           id='name'
           placeholder='Your name'
-          // required
         />
       </div>
       <div className='grid w-full max-w-lg items-center gap-1.5'>
@@ -36,7 +35,6 @@ const SignUpForm = () => {
           type='email'
           name='email'
           id='email'
-          // required
           placeholder='Your email'
         />
       </div>
@@ -59,7 +57,7 @@ const SignUpForm = () => {
         />
       </div>
       <Button className='w-full text-lg' disabled={isPending}>
-        {isPending ? 'loading...' : 'Create an account'}
+        {isPending ? 'Loading...' : 'Create an account'}
       </Button>
       {formState && !formState.success && (
         <div className='text-center'>{formState.message}</div>

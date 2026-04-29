@@ -11,7 +11,7 @@ const links = [
     href: '/admin/overview',
   },
   {
-    title: 'Products',
+    title: 'Literature',
     href: '/admin/products',
   },
   {

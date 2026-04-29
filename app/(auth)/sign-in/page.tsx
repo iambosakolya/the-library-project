@@ -32,15 +32,16 @@ const SignInPage = async (props: {
           <CardHeader className='flex items-start justify-between'>
             <div className='flex items-center gap-4'>
               <div className='hidden lg:block'>
-                <h3 className='text-2xl font-bold'>NEW CUSTOMER?</h3>
+                <h3 className='text-2xl font-bold'>NEWCOMER?</h3>
               </div>
             </div>
           </CardHeader>
           <CardContent className='flex flex-grow flex-col justify-between text-lg'>
             <p>
-              By creating an account with our store, you will be able to move
-              through the checkout process faster, store multiple shipping
-              addresses, view and track your orders in your account and more.
+              By creating an account with our store, you will be able to join
+              our reading club community, share your ideas and reviews, publish
+              YOUR books, sell them, create and visit bookclubs and events and
+              EVEN view your analytics through years.
             </p>
             <div className='mt-auto'>
               <Button className='text-md w-full'>

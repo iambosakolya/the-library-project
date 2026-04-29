@@ -20,9 +20,10 @@ const LoginForm = () => {
   return (
     <form action={formAction} className='space-y-8'>
       <input type='hidden' name='callbackUrl' value={callbackUrl} />
-      <div className='grid w-full max-w-sm items-center gap-1.5'>
+      <div className='grid max-w-sm items-center gap-1.5'>
         <Label htmlFor='email'>Email</Label>
         <Input
+          className='w-[460px]'
           type='email'
           name='email'
           id='email'
@@ -35,15 +36,18 @@ const LoginForm = () => {
         <Label htmlFor='password'>Password</Label>
         <Input
           type='password'
+          className='w-[460px]'
           name='password'
           id='password'
           placeholder='Password'
           defaultValue={signInDefaultValues.password}
         />
       </div>
-      <Button className='w-full text-lg' disabled={isPending}>
-        {isPending ? 'loading...' : 'Login'}
-      </Button>
+      <div className='gap-8'>
+        <Button className='w-full text-lg' disabled={isPending}>
+          {isPending ? 'Loading...' : 'Login'}
+        </Button>
+      </div>
 
       {formState && !formState.success && (
         <div className='text-center'>{formState.message}</div>

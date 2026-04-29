@@ -8,28 +8,34 @@ const ProductImage = ({ images }: { images: string[] }) => {
   const [current, setCurrent] = useState(0);
 
   return (
-    <div className='space-y-6 p-8'>
-      <Image
-        src={images[current]}
-        alt='Images of the book'
-        width={1000}
-        height={1000}
-      />
+    <div className='space-y-4 p-4 md:p-6'>
+      <div className='relative mx-auto aspect-[3/4] w-full max-w-sm overflow-hidden rounded-lg bg-muted'>
+        <Image
+          src={images[current]}
+          alt='Images of the book'
+          fill
+          sizes='(max-width: 768px) 80vw, 350px'
+          className='object-contain'
+        />
+      </div>
 
-      <div className='flex flex-row space-x-2'>
+      <div className='flex flex-row justify-center space-x-2'>
         {images.map((image, index) => (
           <div
             className={cn(
-              'mr-2 cursor-pointer border hover:border-orange-400',
-              current === index && 'border-orange-600',
+              'relative h-16 w-12 cursor-pointer overflow-hidden rounded border-2 transition-colors hover:border-orange-400',
+              current === index ? 'border-orange-600' : 'border-transparent',
             )}
             key={image}
-            onClick={() => {
-              setCurrent(index);
-              console.log('Image changed');
-            }}
+            onClick={() => setCurrent(index)}
           >
-            <Image src={image} alt='image' width={120} height={120} />
+            <Image
+              src={image}
+              alt='image'
+              fill
+              sizes='48px'
+              className='object-contain'
+            />
           </div>
         ))}
       </div>

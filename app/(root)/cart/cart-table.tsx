@@ -29,7 +29,7 @@ const CartTable = ({ cart }: { cart?: Cart }) => {
   return (
     <>
       <h1 className='flex justify-center py-11 text-3xl font-bold'>
-        SHOPPING CART
+        LITERATURE CART
       </h1>
       {!cart || cart?.items.length === 0 ? (
         <div className='text-lg'>
