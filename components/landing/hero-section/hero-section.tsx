@@ -97,12 +97,18 @@ export default function HeroSection() {
         >
           <TegakiRenderer
             font={bundle}
-            time={{ mode: 'uncontrolled', speed: 0.8, loop: false }}
+            time={{ mode: 'controlled', value: 10 }}
             style={tegakiStyles}
           >
             Where Book Lovers
           </TegakiRenderer>
-          <span className={contentStyles.gradientText}>Unite</span>
+          <TegakiRenderer
+            font={bundle}
+            time={{ mode: 'uncontrolled', speed: 1, loop: true }}
+            style={tegakiStyles}
+          >
+            Unite
+          </TegakiRenderer>
         </motion.h1>
 
         {/* sub-headline */}

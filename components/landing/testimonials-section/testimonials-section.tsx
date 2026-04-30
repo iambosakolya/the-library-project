@@ -36,7 +36,7 @@ export default function TestimonialsSection() {
           </span>
           <h2 className={testimonialsStyles.title}>
             What Our{' '}
-            <span className={testimonialsStyles.gradientText}>Community</span>{' '}
+            <span>Community</span>{' '}
             Says
           </h2>
         </motion.div>

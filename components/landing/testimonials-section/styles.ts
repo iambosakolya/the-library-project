@@ -5,8 +5,6 @@ export const testimonialsStyles = {
   badge:
     'mb-3 inline-block rounded-full bg-secondary px-4 py-1 text-sm font-medium text-muted-foreground',
   title: 'text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl',
-  gradientText:
-    'bg-gradient-to-r from-chart-1 to-chart-4 bg-clip-text text-transparent',
   quoteWrapper: 'relative mx-auto max-w-2xl',
   quoteIcon: 'mx-auto mb-6 h-10 w-10 text-muted-foreground/20',
   quoteText:

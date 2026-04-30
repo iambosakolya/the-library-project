@@ -38,7 +38,7 @@ export default function CommunityStatsSection({
           <span className={communityStatsStyles.badge}>Growing every day</span>
           <h2 className={communityStatsStyles.title}>
             Our{' '}
-            <span className={communityStatsStyles.gradientText}>Community</span>{' '}
+            <span>Community</span>{' '}
             in Numbers
           </h2>
         </motion.div>
