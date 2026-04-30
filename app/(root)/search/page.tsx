@@ -202,8 +202,12 @@ const SearchPage = async (props: {
             ))}
           </div>
         </div>
-        <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
-          {products.data.length === 0 && <div>No products found</div>}
+        <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+          {products.data.length === 0 && (
+            <div className='col-span-full py-12 text-center text-muted-foreground'>
+              No products found
+            </div>
+          )}
           {products.data.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

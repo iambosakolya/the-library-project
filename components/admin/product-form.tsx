@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { productDefaultValues } from '@/lib/constants';
 import { productInsertSchema, updateProductSchema } from '@/lib/validators';
@@ -20,10 +21,12 @@ import slugify from 'slugify';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
+import { Checkbox } from '../ui/checkbox';
 import { createProduct, updateProduct } from '@/lib/actions/product.actions';
 import { UploadButton } from '@/lib/uploadthing';
 import { Card, CardContent } from '../ui/card';
 import Image from 'next/image';
+import { X } from 'lucide-react';
 
 const ProductForm = ({
   type,
@@ -37,6 +40,10 @@ const ProductForm = ({
   const router = useRouter();
   const { toast } = useToast();
 
+  const defaultIsForSale =
+    product && type === 'Update' ? Number(product.price) > 0 : false;
+  const [isForSale, setIsForSale] = useState(defaultIsForSale);
+
   const form = useForm<z.infer<typeof productInsertSchema>>({
     resolver: zodResolver(
       type === 'Create' ? productInsertSchema : updateProductSchema,
@@ -48,7 +55,12 @@ const ProductForm = ({
   const onSubmit: SubmitHandler<z.infer<typeof productInsertSchema>> = async (
     values,
   ) => {
-    // On Create
+    // If not for sale, set price to 0
+    if (!isForSale) {
+      values.price = '0';
+    }
+
+    // On Create - admin-added books are published immediately without approval
     if (type === 'Create') {
       const res = await createProduct(values);
 
@@ -59,7 +71,7 @@ const ProductForm = ({
         });
       } else {
         toast({
-          description: res.message,
+          description: 'Book added successfully — published immediately.',
         });
         router.push('/admin/products');
       }
@@ -199,28 +211,50 @@ const ProductForm = ({
             )}
           />
         </div>
-        <div className='flex flex-col gap-5 md:flex-row'>
-          {/* Price */}
-          <FormField
-            control={form.control}
-            name='price'
-            render={({
-              field,
-            }: {
-              field: ControllerRenderProps<
-                z.infer<typeof productInsertSchema>,
-                'price'
-              >;
-            }) => (
-              <FormItem className='w-full'>
-                <FormLabel>Price</FormLabel>
-                <FormControl>
-                  <Input placeholder='Enter product price' {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+        {/* Is for sale toggle */}
+        <div className='flex items-center gap-3'>
+          <Checkbox
+            id='isForSale'
+            checked={isForSale}
+            onCheckedChange={(checked) => {
+              setIsForSale(checked === true);
+              if (!checked) {
+                form.setValue('price', '0');
+              }
+            }}
           />
+          <label
+            htmlFor='isForSale'
+            className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
+          >
+            This book is for sale
+          </label>
+        </div>
+
+        <div className='flex flex-col gap-5 md:flex-row'>
+          {/* Price - only shown if for sale */}
+          {isForSale && (
+            <FormField
+              control={form.control}
+              name='price'
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<
+                  z.infer<typeof productInsertSchema>,
+                  'price'
+                >;
+              }) => (
+                <FormItem className='w-full'>
+                  <FormLabel>Price</FormLabel>
+                  <FormControl>
+                    <Input placeholder='Enter product price' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
           {/* Stock */}
           <FormField
             control={form.control}
@@ -250,35 +284,56 @@ const ProductForm = ({
             name='images'
             render={() => (
               <FormItem className='w-full'>
-                <FormLabel>Image</FormLabel>
+                <FormLabel>Images</FormLabel>
                 <Card>
                   <CardContent className='mt-2 min-h-48 space-y-2'>
-                    <div className='flex-start space-x-2'>
-                      {images.map((image: string) => (
-                        <Image
-                          key={image}
-                          src={image}
-                          alt='product image'
-                          className='h-20 w-20 rounded-sm object-cover object-center'
-                          width={100}
-                          height={100}
-                        />
-                      ))}
-                      <FormControl>
-                        <UploadButton
-                          endpoint='imageUploader'
-                          onClientUploadComplete={(res: { url: string }[]) => {
-                            form.setValue('images', [...images, res[0].url]);
-                          }}
-                          onUploadError={(error: Error) => {
-                            toast({
-                              variant: 'destructive',
-                              description: `ERROR! ${error.message}`,
-                            });
-                          }}
-                        />
-                      </FormControl>
-                    </div>
+                    {/* Image preview grid */}
+                    {images.length > 0 && (
+                      <div className='flex flex-wrap gap-2'>
+                        {images.map((image: string) => (
+                          <div key={image} className='group relative'>
+                            <Image
+                              src={image}
+                              alt='product image'
+                              className='h-20 w-20 rounded-sm object-cover object-center'
+                              width={100}
+                              height={100}
+                            />
+                            <button
+                              type='button'
+                              className='absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-destructive-foreground opacity-0 transition-opacity group-hover:opacity-100'
+                              onClick={() => {
+                                form.setValue(
+                                  'images',
+                                  images.filter((img: string) => img !== image),
+                                );
+                              }}
+                            >
+                              <X className='h-3 w-3' />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {/* Upload button */}
+                    <FormControl>
+                      <UploadButton
+                        endpoint='imageUploader'
+                        onClientUploadComplete={(res) => {
+                          const newUrls = res.map((file) => file.url);
+                          form.setValue('images', [...images, ...newUrls]);
+                          toast({
+                            description: `${res.length} image(s) uploaded successfully`,
+                          });
+                        }}
+                        onUploadError={(error: Error) => {
+                          toast({
+                            variant: 'destructive',
+                            description: `ERROR! ${error.message}`,
+                          });
+                        }}
+                      />
+                    </FormControl>
                   </CardContent>
                 </Card>
                 <FormMessage />

@@ -1,9 +1,7 @@
-export const APP_NAME =
-  process.env.NEXT_PUBLIC_APP_NAME || 'LibProj';
+export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'LibProj';
 
 export const APP_DESCRIPTION =
-  process.env.NEXT_PUBLIC_APP_DESCRIPTION ||
-  'Web application using Next.js';
+  process.env.NEXT_PUBLIC_APP_DESCRIPTION || 'Web application using Next.js';
 
 export const SERVER_URL =
   process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000';
@@ -37,7 +35,7 @@ export const productDefaultValues = {
   slug: '',
   category: '',
   images: [],
-  brand: '',
+  author: '',
   description: '',
   price: '0',
   stock: 0,
@@ -66,7 +64,7 @@ export const BOOK_GENRES = [
   'Drama',
   'Horror',
   'Young Adult',
-  'Children\'s Books',
+  "Children's Books",
   'Comics & Graphic Novels',
   'Cookbooks',
   'Travel',

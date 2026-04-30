@@ -35,9 +35,9 @@ const AdminProductsPage = async (props: {
   return (
     <div className='space-y-2'>
       <div className='flex-between'>
-        <h1 className='h2-bold'>Products</h1>
+        <h1 className='h2-bold'>Literature</h1>
         <Button asChild variant='default'>
-          <Link href='/admin/products/create'>Create Product</Link>
+          <Link href='/admin/products/create'>Add the book</Link>
         </Button>
       </div>
 
