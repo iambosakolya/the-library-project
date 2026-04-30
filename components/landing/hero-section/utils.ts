@@ -1,3 +1,5 @@
+import { Particle } from './types';
+
 /**
  * Generate an array of random floating letter particles.
  */
