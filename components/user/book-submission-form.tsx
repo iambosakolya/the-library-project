@@ -2,7 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { bookSubmissionDefaultValues, BOOK_GENRES, BOOK_LANGUAGES } from '@/lib/constants';
+import {
+  bookSubmissionDefaultValues,
+  BOOK_GENRES,
+  BOOK_LANGUAGES,
+} from '@/lib/constants';
 import { bookSubmissionSchema } from '@/lib/validators';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
@@ -20,9 +24,19 @@ import {
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
-import { createBookSubmission, searchAuthors, searchCatalog } from '@/lib/actions/book-submission.actions';
-import { UploadButton } from '@/lib/uploadthing';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import {
+  createBookSubmission,
+  searchAuthors,
+  searchCatalog,
+} from '@/lib/actions/book-submission.actions';
+import { UploadDropzone } from '@/lib/uploadthing';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../ui/card';
 import Image from 'next/image';
 import {
   Select,
@@ -32,9 +46,22 @@ import {
   SelectValue,
 } from '../ui/select';
 import { Badge } from '../ui/badge';
-import { X, Search, Loader2, BookOpen, AlertCircle, CheckCircle, DollarSign } from 'lucide-react';
+import {
+  X,
+  Search,
+  Loader2,
+  BookOpen,
+  AlertCircle,
+  CheckCircle,
+  DollarSign,
+} from 'lucide-react';
 import { Switch } from '../ui/switch';
-import { searchBookByISBN, searchBookByTitleAndAuthor, ParsedBookData, detectLanguageFromTitle } from '@/lib/google-books';
+import {
+  searchBookByISBN,
+  searchBookByTitleAndAuthor,
+  ParsedBookData,
+  detectLanguageFromTitle,
+} from '@/lib/google-books';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import AIDescriptionGenerator from './ai-description-generator';
 
@@ -53,8 +80,12 @@ const BookSubmissionForm = () => {
   const [isbnLookupLoading, setIsbnLookupLoading] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const [authorSuggestions, setAuthorSuggestions] = useState<string[]>([]);
-  const [catalogSearchResults, setCatalogSearchResults] = useState<CatalogBook[]>([]);
-  const [googleBooksResults, setGoogleBooksResults] = useState<ParsedBookData[]>([]);
+  const [catalogSearchResults, setCatalogSearchResults] = useState<
+    CatalogBook[]
+  >([]);
+  const [googleBooksResults, setGoogleBooksResults] = useState<
+    ParsedBookData[]
+  >([]);
   const [showCatalogSearch, setShowCatalogSearch] = useState(true);
   const [showGoogleResults, setShowGoogleResults] = useState(false);
 
@@ -125,7 +156,7 @@ const BookSubmissionForm = () => {
     setIsbnLookupLoading(true);
     try {
       const bookData = await searchBookByISBN(watchedIsbn);
-      
+
       if (bookData) {
         // Prefill form with Google Books data
         form.setValue('title', bookData.title);
@@ -136,7 +167,10 @@ const BookSubmissionForm = () => {
         form.setValue('description', bookData.description);
         form.setValue('pageCount', bookData.pageCount || null);
         form.setValue('language', bookData.language || '');
-        form.setValue('categories', bookData.categories.length > 0 ? bookData.categories : ['Other']);
+        form.setValue(
+          'categories',
+          bookData.categories.length > 0 ? bookData.categories : ['Other'],
+        );
         form.setValue('coverImage', bookData.coverImage || '');
         form.setValue('thumbnailImage', bookData.thumbnailImage || '');
         form.setValue('previewLink', bookData.previewLink || '');
@@ -148,7 +182,8 @@ const BookSubmissionForm = () => {
       } else {
         toast({
           variant: 'destructive',
-          description: 'No book found with this ISBN. You can still fill in the details manually.',
+          description:
+            'No book found with this ISBN. You can still fill in the details manually.',
         });
       }
     } catch {
@@ -173,10 +208,13 @@ const BookSubmissionForm = () => {
 
     setSearchLoading(true);
     try {
-      const results = await searchBookByTitleAndAuthor(watchedTitle, watchedAuthor || undefined);
+      const results = await searchBookByTitleAndAuthor(
+        watchedTitle,
+        watchedAuthor || undefined,
+      );
       setGoogleBooksResults(results);
       setShowGoogleResults(true);
-      
+
       if (results.length === 0) {
         toast({
           description: 'No results found on Google Books',
@@ -203,7 +241,10 @@ const BookSubmissionForm = () => {
     form.setValue('description', bookData.description);
     form.setValue('pageCount', bookData.pageCount || null);
     form.setValue('language', bookData.language || '');
-    form.setValue('categories', bookData.categories.length > 0 ? bookData.categories : ['Other']);
+    form.setValue(
+      'categories',
+      bookData.categories.length > 0 ? bookData.categories : ['Other'],
+    );
     form.setValue('coverImage', bookData.coverImage || '');
     form.setValue('thumbnailImage', bookData.thumbnailImage || '');
     form.setValue('previewLink', bookData.previewLink || '');
@@ -215,7 +256,9 @@ const BookSubmissionForm = () => {
     });
   };
 
-  const onSubmit: SubmitHandler<z.infer<typeof bookSubmissionSchema>> = async (values) => {
+  const onSubmit: SubmitHandler<z.infer<typeof bookSubmissionSchema>> = async (
+    values,
+  ) => {
     setIsSubmitting(true);
     try {
       const res = await createBookSubmission(values);
@@ -234,7 +277,8 @@ const BookSubmissionForm = () => {
     } catch (error) {
       toast({
         variant: 'destructive',
-        description: error instanceof Error ? error.message : 'An error occurred',
+        description:
+          error instanceof Error ? error.message : 'An error occurred',
       });
     } finally {
       setIsSubmitting(false);
@@ -265,7 +309,8 @@ const BookSubmissionForm = () => {
             Submit a New Book
           </CardTitle>
           <CardDescription>
-            Can not find a book in our catalog? Submit it here and we will add it after review.
+            Can not find a book in our catalog? Submit it here and we will add
+            it after review.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -277,7 +322,10 @@ const BookSubmissionForm = () => {
               <AlertDescription>
                 <div className='mt-2 space-y-2'>
                   {catalogSearchResults.slice(0, 3).map((book) => (
-                    <div key={book.id} className='flex items-center gap-2 text-sm'>
+                    <div
+                      key={book.id}
+                      className='flex items-center gap-2 text-sm'
+                    >
                       {book.images?.[0] && (
                         <Image
                           src={book.images[0]}
@@ -311,9 +359,12 @@ const BookSubmissionForm = () => {
               {/* ISBN Lookup Section */}
               <Card className='border-dashed'>
                 <CardHeader>
-                  <CardTitle className='text-base'>Quick Fill with ISBN</CardTitle>
+                  <CardTitle className='text-base'>
+                    Quick Fill with ISBN
+                  </CardTitle>
                   <CardDescription>
-                    Enter an ISBN to automatically fill book details from Google Books
+                    Enter an ISBN to automatically fill book details from Google
+                    Books
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -324,7 +375,11 @@ const BookSubmissionForm = () => {
                       render={({ field }) => (
                         <FormItem className='flex-1'>
                           <FormControl>
-                            <Input placeholder='Enter ISBN (10 or 13 digits)' {...field} value={field.value || ''} />
+                            <Input
+                              placeholder='Enter ISBN (10 or 13 digits)'
+                              {...field}
+                              value={field.value || ''}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -349,7 +404,9 @@ const BookSubmissionForm = () => {
               {/* Google Books Search */}
               <Card className='border-dashed'>
                 <CardHeader>
-                  <CardTitle className='text-base'>Or Search Google Books</CardTitle>
+                  <CardTitle className='text-base'>
+                    Or Search Google Books
+                  </CardTitle>
                   <CardDescription>
                     Search by title and author to find your book
                   </CardDescription>
@@ -392,9 +449,13 @@ const BookSubmissionForm = () => {
                           )}
                           <div className='flex-1'>
                             <p className='font-medium'>{book.title}</p>
-                            <p className='text-sm text-muted-foreground'>{book.author}</p>
+                            <p className='text-sm text-muted-foreground'>
+                              {book.author}
+                            </p>
                             {book.publishedDate && (
-                              <p className='text-xs text-muted-foreground'>{book.publishedDate}                            </p>
+                              <p className='text-xs text-muted-foreground'>
+                                {book.publishedDate}{' '}
+                              </p>
                             )}
                           </div>
                         </button>
@@ -453,7 +514,9 @@ const BookSubmissionForm = () => {
                           )}
                         </div>
                       </FormControl>
-                      <FormDescription>Start typing to see suggestions</FormDescription>
+                      <FormDescription>
+                        Start typing to see suggestions
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -467,7 +530,11 @@ const BookSubmissionForm = () => {
                     <FormItem>
                       <FormLabel>ISBN-13</FormLabel>
                       <FormControl>
-                        <Input placeholder='Enter ISBN-13' {...field} value={field.value || ''} />
+                        <Input
+                          placeholder='Enter ISBN-13'
+                          {...field}
+                          value={field.value || ''}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -483,7 +550,11 @@ const BookSubmissionForm = () => {
                       <FormItem>
                         <FormLabel>Publisher</FormLabel>
                         <FormControl>
-                          <Input placeholder='Enter publisher' {...field} value={field.value || ''} />
+                          <Input
+                            placeholder='Enter publisher'
+                            {...field}
+                            value={field.value || ''}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -497,7 +568,11 @@ const BookSubmissionForm = () => {
                       <FormItem>
                         <FormLabel>Published Date</FormLabel>
                         <FormControl>
-                          <Input placeholder='e.g., 2023, 2023-01, 2023-01-15' {...field} value={field.value || ''} />
+                          <Input
+                            placeholder='e.g., 2023, 2023-01, 2023-01-15'
+                            {...field}
+                            value={field.value || ''}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -539,7 +614,9 @@ const BookSubmissionForm = () => {
                     publisher: form.getValues('publisher') || undefined,
                   }}
                   currentDescription={watchedDescription || ''}
-                  onApply={(text) => form.setValue('description', text, { shouldValidate: true })}
+                  onApply={(text) =>
+                    form.setValue('description', text, { shouldValidate: true })
+                  }
                 />
 
                 {/* Page Count and Language */}
@@ -556,7 +633,11 @@ const BookSubmissionForm = () => {
                             placeholder='Enter page count'
                             {...field}
                             value={field.value || ''}
-                            onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                            onChange={(e) =>
+                              field.onChange(
+                                e.target.value ? Number(e.target.value) : null,
+                              )
+                            }
                           />
                         </FormControl>
                         <FormMessage />
@@ -570,7 +651,10 @@ const BookSubmissionForm = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Language</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value || ''}>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value || ''}
+                        >
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder='Select language' />
@@ -625,7 +709,9 @@ const BookSubmissionForm = () => {
                           </Badge>
                         ))}
                       </div>
-                      <FormDescription>Select at least one category</FormDescription>
+                      <FormDescription>
+                        Select at least one category
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -639,7 +725,7 @@ const BookSubmissionForm = () => {
                     <FormItem>
                       <FormLabel>Cover Image</FormLabel>
                       <Card>
-                        <CardContent className='mt-2 min-h-32 space-y-2'>
+                        <CardContent className='mt-6 min-h-32 space-y-2'>
                           {watchedCoverImage && (
                             <div className='flex items-center gap-4'>
                               <Image
@@ -661,9 +747,9 @@ const BookSubmissionForm = () => {
                           )}
                           {!watchedCoverImage && (
                             <FormControl>
-                              <UploadButton
+                              <UploadDropzone
                                 endpoint='imageUploader'
-                                onClientUploadComplete={(res: { url: string }[]) => {
+                                onClientUploadComplete={(res) => {
                                   form.setValue('coverImage', res[0].url);
                                   toast({
                                     description: 'Image uploaded successfully',
@@ -681,7 +767,8 @@ const BookSubmissionForm = () => {
                         </CardContent>
                       </Card>
                       <FormDescription>
-                        Upload a cover image or one will be auto-filled from Google Books
+                        Upload a cover image or one will be auto-filled from
+                        Google Books
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -706,7 +793,9 @@ const BookSubmissionForm = () => {
                       render={({ field }) => (
                         <FormItem className='flex items-center justify-between rounded-lg border p-4'>
                           <div className='space-y-0.5'>
-                            <FormLabel className='text-base'>For Sale</FormLabel>
+                            <FormLabel className='text-base'>
+                              For Sale
+                            </FormLabel>
                             <FormDescription>
                               Toggle this if the book is available for purchase
                             </FormDescription>
@@ -731,7 +820,7 @@ const BookSubmissionForm = () => {
                             <FormLabel>Suggested Price *</FormLabel>
                             <FormControl>
                               <div className='relative'>
-                                <DollarSign className='text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2' />
+                                <DollarSign className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
                                 <Input
                                   type='number'
                                   step='0.01'
@@ -742,14 +831,17 @@ const BookSubmissionForm = () => {
                                   value={field.value ?? ''}
                                   onChange={(e) =>
                                     field.onChange(
-                                      e.target.value ? Number(e.target.value) : null,
+                                      e.target.value
+                                        ? Number(e.target.value)
+                                        : null,
                                     )
                                   }
                                 />
                               </div>
                             </FormControl>
                             <FormDescription>
-                              Enter the amount you would like to sell this book for
+                              Enter the amount you would like to sell this book
+                              for
                             </FormDescription>
                             <FormMessage />
                           </FormItem>

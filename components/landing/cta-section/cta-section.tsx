@@ -6,6 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowRight, BookOpen, CheckCircle2, Sparkles } from 'lucide-react';
 
+import { ctaStyles } from './styles';
+import {
+  CTA_RESET_DELAY,
+  BLOB_ANIMATIONS,
+  FLOATING_ICON_ANIMATIONS,
+} from './constants';
+
 export default function CTASection() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -17,80 +24,72 @@ export default function CTASection() {
     setTimeout(() => {
       setSubmitted(false);
       setEmail('');
-    }, 4000);
+    }, CTA_RESET_DELAY);
   };
 
   return (
-    <section className='relative overflow-hidden bg-gradient-to-br from-primary via-primary/95 to-primary py-24 md:py-32'>
+    <section className={ctaStyles.section}>
       {/* decorative blobs */}
-      <div className='pointer-events-none absolute inset-0'>
+      <div className={ctaStyles.blobContainer}>
         <motion.div
-          className='absolute -left-20 -top-20 h-80 w-80 rounded-full bg-white/5 blur-3xl'
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+          className={ctaStyles.blobLeft}
+          animate={BLOB_ANIMATIONS.left.animate}
+          transition={BLOB_ANIMATIONS.left.transition}
         />
         <motion.div
-          className='absolute -bottom-20 -right-20 h-96 w-96 rounded-full bg-white/5 blur-3xl'
-          animate={{ scale: [1, 1.15, 1] }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+          className={ctaStyles.blobRight}
+          animate={BLOB_ANIMATIONS.right.animate}
+          transition={BLOB_ANIMATIONS.right.transition}
         />
         {/* floating icons */}
         <motion.div
-          className='absolute left-[10%] top-[20%]'
-          animate={{ y: [0, -15, 0], rotate: [0, 8, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+          className={ctaStyles.floatingIconLeft}
+          animate={FLOATING_ICON_ANIMATIONS.left.animate}
+          transition={FLOATING_ICON_ANIMATIONS.left.transition}
         >
-          <BookOpen className='h-8 w-8 text-primary-foreground/10' />
+          <BookOpen className={ctaStyles.floatingIconStyle} />
         </motion.div>
         <motion.div
-          className='absolute bottom-[25%] right-[15%]'
-          animate={{ y: [0, -12, 0], rotate: [0, -6, 0] }}
-          transition={{
-            duration: 7,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 2,
-          }}
+          className={ctaStyles.floatingIconRight}
+          animate={FLOATING_ICON_ANIMATIONS.right.animate}
+          transition={FLOATING_ICON_ANIMATIONS.right.transition}
         >
-          <Sparkles className='h-6 w-6 text-primary-foreground/10' />
+          <Sparkles className={ctaStyles.floatingIconSmallStyle} />
         </motion.div>
       </div>
 
-      <div className='relative z-10 mx-auto w-full px-6 text-center md:px-12 xl:px-20 2xl:px-32'>
+      <div className={ctaStyles.container}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className='text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl lg:text-5xl'>
+          <h2 className={ctaStyles.title}>
             Ready to Join Our
             <br />
             Reading Community?
           </h2>
-          <p className='mx-auto mt-5 max-w-xl text-lg text-primary-foreground/70'>
+          <p className={ctaStyles.subtitle}>
             Sign up today and connect with thousands of book lovers around the
             world. Your next favorite book is just a conversation away.
           </p>
 
           {/* email form */}
-          <form
-            onSubmit={handleSubmit}
-            className='mx-auto mt-10 flex max-w-md flex-col gap-3 sm:flex-row'
-          >
+          <form onSubmit={handleSubmit} className={ctaStyles.form}>
             <Input
               type='email'
               placeholder='Enter your email'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className='h-12 flex-1 border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground placeholder:text-primary-foreground/50 focus-visible:ring-primary-foreground/40'
+              className={ctaStyles.input}
             />
             <Button
               type='submit'
               size='lg'
               disabled={submitted}
-              className='group gap-2 bg-primary-foreground text-primary shadow-lg hover:bg-primary-foreground/90'
+              className={ctaStyles.submitButton}
             >
               {submitted ? (
                 <>
@@ -107,11 +106,8 @@ export default function CTASection() {
           </form>
 
           {/* social proof */}
-          <p className='mt-6 text-sm text-primary-foreground/50'>
-            Join{' '}
-            <span className='font-semibold text-primary-foreground/70'>
-              10,000+
-            </span>{' '}
+          <p className={ctaStyles.socialProof}>
+            Join <span className={ctaStyles.socialProofHighlight}>10,000+</span>{' '}
             book lovers already on the platform
           </p>
         </motion.div>
