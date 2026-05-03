@@ -21,8 +21,7 @@ export const floatingLetterStyles = {
     'pointer-events-none absolute select-none font-serif text-primary/[0.06] dark:text-primary/[0.08]',
 };
 
-
-
 export const tegakiStyles = {
   fontSize: 102,
+  color: 'hsl(var(--foreground))',
 };
