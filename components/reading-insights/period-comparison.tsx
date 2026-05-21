@@ -15,7 +15,7 @@ import {
   ArrowDownRight,
   Minus,
 } from 'lucide-react';
-import type { Period } from '@/components/community/period-filter';
+import type { Period } from '@/components/community/period-filter/period-filter';
 
 interface ComparisonData {
   mostDiscussed: { name: string; reviewCount: number }[];

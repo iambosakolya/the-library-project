@@ -3,7 +3,7 @@
 import { useState, useTransition, useCallback, lazy, Suspense } from 'react';
 import PeriodFilter, {
   type Period,
-} from '@/components/community/period-filter';
+} from '@/components/community/period-filter/period-filter';
 import GenreFilter from '@/components/reading-insights/genre-filter';
 import type { ReadingInsightsData } from '@/lib/actions/reading-insights.actions';
 

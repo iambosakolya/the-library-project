@@ -8,7 +8,7 @@ import { ChevronLeft, ChevronRight, ArrowRight, BookOpen } from 'lucide-react';
 import type { Event as EventType, ReadingClub } from '@/types';
 
 import { colorPalettes, CAROUSEL_INTERVAL, ITEMS_PER_PAGE } from './constants';
-import { eventsPreviewStyles } from './styles';
+import { eventsPreviewStyles, arrowStyles } from './styles';
 import { EventCard } from './event-card';
 import { ClubCard } from './club-card';
 
@@ -81,7 +81,7 @@ export default function EventsPreviewSection({
             >
               <Link href='/events'>
                 View All Events
-                <ArrowRight className='h-4 w-4 transition-transform group-hover:translate-x-1' />
+                <ArrowRight className={arrowStyles.arrowWrapper} />
               </Link>
             </Button>
             <Button

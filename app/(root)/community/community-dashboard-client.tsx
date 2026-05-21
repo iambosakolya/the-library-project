@@ -1,20 +1,20 @@
 'use client';
 
 import { useState, useTransition, useCallback, lazy, Suspense } from 'react';
-import CommunityStatsBar from '@/components/community/community-stats-bar';
-import TrendingBooksGrid from '@/components/community/trending-books-grid';
-import ActiveClubsList from '@/components/community/active-clubs-list';
-import UpcomingEventsCalendar from '@/components/community/upcoming-events-calendar';
-import GenreCloud from '@/components/community/genre-cloud';
-import TopBooksRanking from '@/components/community/top-books-ranking';
-import ActivityFeed from '@/components/community/activity-feed';
-import ActivityTicker from '@/components/community/activity-ticker';
+import CommunityStatsBar from '@/components/community/community-stats-bar/community-stats-bar';
+import TrendingBooksGrid from '@/components/community/trending-books-grid/trending-books-grid';
+import ActiveClubsList from '@/components/community/active-clubs-list/active-clubs-list';
+import UpcomingEventsCalendar from '@/components/community/upcoming-events-calendar/upcoming-events-calendar';
+import GenreCloud from '@/components/community/genre-cloud/genre-cloud';
+import TopBooksRanking from '@/components/community/top-books-ranking/top-books-ranking';
+import ActivityFeed from '@/components/community/activity-feed/activity-feed';
+import ActivityTicker from '@/components/community/activity-ticker/activity-ticker';
 import PeriodFilter, {
   type Period,
-} from '@/components/community/period-filter';
+} from '@/components/community/period-filter/period-filter';
 
 const ReadingTrendsChart = lazy(
-  () => import('@/components/community/reading-trends-chart'),
+  () => import('@/components/community/reading-trends-chart/reading-trends-chart'),
 );
 
 /* ─── types ─── */

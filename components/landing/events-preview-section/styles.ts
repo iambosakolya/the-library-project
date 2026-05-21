@@ -42,3 +42,7 @@ export const cardStyles = {
   metaRow: 'flex items-center gap-2',
   metaIcon: 'h-4 w-4 shrink-0',
 };
+
+export const arrowStyles = {
+  arrowWrapper: 'h-4 w-4 transition-transform group-hover:translate-x-1',
+};

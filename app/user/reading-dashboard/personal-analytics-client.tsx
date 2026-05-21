@@ -5,8 +5,8 @@ import type { DashboardData } from '@/lib/actions/personal-analytics.actions';
 import {
   useWidgetLayout,
   WidgetCustomizer,
-} from '@/components/personal-analytics/widget-customizer';
-import ExportDataButton from '@/components/personal-analytics/export-data-button';
+} from '@/components/personal-analytics/widget-customizer/widget-customizer';
+import ExportDataButton from '@/components/personal-analytics/export-data-button/export-data-button';
 import {
   Select,
   SelectContent,
@@ -25,34 +25,48 @@ import {
 
 // Lazy load heavy chart/widget components
 const ActivityTimeline = lazy(
-  () => import('@/components/personal-analytics/activity-timeline'),
+  () =>
+    import(
+      '@/components/personal-analytics/activity-timeline/activity-timeline'
+    ),
 );
 const GenreWheel = lazy(
-  () => import('@/components/personal-analytics/genre-wheel'),
+  () => import('@/components/personal-analytics/genre-wheel/genre-wheel'),
 );
 const ReviewStatsCard = lazy(
-  () => import('@/components/personal-analytics/review-stats-card'),
+  () =>
+    import(
+      '@/components/personal-analytics/review-stats-card/review-stats-card'
+    ),
 );
 const ParticipationHistory = lazy(
-  () => import('@/components/personal-analytics/participation-history'),
+  () =>
+    import(
+      '@/components/personal-analytics/participation-history/participation-history'
+    ),
 );
 const StreakTracker = lazy(
-  () => import('@/components/personal-analytics/streak-tracker'),
+  () => import('@/components/personal-analytics/streak-tracker/streak-tracker'),
 );
 const InteractionNetwork = lazy(
-  () => import('@/components/personal-analytics/interaction-network'),
+  () =>
+    import(
+      '@/components/personal-analytics/interaction-network/interaction-network'
+    ),
 );
 const YearInBooksCard = lazy(
-  () => import('@/components/personal-analytics/year-in-books'),
+  () => import('@/components/personal-analytics/year-in-books/year-in-books'),
 );
 const GoalTracker = lazy(
-  () => import('@/components/personal-analytics/goal-tracker'),
+  () => import('@/components/personal-analytics/goal-tracker/goal-tracker'),
 );
 const AchievementGrid = lazy(
-  () => import('@/components/personal-analytics/achievement-grid'),
+  () =>
+    import('@/components/personal-analytics/achievement-grid/achievement-grid'),
 );
 const PrivacyControls = lazy(
-  () => import('@/components/personal-analytics/privacy-controls'),
+  () =>
+    import('@/components/personal-analytics/privacy-controls/privacy-controls'),
 );
 
 function SectionSpinner() {
