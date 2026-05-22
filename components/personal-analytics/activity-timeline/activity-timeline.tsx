@@ -16,13 +16,7 @@ import { Activity } from 'lucide-react';
 import ExportChartButton from '@/components/reading-insights/export-chart-button';
 import type { TimelineItem } from '@/lib/actions/personal-analytics.actions';
 import { activityTimelineStyles as styles } from './styles';
-
-const COLORS = {
-  reviews: '#6366f1',
-  purchases: '#10b981',
-  events: '#f59e0b',
-  clubs: '#ec4899',
-};
+import { COLORS } from './constants';
 
 export default function ActivityTimeline({ data }: { data: TimelineItem[] }) {
   const chartRef = useRef<HTMLDivElement>(null);

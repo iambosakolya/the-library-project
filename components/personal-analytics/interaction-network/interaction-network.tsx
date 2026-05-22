@@ -4,21 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Network, UserCircle } from 'lucide-react';
 import Image from 'next/image';
 import type { InteractionUser } from '@/lib/actions/personal-analytics.actions';
-import { interactionNetworkStyles as styles } from './styles';
-
-const TYPE_LABELS: Record<string, string> = {
-  review_reply: 'Review interactions',
-  club_member: 'Club co-member',
-  follower: 'Follower/Following',
-};
-
-const TYPE_COLORS: Record<string, string> = {
-  review_reply:
-    'bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300',
-  club_member:
-    'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
-  follower: 'bg-pink-100 text-pink-700 dark:bg-pink-950 dark:text-pink-300',
-};
+import { interactionNetworkStyles as styles, TYPE_COLORS } from './styles';
+import { TYPE_LABELS } from './constants';
 
 export default function InteractionNetwork({
   data,

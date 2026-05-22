@@ -23,4 +23,10 @@ export const goalTrackerStyles = {
   progressBar: 'h-3 w-full overflow-hidden rounded-full bg-muted',
   progressFill: 'h-full rounded-full transition-all duration-500',
   progressInfo: 'flex justify-between text-xs text-muted-foreground',
+}
+
+export const TYPE_COLORS: Record<string, string> = {
+  books_to_read: 'bg-indigo-500',
+  reviews_to_write: 'bg-emerald-500',
+  events_to_attend: 'bg-amber-500',
 };

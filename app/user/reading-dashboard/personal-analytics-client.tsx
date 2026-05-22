@@ -2,10 +2,8 @@
 
 import { useState, useTransition, useCallback, lazy, Suspense } from 'react';
 import type { DashboardData } from '@/lib/actions/personal-analytics.actions';
-import {
-  useWidgetLayout,
-  WidgetCustomizer,
-} from '@/components/personal-analytics/widget-customizer/widget-customizer';
+import { WidgetCustomizer } from '@/components/personal-analytics/widget-customizer/widget-customizer';
+import { useWidgetLayout } from '@/components/personal-analytics/use-widget-layout';
 import ExportDataButton from '@/components/personal-analytics/export-data-button/export-data-button';
 import {
   Select,

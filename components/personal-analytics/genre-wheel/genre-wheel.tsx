@@ -14,19 +14,7 @@ import { Palette } from 'lucide-react';
 import ExportChartButton from '@/components/reading-insights/export-chart-button';
 import type { GenrePreference } from '@/lib/actions/personal-analytics.actions';
 import { genreWheelStyles as styles } from './styles';
-
-const COLORS = [
-  '#6366f1',
-  '#8b5cf6',
-  '#ec4899',
-  '#f59e0b',
-  '#10b981',
-  '#06b6d4',
-  '#f97316',
-  '#ef4444',
-  '#84cc16',
-  '#14b8a6',
-];
+import { COLORS } from './constants';
 
 export default function GenreWheel({ data }: { data: GenrePreference[] }) {
   const chartRef = useRef<HTMLDivElement>(null);

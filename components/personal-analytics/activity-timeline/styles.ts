@@ -5,3 +5,4 @@ export const activityTimelineStyles = {
   headerIcon: 'h-5 w-5 text-indigo-500',
   chartWrapper: 'h-[300px] w-full',
 };
+

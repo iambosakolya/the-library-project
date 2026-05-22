@@ -16,8 +16,7 @@ import { PenTool, Star, ThumbsUp, MessageCircle } from 'lucide-react';
 import ExportChartButton from '@/components/reading-insights/export-chart-button';
 import type { ReviewStats } from '@/lib/actions/personal-analytics.actions';
 import { reviewStatsCardStyles as styles } from './styles';
-
-const RATING_COLORS = ['#ef4444', '#f97316', '#f59e0b', '#84cc16', '#10b981'];
+import { RATING_COLORS } from './constants';
 
 export default function ReviewStatsCard({ data }: { data: ReviewStats }) {
   const chartRef = useRef<HTMLDivElement>(null);

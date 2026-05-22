@@ -8,48 +8,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Shield, Eye, Users, Lock } from 'lucide-react';
+import { Shield } from 'lucide-react';
 import type { PrivacySettings } from '@/lib/actions/personal-analytics.actions';
 import { privacyControlsStyles as styles } from './styles';
-
-const VISIBILITY_OPTIONS = [
-  {
-    value: 'public',
-    label: 'Public',
-    icon: Eye,
-    description: 'Visible to everyone',
-  },
-  {
-    value: 'friends_only',
-    label: 'Friends Only',
-    icon: Users,
-    description: 'Visible to followers',
-  },
-  { value: 'private', label: 'Private', icon: Lock, description: 'Only you' },
-];
-
-const SETTING_LABELS: Record<string, { label: string; description: string }> = {
-  profileVisibility: {
-    label: 'Profile Analytics',
-    description: 'Genre preferences and reading stats on your public profile',
-  },
-  goalsVisibility: {
-    label: 'Reading Goals',
-    description: 'Your goal progress and targets',
-  },
-  streakVisibility: {
-    label: 'Reading Streak',
-    description: 'Your current and best streak',
-  },
-  reviewsVisibility: {
-    label: 'Review Statistics',
-    description: 'Detailed review writing statistics',
-  },
-  activityVisibility: {
-    label: 'Activity Timeline',
-    description: 'Your reading activity and participation history',
-  },
-};
+import { SETTING_LABELS, VISIBILITY_OPTIONS } from './constants';
 
 export default function PrivacyControls({
   settings,

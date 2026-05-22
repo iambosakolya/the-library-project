@@ -18,22 +18,10 @@ import {
   BookOpen,
   PenTool,
   CalendarCheck,
-  type LucideIcon,
 } from 'lucide-react';
 import type { GoalData } from '@/lib/actions/personal-analytics.actions';
-import { goalTrackerStyles as styles } from './styles';
-
-const TYPE_CONFIG: Record<string, { label: string; icon: LucideIcon }> = {
-  books_to_read: { label: 'Books to Read', icon: BookOpen },
-  reviews_to_write: { label: 'Reviews to Write', icon: PenTool },
-  events_to_attend: { label: 'Events to Attend', icon: CalendarCheck },
-};
-
-const TYPE_COLORS: Record<string, string> = {
-  books_to_read: 'bg-indigo-500',
-  reviews_to_write: 'bg-emerald-500',
-  events_to_attend: 'bg-amber-500',
-};
+import { goalTrackerStyles as styles, TYPE_COLORS } from './styles';
+import { TYPE_CONFIG } from './constants';
 
 export default function GoalTracker({
   data,

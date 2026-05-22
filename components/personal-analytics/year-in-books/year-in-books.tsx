@@ -25,6 +25,8 @@ import ExportChartButton from '@/components/reading-insights/export-chart-button
 import type { YearInBooks } from '@/lib/actions/personal-analytics.actions';
 import { yearInBooksStyles as styles } from './styles';
 
+import { months } from './constants';
+
 export default function YearInBooksCard({ data }: { data: YearInBooks }) {
   const chartRef = useRef<HTMLDivElement>(null);
 
@@ -88,20 +90,6 @@ export default function YearInBooksCard({ data }: { data: YearInBooks }) {
                 fontSize={11}
                 tickFormatter={(v) => {
                   const [, m] = v.split('-');
-                  const months = [
-                    'Jan',
-                    'Feb',
-                    'Mar',
-                    'Apr',
-                    'May',
-                    'Jun',
-                    'Jul',
-                    'Aug',
-                    'Sep',
-                    'Oct',
-                    'Nov',
-                    'Dec',
-                  ];
                   return months[parseInt(m) - 1] || m;
                 }}
               />

@@ -17,3 +17,11 @@ export const interactionNetworkStyles = {
   progressBar: 'h-full rounded-full bg-cyan-500 transition-all',
   interactionCount: 'text-xs font-semibold text-muted-foreground',
 };
+
+export const TYPE_COLORS: Record<string, string> = {
+  review_reply:
+    'bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300',
+  club_member:
+    'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
+  follower: 'bg-pink-100 text-pink-700 dark:bg-pink-950 dark:text-pink-300',
+};
