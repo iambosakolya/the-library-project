@@ -13,7 +13,7 @@ import {
   Legend,
 } from 'recharts';
 import { Activity } from 'lucide-react';
-import ExportChartButton from '@/components/reading-insights/export-chart-button';
+import ExportChartButton from '@/components/reading-insights/export-chart-button/export-chart-button';
 import type { TimelineItem } from '@/lib/actions/personal-analytics.actions';
 import { activityTimelineStyles as styles } from './styles';
 import { COLORS } from './constants';

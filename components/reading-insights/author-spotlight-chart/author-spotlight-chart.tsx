@@ -14,21 +14,12 @@ import {
   Cell,
 } from 'recharts';
 import { User } from 'lucide-react';
-import ExportChartButton from './export-chart-button';
+import ExportChartButton from '../export-chart-button/export-chart-button';
 import type { AuthorSpotlightItem } from '@/lib/actions/reading-insights.actions';
-
-const COLORS = [
-  '#8b5cf6',
-  '#6366f1',
-  '#3b82f6',
-  '#06b6d4',
-  '#14b8a6',
-  '#22c55e',
-  '#84cc16',
-  '#eab308',
-  '#f59e0b',
-  '#f97316',
-];
+import { sharedStyles } from '../shared/styles';
+import { authorSpotlightStyles as styles } from './styles';
+import { COLORS } from './constants';
+import { truncateText } from '../shared/utils';
 
 export default function AuthorSpotlightChart({
   data,
@@ -40,7 +31,7 @@ export default function AuthorSpotlightChart({
   if (!data.length) {
     return (
       <Card>
-        <CardContent className='py-12 text-center text-muted-foreground'>
+        <CardContent className={sharedStyles.emptyState}>
           No author data available for this period.
         </CardContent>
       </Card>
@@ -49,15 +40,14 @@ export default function AuthorSpotlightChart({
 
   const chartData = data.map((item) => ({
     ...item,
-    shortAuthor:
-      item.author.length > 18 ? item.author.slice(0, 18) + '…' : item.author,
+    shortAuthor: truncateText(item.author, 18),
   }));
 
   return (
     <Card>
-      <CardHeader className='flex flex-row items-center justify-between'>
-        <CardTitle className='flex items-center gap-2'>
-          <User className='h-5 w-5 text-violet-500' />
+      <CardHeader className={sharedStyles.cardHeader}>
+        <CardTitle className={sharedStyles.headerTitle}>
+          <User className={styles.headerIcon} />
           Author Spotlight
         </CardTitle>
         <ExportChartButton chartRef={chartRef} filename='author-spotlight' />
@@ -80,12 +70,7 @@ export default function AuthorSpotlightChart({
               tickLine={false}
             />
             <Tooltip
-              contentStyle={{
-                backgroundColor: 'hsl(var(--card))',
-                border: '1px solid hsl(var(--border))',
-                borderRadius: '8px',
-                fontSize: 12,
-              }}
+              contentStyle={sharedStyles.tooltipContent}
               formatter={(value: number, name: string) => {
                 if (name === 'totalReviews') return [value, 'Reviews'];
                 if (name === 'totalSold') return [value, 'Books Sold'];
@@ -113,14 +98,11 @@ export default function AuthorSpotlightChart({
         </ResponsiveContainer>
 
         {/* Author stats grid */}
-        <div className='mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3'>
+        <div className={styles.statsGrid}>
           {data.slice(0, 6).map((author) => (
-            <div
-              key={author.author}
-              className='rounded-lg border p-3 transition-colors hover:bg-muted/50'
-            >
-              <p className='truncate text-sm font-semibold'>{author.author}</p>
-              <div className='mt-1 flex items-center gap-3 text-xs text-muted-foreground'>
+            <div key={author.author} className={styles.statsCard}>
+              <p className={styles.statsAuthor}>{author.author}</p>
+              <div className={styles.statsMeta}>
                 <span>{author.bookCount} books</span>
                 <span>★ {author.avgRating}</span>
                 <span>{author.totalReviews} reviews</span>

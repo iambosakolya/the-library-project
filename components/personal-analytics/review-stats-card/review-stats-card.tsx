@@ -13,7 +13,7 @@ import {
   Cell,
 } from 'recharts';
 import { PenTool, Star, ThumbsUp, MessageCircle } from 'lucide-react';
-import ExportChartButton from '@/components/reading-insights/export-chart-button';
+import ExportChartButton from '@/components/reading-insights/export-chart-button/export-chart-button';
 import type { ReviewStats } from '@/lib/actions/personal-analytics.actions';
 import { reviewStatsCardStyles as styles } from './styles';
 import { RATING_COLORS } from './constants';

@@ -14,22 +14,13 @@ import {
   Cell,
 } from 'recharts';
 import { MessageSquare } from 'lucide-react';
-import ExportChartButton from './export-chart-button';
+import ExportChartButton from '../export-chart-button/export-chart-button';
 import Link from 'next/link';
 import type { MostDiscussedBook } from '@/lib/actions/reading-insights.actions';
-
-const COLORS = [
-  '#6366f1',
-  '#8b5cf6',
-  '#a78bfa',
-  '#c4b5fd',
-  '#7c3aed',
-  '#4f46e5',
-  '#818cf8',
-  '#6d28d9',
-  '#5b21b6',
-  '#4338ca',
-];
+import { sharedStyles } from '../shared/styles';
+import { mostDiscussedBooksStyles as styles } from './styles';
+import { COLORS } from './constants';
+import { truncateText } from '../shared/utils';
 
 export default function MostDiscussedBooksChart({
   data,
@@ -41,7 +32,7 @@ export default function MostDiscussedBooksChart({
   if (!data.length) {
     return (
       <Card>
-        <CardContent className='py-12 text-center text-muted-foreground'>
+        <CardContent className={sharedStyles.emptyState}>
           No discussion data available for this period.
         </CardContent>
       </Card>
@@ -50,14 +41,14 @@ export default function MostDiscussedBooksChart({
 
   const chartData = data.map((book) => ({
     ...book,
-    shortName: book.name.length > 20 ? book.name.slice(0, 20) + '…' : book.name,
+    shortName: truncateText(book.name, 20),
   }));
 
   return (
     <Card>
-      <CardHeader className='flex flex-row items-center justify-between'>
-        <CardTitle className='flex items-center gap-2'>
-          <MessageSquare className='h-5 w-5 text-indigo-500' />
+      <CardHeader className={sharedStyles.cardHeader}>
+        <CardTitle className={sharedStyles.headerTitle}>
+          <MessageSquare className={styles.headerIcon} />
           Most Discussed Books
         </CardTitle>
         <ExportChartButton
@@ -83,12 +74,7 @@ export default function MostDiscussedBooksChart({
               tickLine={false}
             />
             <Tooltip
-              contentStyle={{
-                backgroundColor: 'hsl(var(--card))',
-                border: '1px solid hsl(var(--border))',
-                borderRadius: '8px',
-                fontSize: 12,
-              }}
+              contentStyle={sharedStyles.tooltipContent}
               formatter={(value: number, name: string) => [
                 value,
                 name === 'reviewCount'
@@ -120,20 +106,18 @@ export default function MostDiscussedBooksChart({
         </ResponsiveContainer>
 
         {/* Book list below chart */}
-        <div className='mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2'>
+        <div className={styles.bookGrid}>
           {data.slice(0, 6).map((book) => (
             <Link
               key={book.id}
               href={`/product/${book.slug}`}
-              className='flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-muted'
+              className={styles.bookLink}
             >
-              <div className='flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300'>
-                {book.reviewCount}
-              </div>
-              <div className='min-w-0 flex-1'>
-                <p className='truncate text-sm font-medium'>{book.name}</p>
-                <p className='text-xs text-muted-foreground'>
-                  {book.author} · ★ {book.avgRating}
+              <div className={styles.bookBadge}>{book.reviewCount}</div>
+              <div className={styles.bookInfo}>
+                <p className={styles.bookName}>{book.name}</p>
+                <p className={styles.bookMeta}>
+                  {book.author} ★ {book.avgRating}
                 </p>
               </div>
             </Link>

@@ -11,10 +11,11 @@ import {
   Legend,
 } from 'recharts';
 import { Compass } from 'lucide-react';
-import ExportChartButton from './export-chart-button';
+import ExportChartButton from '../export-chart-button/export-chart-button';
 import type { DiscoveryPathItem } from '@/lib/actions/reading-insights.actions';
-
-const COLORS = ['#6366f1', '#8b5cf6', '#06b6d4', '#22c55e', '#f59e0b'];
+import { sharedStyles } from '../shared/styles';
+import { discoveryPathsStyles as styles } from './styles';
+import { COLORS } from './constants';
 
 export default function DiscoveryPathsChart({
   data,
@@ -27,7 +28,7 @@ export default function DiscoveryPathsChart({
   if (!total) {
     return (
       <Card>
-        <CardContent className='py-12 text-center text-muted-foreground'>
+        <CardContent className={sharedStyles.emptyState}>
           No discovery path data available.
         </CardContent>
       </Card>
@@ -36,9 +37,9 @@ export default function DiscoveryPathsChart({
 
   return (
     <Card>
-      <CardHeader className='flex flex-row items-center justify-between'>
-        <CardTitle className='flex items-center gap-2'>
-          <Compass className='h-5 w-5 text-cyan-500' />
+      <CardHeader className={sharedStyles.cardHeader}>
+        <CardTitle className={sharedStyles.headerTitle}>
+          <Compass className={styles.headerIcon} />
           Book Discovery Paths
         </CardTitle>
         <ExportChartButton chartRef={chartRef} filename='discovery-paths' />
@@ -69,12 +70,7 @@ export default function DiscoveryPathsChart({
               ))}
             </Pie>
             <Tooltip
-              contentStyle={{
-                backgroundColor: 'hsl(var(--card))',
-                border: '1px solid hsl(var(--border))',
-                borderRadius: '8px',
-                fontSize: 12,
-              }}
+              contentStyle={sharedStyles.tooltipContent}
               formatter={(value: number) => [value, 'Users']}
             />
             <Legend wrapperStyle={{ fontSize: 12 }} />
@@ -82,19 +78,19 @@ export default function DiscoveryPathsChart({
         </ResponsiveContainer>
 
         {/* Path breakdown */}
-        <div className='mt-3 space-y-2'>
+        <div className={styles.breakdownWrapper}>
           {data.map((item, i) => (
-            <div key={item.path} className='flex items-center justify-between'>
-              <div className='flex items-center gap-2'>
+            <div key={item.path} className={styles.breakdownRow}>
+              <div className={styles.breakdownLabel}>
                 <div
-                  className='h-3 w-3 rounded-full'
+                  className={styles.breakdownDot}
                   style={{ backgroundColor: COLORS[i % COLORS.length] }}
                 />
-                <span className='text-sm'>{item.path}</span>
+                <span className={styles.breakdownText}>{item.path}</span>
               </div>
-              <div className='flex items-center gap-2'>
-                <span className='text-sm font-medium'>{item.count}</span>
-                <span className='text-xs text-muted-foreground'>
+              <div className={styles.breakdownValue}>
+                <span className={styles.breakdownCount}>{item.count}</span>
+                <span className={styles.breakdownPercent}>
                   ({total > 0 ? ((item.count / total) * 100).toFixed(1) : 0}%)
                 </span>
               </div>

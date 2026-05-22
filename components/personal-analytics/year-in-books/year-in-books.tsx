@@ -21,7 +21,7 @@ import {
   Users,
   Calendar,
 } from 'lucide-react';
-import ExportChartButton from '@/components/reading-insights/export-chart-button';
+import ExportChartButton from '@/components/reading-insights/export-chart-button/export-chart-button';
 import type { YearInBooks } from '@/lib/actions/personal-analytics.actions';
 import { yearInBooksStyles as styles } from './styles';
 

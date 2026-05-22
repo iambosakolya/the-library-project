@@ -13,8 +13,10 @@ import {
   Legend,
 } from 'recharts';
 import { Thermometer } from 'lucide-react';
-import ExportChartButton from './export-chart-button';
+import ExportChartButton from '../export-chart-button/export-chart-button';
 import type { SeasonalityItem } from '@/lib/actions/reading-insights.actions';
+import { sharedStyles } from '../shared/styles';
+import { seasonalityTrendsStyles as styles } from './styles';
 
 export default function SeasonalityTrendsChart({
   data,
@@ -28,7 +30,7 @@ export default function SeasonalityTrendsChart({
   if (!hasData) {
     return (
       <Card>
-        <CardContent className='py-12 text-center text-muted-foreground'>
+        <CardContent className={sharedStyles.emptyState}>
           No seasonality data available yet.
         </CardContent>
       </Card>
@@ -47,18 +49,18 @@ export default function SeasonalityTrendsChart({
 
   return (
     <Card>
-      <CardHeader className='flex flex-row items-center justify-between'>
+      <CardHeader className={sharedStyles.cardHeader}>
         <div>
-          <CardTitle className='flex items-center gap-2'>
-            <Thermometer className='h-5 w-5 text-rose-500' />
+          <CardTitle className={sharedStyles.headerTitle}>
+            <Thermometer className={styles.headerIcon} />
             Seasonality Trends
           </CardTitle>
-          <p className='mt-1 text-xs text-muted-foreground'>
+          <p className={styles.subtitle}>
             Peak reviews:{' '}
-            <span className='font-medium'>{peakReviews.month}</span>
+            <span className={styles.peakLabel}>{peakReviews.month}</span>
             {' · '}
             Peak purchases:{' '}
-            <span className='font-medium'>{peakPurchases.month}</span>
+            <span className={styles.peakLabel}>{peakPurchases.month}</span>
           </p>
         </div>
         <ExportChartButton chartRef={chartRef} filename='seasonality-trends' />
@@ -99,14 +101,7 @@ export default function SeasonalityTrendsChart({
               tickLine={false}
               axisLine={false}
             />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: 'hsl(var(--card))',
-                border: '1px solid hsl(var(--border))',
-                borderRadius: '8px',
-                fontSize: 12,
-              }}
-            />
+            <Tooltip contentStyle={sharedStyles.tooltipContent} />
             <Legend wrapperStyle={{ fontSize: 12 }} />
             <Area
               type='monotone'

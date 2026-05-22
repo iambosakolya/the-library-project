@@ -4,33 +4,55 @@ import { useState, useTransition, useCallback, lazy, Suspense } from 'react';
 import PeriodFilter, {
   type Period,
 } from '@/components/community/period-filter/period-filter';
-import GenreFilter from '@/components/reading-insights/genre-filter';
+import GenreFilter from '@/components/reading-insights/genre-filter/genre-filter';
 import type { ReadingInsightsData } from '@/lib/actions/reading-insights.actions';
 
 // Lazy load heavy chart components
 const MostDiscussedBooksChart = lazy(
-  () => import('@/components/reading-insights/most-discussed-books-chart'),
+  () =>
+    import(
+      '@/components/reading-insights/most-discussed-books-chart/most-discussed-books-chart'
+    ),
 );
 const RatingDistributionChart = lazy(
-  () => import('@/components/reading-insights/rating-distribution-chart'),
+  () =>
+    import(
+      '@/components/reading-insights/rating-distribution-chart/rating-distribution-chart'
+    ),
 );
 const AuthorSpotlightChart = lazy(
-  () => import('@/components/reading-insights/author-spotlight-chart'),
+  () =>
+    import(
+      '@/components/reading-insights/author-spotlight-chart/author-spotlight-chart'
+    ),
 );
 const SeasonalityTrendsChart = lazy(
-  () => import('@/components/reading-insights/seasonality-trends-chart'),
+  () =>
+    import(
+      '@/components/reading-insights/seasonality-trends-chart/seasonality-trends-chart'
+    ),
 );
 const DiscoveryPathsChart = lazy(
-  () => import('@/components/reading-insights/discovery-paths-chart'),
+  () =>
+    import(
+      '@/components/reading-insights/discovery-paths-chart/discovery-paths-chart'
+    ),
 );
 const ClubPreferencesChart = lazy(
-  () => import('@/components/reading-insights/club-preferences-chart'),
+  () =>
+    import(
+      '@/components/reading-insights/club-preferences-chart/club-preferences-chart'
+    ),
 );
 const RisingBooksChart = lazy(
-  () => import('@/components/reading-insights/rising-books-chart'),
+  () =>
+    import(
+      '@/components/reading-insights/rising-books-chart/rising-books-chart'
+    ),
 );
 const PeriodComparison = lazy(
-  () => import('@/components/reading-insights/period-comparison'),
+  () =>
+    import('@/components/reading-insights/period-comparison/period-comparison'),
 );
 
 function SectionSpinner() {

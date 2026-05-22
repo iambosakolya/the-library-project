@@ -11,7 +11,7 @@ import {
   Legend,
 } from 'recharts';
 import { Palette } from 'lucide-react';
-import ExportChartButton from '@/components/reading-insights/export-chart-button';
+import ExportChartButton from '@/components/reading-insights/export-chart-button/export-chart-button';
 import type { GenrePreference } from '@/lib/actions/personal-analytics.actions';
 import { genreWheelStyles as styles } from './styles';
 import { COLORS } from './constants';

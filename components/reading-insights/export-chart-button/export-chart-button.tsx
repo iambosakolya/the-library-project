@@ -3,11 +3,8 @@
 import { useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
-
-interface ExportChartButtonProps {
-  chartRef: React.RefObject<HTMLDivElement | null>;
-  filename?: string;
-}
+import type { ExportChartButtonProps } from '../shared/types';
+import { exportChartButtonStyles as styles } from './styles';
 
 export default function ExportChartButton({
   chartRef,
@@ -53,9 +50,9 @@ export default function ExportChartButton({
       variant='ghost'
       size='sm'
       onClick={handleExport}
-      className='h-7 gap-1 text-xs text-muted-foreground hover:text-foreground'
+      className={styles.button}
     >
-      <Download className='h-3 w-3' />
+      <Download className={styles.icon} />
       Export
     </Button>
   );

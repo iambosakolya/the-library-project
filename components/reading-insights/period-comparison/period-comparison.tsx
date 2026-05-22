@@ -15,13 +15,10 @@ import {
   ArrowDownRight,
   Minus,
 } from 'lucide-react';
-import type { Period } from '@/components/community/period-filter/period-filter';
-
-interface ComparisonData {
-  mostDiscussed: { name: string; reviewCount: number }[];
-  authorSpotlight: { author: string; totalReviews: number }[];
-  risingBooks: { name: string; recentReviews: number; recentSales: number }[];
-}
+import type { ComparisonData, Period } from '../shared/types';
+import { sharedStyles } from '../shared/styles';
+import { periodComparisonStyles as styles } from './styles';
+import { PERIOD_OPTIONS } from './constants';
 
 function DeltaIndicator({
   current,
@@ -31,7 +28,7 @@ function DeltaIndicator({
   previous: number;
 }) {
   if (previous === 0 && current === 0) {
-    return <Minus className='h-3 w-3 text-muted-foreground' />;
+    return <Minus className={styles.deltaNeutralIcon} />;
   }
   const delta =
     previous > 0
@@ -41,20 +38,20 @@ function DeltaIndicator({
         : 0;
   if (delta > 0) {
     return (
-      <span className='inline-flex items-center gap-0.5 text-xs text-emerald-600 dark:text-emerald-400'>
-        <ArrowUpRight className='h-3 w-3' />+{delta.toFixed(0)}%
+      <span className={styles.deltaPositive}>
+        <ArrowUpRight className={styles.deltaIcon} />+{delta.toFixed(0)}%
       </span>
     );
   }
   if (delta < 0) {
     return (
-      <span className='inline-flex items-center gap-0.5 text-xs text-red-600 dark:text-red-400'>
-        <ArrowDownRight className='h-3 w-3' />
+      <span className={styles.deltaNegative}>
+        <ArrowDownRight className={styles.deltaIcon} />
         {delta.toFixed(0)}%
       </span>
     );
   }
-  return <Minus className='h-3 w-3 text-muted-foreground' />;
+  return <Minus className={styles.deltaNeutralIcon} />;
 }
 
 export default function PeriodComparison() {
@@ -87,66 +84,68 @@ export default function PeriodComparison() {
     });
   };
 
-  const periodLabel = (p: Period) =>
-    p === 'week' ? 'This Week' : p === 'month' ? 'This Month' : 'This Year';
+  const periodLabel = (p: Period) => {
+    const option = PERIOD_OPTIONS.find((o) => o.value === p);
+    return option?.label ?? p;
+  };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className='flex items-center gap-2'>
-          <ArrowLeftRight className='h-5 w-5 text-blue-500' />
+        <CardTitle className={sharedStyles.headerTitle}>
+          <ArrowLeftRight className={styles.headerIcon} />
           Period Comparison
         </CardTitle>
       </CardHeader>
       <CardContent>
         {/* Controls */}
-        <div className='flex flex-wrap items-center gap-3'>
+        <div className={styles.controls}>
           <Select
             value={periodA}
             onValueChange={(v) => setPeriodA(v as Period)}
           >
-            <SelectTrigger className='h-8 w-[130px] text-xs'>
+            <SelectTrigger className={styles.selectTrigger}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value='week' className='text-xs'>
-                This Week
-              </SelectItem>
-              <SelectItem value='month' className='text-xs'>
-                This Month
-              </SelectItem>
-              <SelectItem value='year' className='text-xs'>
-                This Year
-              </SelectItem>
+              {PERIOD_OPTIONS.map((opt) => (
+                <SelectItem
+                  key={opt.value}
+                  value={opt.value}
+                  className={styles.selectItem}
+                >
+                  {opt.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
-          <span className='text-sm text-muted-foreground'>vs</span>
+          <span className={styles.vsLabel}>vs</span>
 
           <Select
             value={periodB}
             onValueChange={(v) => setPeriodB(v as Period)}
           >
-            <SelectTrigger className='h-8 w-[130px] text-xs'>
+            <SelectTrigger className={styles.selectTrigger}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value='week' className='text-xs'>
-                This Week
-              </SelectItem>
-              <SelectItem value='month' className='text-xs'>
-                This Month
-              </SelectItem>
-              <SelectItem value='year' className='text-xs'>
-                This Year
-              </SelectItem>
+              {PERIOD_OPTIONS.map((opt) => (
+                <SelectItem
+                  key={opt.value}
+                  value={opt.value}
+                  className={styles.selectItem}
+                >
+                  {opt.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
           <button
             onClick={handleCompare}
             disabled={isPending || periodA === periodB}
-            className='rounded-md bg-primary px-4 py-1.5 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50'
+            className={styles.compareButton}
           >
             {isPending ? 'Loading…' : 'Compare'}
           </button>
@@ -154,41 +153,31 @@ export default function PeriodComparison() {
 
         {/* Results */}
         {dataA && dataB && (
-          <div className='mt-6 space-y-6'>
+          <div className={styles.resultsWrapper}>
             {/* Top Discussed Books Comparison */}
             <div>
-              <h4 className='mb-3 text-sm font-medium'>Most Discussed Books</h4>
-              <div className='grid grid-cols-2 gap-4'>
+              <h4 className={styles.sectionTitle}>Most Discussed Books</h4>
+              <div className={styles.comparisonGrid}>
                 <div>
-                  <p className='mb-2 text-xs font-medium text-muted-foreground'>
-                    {periodLabel(periodA)}
-                  </p>
+                  <p className={styles.periodLabel}>{periodLabel(periodA)}</p>
                   {dataA.mostDiscussed?.slice(0, 5).map((book) => (
-                    <div
-                      key={book.name}
-                      className='flex items-center justify-between py-1'
-                    >
-                      <span className='truncate text-sm'>{book.name}</span>
-                      <span className='text-xs font-medium'>
+                    <div key={book.name} className={styles.itemRow}>
+                      <span className={styles.itemName}>{book.name}</span>
+                      <span className={styles.itemValue}>
                         {book.reviewCount} reviews
                       </span>
                     </div>
                   ))}
                 </div>
                 <div>
-                  <p className='mb-2 text-xs font-medium text-muted-foreground'>
-                    {periodLabel(periodB)}
-                  </p>
+                  <p className={styles.periodLabel}>{periodLabel(periodB)}</p>
                   {dataB.mostDiscussed?.slice(0, 5).map((book, i) => {
                     const prevBook = dataA.mostDiscussed?.[i];
                     return (
-                      <div
-                        key={book.name}
-                        className='flex items-center justify-between py-1'
-                      >
-                        <span className='truncate text-sm'>{book.name}</span>
-                        <div className='flex items-center gap-2'>
-                          <span className='text-xs font-medium'>
+                      <div key={book.name} className={styles.itemRow}>
+                        <span className={styles.itemName}>{book.name}</span>
+                        <div className={styles.itemValueWithDelta}>
+                          <span className={styles.itemValue}>
                             {book.reviewCount} reviews
                           </span>
                           {prevBook && (
@@ -207,38 +196,28 @@ export default function PeriodComparison() {
 
             {/* Top Authors Comparison */}
             <div>
-              <h4 className='mb-3 text-sm font-medium'>Top Authors</h4>
-              <div className='grid grid-cols-2 gap-4'>
+              <h4 className={styles.sectionTitle}>Top Authors</h4>
+              <div className={styles.comparisonGrid}>
                 <div>
-                  <p className='mb-2 text-xs font-medium text-muted-foreground'>
-                    {periodLabel(periodA)}
-                  </p>
+                  <p className={styles.periodLabel}>{periodLabel(periodA)}</p>
                   {dataA.authorSpotlight?.slice(0, 5).map((a) => (
-                    <div
-                      key={a.author}
-                      className='flex items-center justify-between py-1'
-                    >
-                      <span className='truncate text-sm'>{a.author}</span>
-                      <span className='text-xs font-medium'>
+                    <div key={a.author} className={styles.itemRow}>
+                      <span className={styles.itemName}>{a.author}</span>
+                      <span className={styles.itemValue}>
                         {a.totalReviews} reviews
                       </span>
                     </div>
                   ))}
                 </div>
                 <div>
-                  <p className='mb-2 text-xs font-medium text-muted-foreground'>
-                    {periodLabel(periodB)}
-                  </p>
+                  <p className={styles.periodLabel}>{periodLabel(periodB)}</p>
                   {dataB.authorSpotlight?.slice(0, 5).map((a, i) => {
                     const prevA = dataA.authorSpotlight?.[i];
                     return (
-                      <div
-                        key={a.author}
-                        className='flex items-center justify-between py-1'
-                      >
-                        <span className='truncate text-sm'>{a.author}</span>
-                        <div className='flex items-center gap-2'>
-                          <span className='text-xs font-medium'>
+                      <div key={a.author} className={styles.itemRow}>
+                        <span className={styles.itemName}>{a.author}</span>
+                        <div className={styles.itemValueWithDelta}>
+                          <span className={styles.itemValue}>
                             {a.totalReviews} reviews
                           </span>
                           {prevA && (
@@ -258,7 +237,7 @@ export default function PeriodComparison() {
         )}
 
         {!dataA && !dataB && (
-          <p className='mt-4 text-center text-sm text-muted-foreground'>
+          <p className={styles.emptyHint}>
             Select two different periods and click Compare to see side-by-side
             analytics.
           </p>
