@@ -13,10 +13,16 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import BookSubmissionActions from '@/components/admin/book-submission-actions';
+import BookSubmissionActions from '@/components/admin/book-submission-actions/book-submission-actions';
 import { BookSubmission } from '@/types';
 import Image from 'next/image';
-import { Clock, CheckCircle, AlertTriangle, BookOpen, DollarSign } from 'lucide-react';
+import {
+  Clock,
+  CheckCircle,
+  AlertTriangle,
+  BookOpen,
+  DollarSign,
+} from 'lucide-react';
 import { formatDistance } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
@@ -34,7 +40,9 @@ type PageProps = {
   searchParams: Promise<SearchParams>;
 };
 
-export default async function AdminBookSubmissionsPage({ searchParams }: PageProps) {
+export default async function AdminBookSubmissionsPage({
+  searchParams,
+}: PageProps) {
   const session = await auth();
 
   if (!session?.user || session.user.role !== 'admin') {
@@ -132,9 +140,7 @@ export default async function AdminBookSubmissionsPage({ searchParams }: PagePro
               <div className='text-2xl font-bold text-green-600'>
                 {sla.onTimePending}
               </div>
-              <p className='text-xs text-muted-foreground'>
-                Within 3 day SLA
-              </p>
+              <p className='text-xs text-muted-foreground'>Within 3 day SLA</p>
             </CardContent>
           </Card>
 
@@ -147,9 +153,7 @@ export default async function AdminBookSubmissionsPage({ searchParams }: PagePro
               <div className='text-2xl font-bold text-blue-600'>
                 {sla.recentPending}
               </div>
-              <p className='text-xs text-muted-foreground'>
-                Last 24 hours
-              </p>
+              <p className='text-xs text-muted-foreground'>Last 24 hours</p>
             </CardContent>
           </Card>
 
@@ -162,9 +166,7 @@ export default async function AdminBookSubmissionsPage({ searchParams }: PagePro
               <div className='text-2xl font-bold text-red-600'>
                 {sla.overduePending}
               </div>
-              <p className='text-xs text-muted-foreground'>
-                &gt;3 days old
-              </p>
+              <p className='text-xs text-muted-foreground'>&gt;3 days old</p>
             </CardContent>
           </Card>
         </div>
@@ -306,7 +308,8 @@ export default async function AdminBookSubmissionsPage({ searchParams }: PagePro
                       {submission.isForSale ? (
                         <p className='flex items-center gap-1 text-sm text-green-600'>
                           <DollarSign className='h-3 w-3' />
-                          Yes — Suggested price: ${Number(submission.suggestedPrice ?? 0).toFixed(2)}
+                          Yes — Suggested price: $
+                          {Number(submission.suggestedPrice ?? 0).toFixed(2)}
                         </p>
                       ) : (
                         <p className='text-sm text-muted-foreground'>No</p>
@@ -323,18 +326,19 @@ export default async function AdminBookSubmissionsPage({ searchParams }: PagePro
                   </div>
 
                   {/* Categories */}
-                  {submission.categories && submission.categories.length > 0 && (
-                    <div>
-                      <h3 className='text-sm font-semibold'>Categories</h3>
-                      <div className='mt-2 flex flex-wrap gap-2'>
-                        {submission.categories.map((category) => (
-                          <Badge key={category} variant='secondary'>
-                            {category}
-                          </Badge>
-                        ))}
+                  {submission.categories &&
+                    submission.categories.length > 0 && (
+                      <div>
+                        <h3 className='text-sm font-semibold'>Categories</h3>
+                        <div className='mt-2 flex flex-wrap gap-2'>
+                          {submission.categories.map((category) => (
+                            <Badge key={category} variant='secondary'>
+                              {category}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
                   {/* Google Books Link */}
                   {submission.previewLink && (

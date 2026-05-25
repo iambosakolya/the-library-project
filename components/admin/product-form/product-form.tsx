@@ -16,17 +16,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/form';
+} from '@/components/ui/form';
 import slugify from 'slugify';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
-import { Textarea } from '../ui/textarea';
-import { Checkbox } from '../ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import { createProduct, updateProduct } from '@/lib/actions/product.actions';
 import { UploadButton } from '@/lib/uploadthing';
-import { Card, CardContent } from '../ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 import { X } from 'lucide-react';
+import { productFormStyles as styles } from './styles';
 
 const ProductForm = ({
   type,
@@ -55,20 +56,15 @@ const ProductForm = ({
   const onSubmit: SubmitHandler<z.infer<typeof productInsertSchema>> = async (
     values,
   ) => {
-    // If not for sale, set price to 0
     if (!isForSale) {
       values.price = '0';
     }
 
-    // On Create - admin-added books are published immediately without approval
     if (type === 'Create') {
       const res = await createProduct(values);
 
       if (!res.success) {
-        toast({
-          variant: 'destructive',
-          description: res.message,
-        });
+        toast({ variant: 'destructive', description: res.message });
       } else {
         toast({
           description: 'Book added successfully — published immediately.',
@@ -77,7 +73,6 @@ const ProductForm = ({
       }
     }
 
-    // On Update
     if (type === 'Update') {
       if (!productId) {
         router.push('/admin/products');
@@ -87,14 +82,9 @@ const ProductForm = ({
       const res = await updateProduct({ ...values, id: productId });
 
       if (!res.success) {
-        toast({
-          variant: 'destructive',
-          description: res.message,
-        });
+        toast({ variant: 'destructive', description: res.message });
       } else {
-        toast({
-          description: res.message,
-        });
+        toast({ description: res.message });
         router.push('/admin/products');
       }
     }
@@ -107,9 +97,9 @@ const ProductForm = ({
       <form
         method='POST'
         onSubmit={form.handleSubmit(onSubmit)}
-        className='space-y-8'
+        className={styles.form}
       >
-        <div className='flex flex-col gap-5 md:flex-row'>
+        <div className={styles.fieldRow}>
           {/* Name */}
           <FormField
             control={form.control}
@@ -122,7 +112,7 @@ const ProductForm = ({
                 'name'
               >;
             }) => (
-              <FormItem className='w-full'>
+              <FormItem className={styles.fieldFull}>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
                   <Input placeholder='Enter product name' {...field} />
@@ -143,14 +133,14 @@ const ProductForm = ({
                 'slug'
               >;
             }) => (
-              <FormItem className='w-full'>
+              <FormItem className={styles.fieldFull}>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
                   <div className='relative'>
                     <Input placeholder='Enter slug' {...field} />
                     <Button
                       type='button'
-                      className='mt-2 bg-gray-500 px-4 py-1 text-white hover:bg-gray-600'
+                      className={styles.generateSlugBtn}
                       onClick={() => {
                         form.setValue(
                           'slug',
@@ -167,7 +157,7 @@ const ProductForm = ({
             )}
           />
         </div>
-        <div className='flex flex-col gap-5 md:flex-row'>
+        <div className={styles.fieldRow}>
           {/* Category */}
           <FormField
             control={form.control}
@@ -180,7 +170,7 @@ const ProductForm = ({
                 'category'
               >;
             }) => (
-              <FormItem className='w-full'>
+              <FormItem className={styles.fieldFull}>
                 <FormLabel>Category</FormLabel>
                 <FormControl>
                   <Input placeholder='Enter category' {...field} />
@@ -189,7 +179,7 @@ const ProductForm = ({
               </FormItem>
             )}
           />
-          {/*  author */}
+          {/* Author */}
           <FormField
             control={form.control}
             name='author'
@@ -201,7 +191,7 @@ const ProductForm = ({
                 'author'
               >;
             }) => (
-              <FormItem className='w-full'>
+              <FormItem className={styles.fieldFull}>
                 <FormLabel>Author</FormLabel>
                 <FormControl>
                   <Input placeholder='Enter author' {...field} />
@@ -212,7 +202,7 @@ const ProductForm = ({
           />
         </div>
         {/* Is for sale toggle */}
-        <div className='flex items-center gap-3'>
+        <div className={styles.saleToggle}>
           <Checkbox
             id='isForSale'
             checked={isForSale}
@@ -223,15 +213,12 @@ const ProductForm = ({
               }
             }}
           />
-          <label
-            htmlFor='isForSale'
-            className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
-          >
+          <label htmlFor='isForSale' className={styles.saleLabel}>
             This book is for sale
           </label>
         </div>
 
-        <div className='flex flex-col gap-5 md:flex-row'>
+        <div className={styles.fieldRow}>
           {/* Price - only shown if for sale */}
           {isForSale && (
             <FormField
@@ -245,7 +232,7 @@ const ProductForm = ({
                   'price'
                 >;
               }) => (
-                <FormItem className='w-full'>
+                <FormItem className={styles.fieldFull}>
                   <FormLabel>Price</FormLabel>
                   <FormControl>
                     <Input placeholder='Enter product price' {...field} />
@@ -267,7 +254,7 @@ const ProductForm = ({
                 'stock'
               >;
             }) => (
-              <FormItem className='w-full'>
+              <FormItem className={styles.fieldFull}>
                 <FormLabel>Stock</FormLabel>
                 <FormControl>
                   <Input placeholder='Enter stock' {...field} />
@@ -283,25 +270,25 @@ const ProductForm = ({
             control={form.control}
             name='images'
             render={() => (
-              <FormItem className='w-full'>
+              <FormItem className={styles.fieldFull}>
                 <FormLabel>Images</FormLabel>
                 <Card>
-                  <CardContent className='mt-2 min-h-48 space-y-2'>
+                  <CardContent className={styles.imageCard}>
                     {/* Image preview grid */}
                     {images.length > 0 && (
-                      <div className='flex flex-wrap gap-2'>
+                      <div className={styles.imageGrid}>
                         {images.map((image: string) => (
-                          <div key={image} className='group relative'>
+                          <div key={image} className={styles.imageWrapper}>
                             <Image
                               src={image}
                               alt='product image'
-                              className='h-20 w-20 rounded-sm object-cover object-center'
+                              className={styles.image}
                               width={100}
                               height={100}
                             />
                             <button
                               type='button'
-                              className='absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-destructive-foreground opacity-0 transition-opacity group-hover:opacity-100'
+                              className={styles.imageRemoveBtn}
                               onClick={() => {
                                 form.setValue(
                                   'images',
@@ -309,7 +296,7 @@ const ProductForm = ({
                                 );
                               }}
                             >
-                              <X className='h-3 w-3' />
+                              <X className={styles.imageRemoveIcon} />
                             </button>
                           </div>
                         ))}
@@ -355,7 +342,7 @@ const ProductForm = ({
                 'description'
               >;
             }) => (
-              <FormItem className='w-full'>
+              <FormItem className={styles.fieldFull}>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
                   <Textarea
@@ -374,7 +361,7 @@ const ProductForm = ({
             type='submit'
             size='lg'
             disabled={form.formState.isSubmitting}
-            className='button col-span-2 w-full'
+            className={styles.submitButton}
           >
             {form.formState.isSubmitting ? 'Submitting' : `${type} Product`}
           </Button>

@@ -8,24 +8,8 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
-
-const COLORS = [
-  '#6366f1',
-  '#8b5cf6',
-  '#a855f7',
-  '#d946ef',
-  '#ec4899',
-  '#f43f5e',
-  '#ef4444',
-  '#f97316',
-  '#eab308',
-  '#22c55e',
-];
-
-interface DistributionPieChartProps {
-  data: { name: string; value: number }[];
-  height?: number;
-}
+import type { DistributionPieChartProps } from '../shared/types';
+import { CHART_COLORS, tooltipContentStyle } from '../shared/constants';
 
 export function DistributionPieChart({
   data,
@@ -60,15 +44,14 @@ export function DistributionPieChart({
           paddingAngle={2}
         >
           {data.map((_, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            <Cell
+              key={`cell-${index}`}
+              fill={CHART_COLORS[index % CHART_COLORS.length]}
+            />
           ))}
         </Pie>
         <Tooltip
-          contentStyle={{
-            backgroundColor: 'hsl(var(--card))',
-            border: '1px solid hsl(var(--border))',
-            borderRadius: '8px',
-          }}
+          contentStyle={tooltipContentStyle}
           formatter={(value: number, name: string) => [`${value}`, name]}
         />
         <Legend

@@ -10,14 +10,8 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
-
-interface TrendLineChartProps {
-  data: Record<string, unknown>[];
-  xKey: string;
-  lines: { key: string; color: string; name: string }[];
-  height?: number;
-  yFormatter?: (value: number) => string;
-}
+import type { TrendLineChartProps } from '../shared/types';
+import { tooltipContentStyle } from '../shared/constants';
 
 export function TrendLineChart({
   data,
@@ -56,13 +50,7 @@ export function TrendLineChart({
           axisLine={false}
           tickFormatter={yFormatter}
         />
-        <Tooltip
-          contentStyle={{
-            backgroundColor: 'hsl(var(--card))',
-            border: '1px solid hsl(var(--border))',
-            borderRadius: '8px',
-          }}
-        />
+        <Tooltip contentStyle={tooltipContentStyle} />
         <Legend />
         {lines.map((line) => (
           <Line

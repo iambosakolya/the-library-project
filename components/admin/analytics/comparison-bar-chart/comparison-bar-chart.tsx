@@ -11,28 +11,8 @@ import {
   Legend,
   Cell,
 } from 'recharts';
-
-const COLORS = [
-  '#6366f1',
-  '#8b5cf6',
-  '#a855f7',
-  '#d946ef',
-  '#ec4899',
-  '#f43f5e',
-  '#ef4444',
-  '#f97316',
-  '#eab308',
-  '#22c55e',
-];
-
-interface ComparisonBarChartProps {
-  data: Record<string, unknown>[];
-  xKey: string;
-  bars: { key: string; color?: string; name: string }[];
-  height?: number;
-  colorful?: boolean;
-  yFormatter?: (value: number) => string;
-}
+import type { ComparisonBarChartProps } from '../shared/types';
+import { CHART_COLORS, tooltipContentStyle } from '../shared/constants';
 
 export function ComparisonBarChart({
   data,
@@ -60,25 +40,22 @@ export function ComparisonBarChart({
           axisLine={false}
           tickFormatter={yFormatter}
         />
-        <Tooltip
-          contentStyle={{
-            backgroundColor: 'hsl(var(--card))',
-            border: '1px solid hsl(var(--border))',
-            borderRadius: '8px',
-          }}
-        />
+        <Tooltip contentStyle={tooltipContentStyle} />
         <Legend />
         {bars.map((bar, barIdx) => (
           <Bar
             key={bar.key}
             dataKey={bar.key}
             name={bar.name}
-            fill={bar.color ?? COLORS[barIdx % COLORS.length]}
+            fill={bar.color ?? CHART_COLORS[barIdx % CHART_COLORS.length]}
             radius={[4, 4, 0, 0]}
           >
             {colorful &&
               data.map((_, idx) => (
-                <Cell key={`cell-${idx}`} fill={COLORS[idx % COLORS.length]} />
+                <Cell
+                  key={`cell-${idx}`}
+                  fill={CHART_COLORS[idx % CHART_COLORS.length]}
+                />
               ))}
           </Bar>
         ))}

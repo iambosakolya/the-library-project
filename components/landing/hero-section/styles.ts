@@ -1,5 +1,3 @@
-/** Reusable style objects for hero section */
-
 export const sectionStyles = {
   wrapper:
     'relative min-h-[65vh] overflow-hidden bg-gradient-to-b from-secondary/60 via-background to-background dark:from-secondary/20',
