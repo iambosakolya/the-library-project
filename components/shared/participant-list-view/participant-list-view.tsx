@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Registration, Attendance } from '@/types';
+import { Attendance } from '@/types';
 import {
   Card,
   CardContent,
@@ -37,6 +37,8 @@ import {
 } from '@/lib/actions/organizer.actions';
 import Image from 'next/image';
 import { format } from 'date-fns';
+import { type ParticipantListViewProps } from '../shared/types';
+
 import {
   UserIcon,
   MailIcon,
@@ -47,14 +49,12 @@ import {
   CalendarCheckIcon,
 } from 'lucide-react';
 
-type Props = {
-  participants: Registration[];
-  attendanceRecords: Attendance[];
-  entityId: string;
-  entityType: 'club' | 'event';
-  entityTitle: string;
-  totalSessions: number;
-};
+import {
+  participantStyles,
+  messageDialogStyles,
+  attendanceStyles,
+  cancelledStyles,
+} from './styles';
 
 export default function ParticipantListView({
   participants,
@@ -63,7 +63,7 @@ export default function ParticipantListView({
   entityType,
   entityTitle,
   totalSessions,
-}: Props) {
+}: ParticipantListViewProps) {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
   const [selectedSession, setSelectedSession] = useState(1);
@@ -73,9 +73,7 @@ export default function ParticipantListView({
   const [localAttendance, setLocalAttendance] =
     useState<Attendance[]>(attendanceRecords);
 
-  const activeParticipants = participants.filter(
-    (p) => p.status === 'active',
-  );
+  const activeParticipants = participants.filter((p) => p.status === 'active');
   const cancelledParticipants = participants.filter(
     (p) => p.status === 'cancelled',
   );
@@ -106,9 +104,7 @@ export default function ParticipantListView({
       if (result.success) {
         setLocalAttendance((prev) => {
           const idx = prev.findIndex(
-            (a) =>
-              a.userId === userId &&
-              a.sessionNumber === selectedSession,
+            (a) => a.userId === userId && a.sessionNumber === selectedSession,
           );
           const newRecord: Attendance = {
             id: result.data?.id || '',
@@ -138,11 +134,10 @@ export default function ParticipantListView({
 
   const handleSendMessage = () => {
     startTransition(async () => {
-      const result = await sendMessageToParticipants(
-        entityId,
-        entityType,
-        { subject, message },
-      );
+      const result = await sendMessageToParticipants(entityId, entityType, {
+        subject,
+        message,
+      });
 
       if (result.success) {
         toast({ description: result.message });
@@ -168,20 +163,17 @@ export default function ParticipantListView({
     }
   };
 
-  const sessionOptions = Array.from(
-    { length: totalSessions },
-    (_, i) => i + 1,
-  );
+  const sessionOptions = Array.from({ length: totalSessions }, (_, i) => i + 1);
 
   return (
-    <div className='space-y-6'>
+    <div className={participantStyles.wrapper}>
       {/* Summary + Message Action */}
-      <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
-        <div className='flex gap-4'>
-          <Badge variant='default' className='text-sm'>
+      <div className={participantStyles.summaryRow}>
+        <div className={participantStyles.badgeRow}>
+          <Badge variant='default' className={participantStyles.badgeText}>
             {activeParticipants.length} Active
           </Badge>
-          <Badge variant='secondary' className='text-sm'>
+          <Badge variant='secondary' className={participantStyles.badgeText}>
             {cancelledParticipants.length} Cancelled
           </Badge>
         </div>
@@ -193,7 +185,7 @@ export default function ParticipantListView({
               Message All Participants
             </Button>
           </DialogTrigger>
-          <DialogContent className='sm:max-w-lg'>
+          <DialogContent className={messageDialogStyles.content}>
             <DialogHeader>
               <DialogTitle>Send Message to Participants</DialogTitle>
               <DialogDescription>
@@ -201,8 +193,8 @@ export default function ParticipantListView({
                 active participants of &quot;{entityTitle}&quot;.
               </DialogDescription>
             </DialogHeader>
-            <div className='space-y-4'>
-              <div className='space-y-2'>
+            <div className={messageDialogStyles.formSection}>
+              <div className={messageDialogStyles.inputGroup}>
                 <Label htmlFor='subject'>Subject</Label>
                 <Input
                   id='subject'
@@ -211,30 +203,25 @@ export default function ParticipantListView({
                   onChange={(e) => setSubject(e.target.value)}
                 />
               </div>
-              <div className='space-y-2'>
+              <div className={messageDialogStyles.inputGroup}>
                 <Label htmlFor='message'>Message</Label>
                 <Textarea
                   id='message'
                   placeholder='Type your message...'
-                  className='min-h-32'
+                  className={messageDialogStyles.textarea}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                 />
               </div>
             </div>
             <DialogFooter>
-              <Button
-                variant='outline'
-                onClick={() => setMessageOpen(false)}
-              >
+              <Button variant='outline' onClick={() => setMessageOpen(false)}>
                 Cancel
               </Button>
               <Button
                 onClick={handleSendMessage}
                 disabled={
-                  isPending ||
-                  subject.length < 3 ||
-                  message.length < 10
+                  isPending || subject.length < 3 || message.length < 10
                 }
               >
                 {isPending ? 'Sending...' : 'Send Message'}
@@ -247,23 +234,26 @@ export default function ParticipantListView({
       {/* Attendance Tracking */}
       <Card>
         <CardHeader>
-          <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
+          <div className={attendanceStyles.headerRow}>
             <div>
               <CardTitle className='flex items-center gap-2'>
-                <CalendarCheckIcon className='h-5 w-5' />
+                <CalendarCheckIcon className={attendanceStyles.titleIcon} />
                 Attendance Tracking
               </CardTitle>
               <CardDescription>
                 Mark attendance for each session
               </CardDescription>
             </div>
-            <div className='flex items-center gap-2'>
+            <div className={attendanceStyles.sessionRow}>
               <Label htmlFor='session-select'>Session:</Label>
               <Select
                 value={String(selectedSession)}
                 onValueChange={(v) => setSelectedSession(Number(v))}
               >
-                <SelectTrigger className='w-32' id='session-select'>
+                <SelectTrigger
+                  className={attendanceStyles.sessionSelect}
+                  id='session-select'
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -279,11 +269,11 @@ export default function ParticipantListView({
         </CardHeader>
         <CardContent>
           {activeParticipants.length === 0 ? (
-            <p className='py-8 text-center text-muted-foreground'>
+            <p className={attendanceStyles.emptyText}>
               No active participants yet.
             </p>
           ) : (
-            <div className='space-y-3'>
+            <div className={attendanceStyles.participantList}>
               {activeParticipants.map((participant) => {
                 const user = participant.user;
                 if (!user) return null;
@@ -296,40 +286,37 @@ export default function ParticipantListView({
                 return (
                   <div
                     key={participant.id}
-                    className='flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between'
+                    className={attendanceStyles.participantCard}
                   >
-                    <div className='flex items-center gap-3'>
+                    <div className={attendanceStyles.userRow}>
                       {user.image ? (
                         <Image
                           src={user.image}
                           alt={user.name}
                           width={40}
                           height={40}
-                          className='rounded-full'
+                          className={attendanceStyles.avatar}
                         />
                       ) : (
-                        <div className='flex h-10 w-10 items-center justify-center rounded-full bg-muted'>
-                          <UserIcon className='h-5 w-5 text-muted-foreground' />
+                        <div className={attendanceStyles.avatarPlaceholder}>
+                          <UserIcon className={attendanceStyles.avatarIcon} />
                         </div>
                       )}
                       <div>
-                        <p className='font-medium'>{user.name}</p>
-                        <div className='flex items-center gap-1 text-sm text-muted-foreground'>
-                          <MailIcon className='h-3 w-3' />
+                        <p className={attendanceStyles.userName}>{user.name}</p>
+                        <div className={attendanceStyles.userEmail}>
+                          <MailIcon className={attendanceStyles.emailIcon} />
                           {user.email}
                         </div>
-                        <p className='text-xs text-muted-foreground'>
+                        <p className={attendanceStyles.joinDate}>
                           Joined{' '}
-                          {format(
-                            new Date(participant.registeredAt),
-                            'PPP',
-                          )}
+                          {format(new Date(participant.registeredAt), 'PPP')}
                         </p>
                       </div>
                     </div>
 
-                    <div className='flex items-center gap-2'>
-                      <span className='mr-2 flex items-center gap-1 text-sm'>
+                    <div className={attendanceStyles.statusRow}>
+                      <span className={attendanceStyles.statusLabel}>
                         {statusIcon(attendance?.status || 'unmarked')}
                         <span className='capitalize'>
                           {attendance?.status || 'Unmarked'}
@@ -342,13 +329,13 @@ export default function ParticipantListView({
                             ? 'default'
                             : 'outline'
                         }
-                        onClick={() =>
-                          handleMarkAttendance(user.id, 'present')
-                        }
+                        onClick={() => handleMarkAttendance(user.id, 'present')}
                         disabled={isPending}
-                        className='gap-1'
+                        className={attendanceStyles.statusButton}
                       >
-                        <CheckCircleIcon className='h-3.5 w-3.5' />
+                        <CheckCircleIcon
+                          className={attendanceStyles.statusIcon}
+                        />
                         Present
                       </Button>
                       <Button
@@ -358,13 +345,11 @@ export default function ParticipantListView({
                             ? 'destructive'
                             : 'outline'
                         }
-                        onClick={() =>
-                          handleMarkAttendance(user.id, 'absent')
-                        }
+                        onClick={() => handleMarkAttendance(user.id, 'absent')}
                         disabled={isPending}
-                        className='gap-1'
+                        className={attendanceStyles.statusButton}
                       >
-                        <XCircleIcon className='h-3.5 w-3.5' />
+                        <XCircleIcon className={attendanceStyles.statusIcon} />
                         Absent
                       </Button>
                       <Button
@@ -374,13 +359,13 @@ export default function ParticipantListView({
                             ? 'secondary'
                             : 'outline'
                         }
-                        onClick={() =>
-                          handleMarkAttendance(user.id, 'excused')
-                        }
+                        onClick={() => handleMarkAttendance(user.id, 'excused')}
                         disabled={isPending}
-                        className='gap-1'
+                        className={attendanceStyles.statusButton}
                       >
-                        <MinusCircleIcon className='h-3.5 w-3.5' />
+                        <MinusCircleIcon
+                          className={attendanceStyles.statusIcon}
+                        />
                         Excused
                       </Button>
                     </div>
@@ -396,40 +381,38 @@ export default function ParticipantListView({
       {cancelledParticipants.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className='text-sm font-medium'>
+            <CardTitle className={cancelledStyles.title}>
               Cancelled Registrations ({cancelledParticipants.length})
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className='space-y-2'>
+            <div className={cancelledStyles.list}>
               {cancelledParticipants.map((p) => {
                 const user = p.user;
                 if (!user) return null;
                 return (
-                  <div
-                    key={p.id}
-                    className='flex items-center gap-3 rounded-lg border border-dashed p-3 opacity-60'
-                  >
+                  <div key={p.id} className={cancelledStyles.card}>
                     {user.image ? (
                       <Image
                         src={user.image}
                         alt={user.name}
                         width={32}
                         height={32}
-                        className='rounded-full'
+                        className={cancelledStyles.avatarSmall}
                       />
                     ) : (
-                      <div className='flex h-8 w-8 items-center justify-center rounded-full bg-muted'>
-                        <UserIcon className='h-4 w-4 text-muted-foreground' />
+                      <div className={cancelledStyles.avatarPlaceholderSmall}>
+                        <UserIcon className={cancelledStyles.avatarIconSmall} />
                       </div>
                     )}
-                    <div className='flex-1'>
-                      <p className='text-sm font-medium'>{user.name}</p>
-                      <p className='text-xs text-muted-foreground'>
-                        {user.email}
-                      </p>
+                    <div className={cancelledStyles.info}>
+                      <p className={cancelledStyles.name}>{user.name}</p>
+                      <p className={cancelledStyles.email}>{user.email}</p>
                     </div>
-                    <Badge variant='destructive' className='text-xs'>
+                    <Badge
+                      variant='destructive'
+                      className={cancelledStyles.badge}
+                    >
                       Cancelled
                       {p.cancelledAt &&
                         ` on ${format(new Date(p.cancelledAt), 'PP')}`}

@@ -3,7 +3,7 @@ import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { getMyClubsAndEvents } from '@/lib/actions/organizer.actions';
 import { MyClubOrEvent } from '@/types';
-import MyClubsDashboard from '@/components/shared/my-clubs-dashboard';
+import MyClubsDashboard from '@/components/shared/my-clubs-dashboard/my-clubs-dashboard';
 
 export const metadata: Metadata = {
   title: 'My Clubs & Events Dashboard',

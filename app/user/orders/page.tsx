@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import Pagination from '@/components/shared/pagination';
+import Pagination from '@/components/shared/pagination/pagination';
 
 export const metadata: Metadata = {
   title: 'My orders',

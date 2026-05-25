@@ -3,7 +3,7 @@ import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { getClubEventForEdit } from '@/lib/actions/organizer.actions';
 import { getAllProducts } from '@/lib/actions/product.actions';
-import EditClubEventForm from '@/components/shared/edit-club-event-form';
+import EditClubEventForm from '@/components/shared/edit-club-event-form/edit-club-event-form';
 
 export const metadata: Metadata = {
   title: 'Edit Club or Event',

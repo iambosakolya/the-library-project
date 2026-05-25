@@ -1,7 +1,7 @@
 import { getEventById } from '@/lib/actions/club-request.actions';
 import { checkUserRegistration } from '@/lib/actions/registration.actions';
 import { notFound } from 'next/navigation';
-import ClubEventDetails from '@/components/shared/club-event-details';
+import ClubEventDetails from '@/components/shared/club-event-details/club-event-details';
 import { auth } from '@/auth';
 import { prisma } from '@/db/prisma';
 

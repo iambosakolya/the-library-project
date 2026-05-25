@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { auth } from '@/auth';
 import { getUserPublicProfile } from '@/lib/actions/user.actions';
 import { formatDateTime } from '@/lib/utils';
-import FollowButton from '@/components/shared/follow-button';
+import FollowButton from '@/components/shared/follow-button/follow-button';
 import StarRating from '@/components/shared/product/star-rating';
 import {
   User,
@@ -55,9 +55,7 @@ const ProfilePage = async (props: { params: Promise<{ id: string }> }) => {
                 {profile.followerCount} follower
                 {profile.followerCount !== 1 ? 's' : ''}
               </span>
-              <span>
-                {profile.followingCount} following
-              </span>
+              <span>{profile.followingCount} following</span>
               <span className='flex items-center gap-1'>
                 <MessageSquare className='h-3.5 w-3.5' />
                 {profile.totalReviews} review
@@ -87,19 +85,14 @@ const ProfilePage = async (props: { params: Promise<{ id: string }> }) => {
                 Current
               </h3>
               <div className='flex flex-wrap gap-2'>
-                {activeClubs.map(
-                  (club: { id: string; title: string }) => (
-                    <Link key={club.id} href={`/clubs/${club.id}`}>
-                      <Badge
-                        variant='default'
-                        className='cursor-pointer gap-1'
-                      >
-                        <BookOpen className='h-3 w-3' />
-                        {club.title}
-                      </Badge>
-                    </Link>
-                  ),
-                )}
+                {activeClubs.map((club: { id: string; title: string }) => (
+                  <Link key={club.id} href={`/clubs/${club.id}`}>
+                    <Badge variant='default' className='cursor-pointer gap-1'>
+                      <BookOpen className='h-3 w-3' />
+                      {club.title}
+                    </Badge>
+                  </Link>
+                ))}
               </div>
             </div>
           )}
@@ -109,19 +102,14 @@ const ProfilePage = async (props: { params: Promise<{ id: string }> }) => {
                 Past
               </h3>
               <div className='flex flex-wrap gap-2'>
-                {pastClubs.map(
-                  (club: { id: string; title: string }) => (
-                    <Link key={club.id} href={`/clubs/${club.id}`}>
-                      <Badge
-                        variant='secondary'
-                        className='cursor-pointer gap-1'
-                      >
-                        <BookOpen className='h-3 w-3' />
-                        {club.title}
-                      </Badge>
-                    </Link>
-                  ),
-                )}
+                {pastClubs.map((club: { id: string; title: string }) => (
+                  <Link key={club.id} href={`/clubs/${club.id}`}>
+                    <Badge variant='secondary' className='cursor-pointer gap-1'>
+                      <BookOpen className='h-3 w-3' />
+                      {club.title}
+                    </Badge>
+                  </Link>
+                ))}
               </div>
             </div>
           )}
@@ -145,10 +133,7 @@ const ProfilePage = async (props: { params: Promise<{ id: string }> }) => {
                 {profile.organizedEvents.map(
                   (event: { id: string; title: string }) => (
                     <Link key={event.id} href={`/events/${event.id}`}>
-                      <Badge
-                        variant='default'
-                        className='cursor-pointer gap-1'
-                      >
+                      <Badge variant='default' className='cursor-pointer gap-1'>
                         <CalendarDays className='h-3 w-3' />
                         {event.title}
                       </Badge>
@@ -165,11 +150,7 @@ const ProfilePage = async (props: { params: Promise<{ id: string }> }) => {
               </h3>
               <div className='flex flex-wrap gap-2'>
                 {profile.registeredEvents.map(
-                  (event: {
-                    id: string;
-                    title: string;
-                    eventDate: Date;
-                  }) => (
+                  (event: { id: string; title: string; eventDate: Date }) => (
                     <Link key={event.id} href={`/events/${event.id}`}>
                       <Badge
                         variant='secondary'
@@ -217,10 +198,7 @@ const ProfilePage = async (props: { params: Promise<{ id: string }> }) => {
                 createdAt: Date;
                 product: { slug: string; name: string };
               }) => (
-                <div
-                  key={review.id}
-                  className='rounded-lg border p-4'
-                >
+                <div key={review.id} className='rounded-lg border p-4'>
                   <div className='flex items-start justify-between'>
                     <div>
                       <Link

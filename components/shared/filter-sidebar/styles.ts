@@ -1,0 +1,17 @@
+export const sidebarStyles = {
+  wrapper: 'w-full space-y-6 rounded-lg border bg-card p-6 lg:w-64',
+  headerRow: 'flex items-center justify-between',
+  title: 'flex items-center gap-2 text-lg font-semibold',
+  titleIcon: 'h-5 w-5',
+  clearButton: 'text-xs',
+  clearIcon: 'mr-1 h-3 w-3',
+  section: 'space-y-3',
+  sectionLabel: 'text-sm font-medium',
+  radioRow: 'flex items-center space-x-2',
+  radioLabel: 'cursor-pointer font-normal',
+  dateSection: 'space-y-2',
+  dateLabel: 'text-xs text-muted-foreground',
+  dateInput: 'mt-1',
+  locationHint: 'text-xs text-muted-foreground',
+  applyButton: 'w-full',
+};

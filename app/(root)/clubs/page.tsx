@@ -1,8 +1,8 @@
 import { getReadingClubs } from '@/lib/actions/club-request.actions';
-import ClubEventCard from '@/components/shared/club-event-card';
-import FilterSidebar from '@/components/shared/filter-sidebar';
-import SearchBar from '@/components/shared/search-bar';
-import Pagination from '@/components/shared/pagination';
+import ClubEventCard from '@/components/shared/club-event-card/club-event-card';
+import FilterSidebar from '@/components/shared/filter-sidebar/filter-sidebar';
+import SearchBar from '@/components/shared/search-bar/search-bar';
+import Pagination from '@/components/shared/pagination/pagination';
 import { notFound } from 'next/navigation';
 import { BookOpenIcon } from 'lucide-react';
 import { ReadingClub } from '@/types';

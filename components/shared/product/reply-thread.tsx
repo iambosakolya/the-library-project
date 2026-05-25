@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { MessageSquare, Pencil, Trash2, User } from 'lucide-react';
 import ReportDialog from './report-dialog';
-import UserBadges from '@/components/shared/user-badges';
+import UserBadges from '@/components/shared/user-badges/user-badges';
 
 const MAX_DEPTH = 3;
 

@@ -10,8 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import Pagination from '@/components/shared/pagination';
-import DeleteDialog from '@/components/shared/delete-dialog';
+import Pagination from '@/components/shared/pagination/pagination';
+import DeleteDialog from '@/components/shared/delete-dialog/delete-dialog';
 
 const AdminProductsPage = async (props: {
   searchParams: Promise<{

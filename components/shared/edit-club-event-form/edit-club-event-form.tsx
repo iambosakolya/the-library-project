@@ -35,7 +35,7 @@ import {
   updateClubEvent,
   togglePublishClubEvent,
 } from '@/lib/actions/organizer.actions';
-import { Product, ReadingClub, Event, ChangeHistoryEntry } from '@/types';
+import { ReadingClub, Event, ChangeHistoryEntry } from '@/types';
 import { format } from 'date-fns';
 import {
   HistoryIcon,
@@ -45,12 +45,8 @@ import {
   ArrowLeftIcon,
 } from 'lucide-react';
 import Link from 'next/link';
-
-type Props = {
-  entity: ReadingClub | Event;
-  type: 'club' | 'event';
-  products: Product[];
-};
+import { editFormStyles, historyStyles } from './styles';
+import { type Props } from '../shared/types';
 
 export default function EditClubEventForm({ entity, type, products }: Props) {
   const router = useRouter();
@@ -63,8 +59,7 @@ export default function EditClubEventForm({ entity, type, products }: Props) {
   const eventData = !isClub ? (entity as Event) : null;
 
   const isActive = entity.isActive;
-  const changeHistory =
-    (entity.changeHistory as ChangeHistoryEntry[]) || [];
+  const changeHistory = (entity.changeHistory as ChangeHistoryEntry[]) || [];
 
   const form = useForm<z.infer<typeof editClubEventSchema>>({
     resolver: zodResolver(editClubEventSchema),
@@ -75,9 +70,8 @@ export default function EditClubEventForm({ entity, type, products }: Props) {
       startDate: isClub
         ? new Date(clubData!.startDate)
         : new Date(eventData!.eventDate),
-      endDate: isClub && clubData?.endDate
-        ? new Date(clubData.endDate)
-        : undefined,
+      endDate:
+        isClub && clubData?.endDate ? new Date(clubData.endDate) : undefined,
       capacity: entity.capacity,
       format: entity.format,
       address: entity.address || '',
@@ -117,24 +111,24 @@ export default function EditClubEventForm({ entity, type, products }: Props) {
   };
 
   return (
-    <div className='space-y-6'>
+    <div className={editFormStyles.wrapper}>
       {/* Top Actions */}
-      <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
+      <div className={editFormStyles.topActions}>
         <Link href='/user/my-clubs'>
-          <Button variant='ghost' className='gap-1'>
+          <Button variant='ghost' className={editFormStyles.backButton}>
             <ArrowLeftIcon className='h-4 w-4' />
             Back to Dashboard
           </Button>
         </Link>
-        <div className='flex items-center gap-4'>
+        <div className={editFormStyles.rightActions}>
           {/* Publish/Unpublish Toggle */}
-          <div className='flex items-center gap-2 rounded-lg border p-3'>
+          <div className={editFormStyles.publishBox}>
             {isActive ? (
               <EyeIcon className='h-4 w-4 text-green-600' />
             ) : (
               <EyeOffIcon className='h-4 w-4 text-muted-foreground' />
             )}
-            <Label htmlFor='publish-toggle' className='text-sm'>
+            <Label htmlFor='publish-toggle' className={editFormStyles.publishLabel}>
               {isActive ? 'Published' : 'Unpublished'}
             </Label>
             <Switch
@@ -147,7 +141,7 @@ export default function EditClubEventForm({ entity, type, products }: Props) {
 
           <Button
             variant='outline'
-            className='gap-1'
+            className={editFormStyles.historyButton}
             onClick={() => setShowHistory(!showHistory)}
           >
             <HistoryIcon className='h-4 w-4' />
@@ -160,8 +154,8 @@ export default function EditClubEventForm({ entity, type, products }: Props) {
       {showHistory && (
         <Card>
           <CardHeader>
-            <CardTitle className='flex items-center gap-2 text-base'>
-              <HistoryIcon className='h-4 w-4' />
+            <CardTitle className={historyStyles.titleRow}>
+              <HistoryIcon className={historyStyles.titleIcon} />
               Change History
             </CardTitle>
             <CardDescription>
@@ -170,31 +164,33 @@ export default function EditClubEventForm({ entity, type, products }: Props) {
           </CardHeader>
           <CardContent>
             {changeHistory.length === 0 ? (
-              <p className='py-4 text-center text-sm text-muted-foreground'>
+              <p className={historyStyles.emptyText}>
                 No changes have been made yet.
               </p>
             ) : (
-              <div className='space-y-3'>
+              <div className={historyStyles.list}>
                 {[...changeHistory].reverse().map((entry, i) => (
-                  <div
-                    key={i}
-                    className='flex flex-col gap-1 rounded-lg border p-3 text-sm'
-                  >
-                    <div className='flex items-center justify-between'>
-                      <Badge variant='outline' className='capitalize'>
+                  <div key={i} className={historyStyles.entry}>
+                    <div className={historyStyles.entryHeader}>
+                      <Badge
+                        variant='outline'
+                        className={historyStyles.entryBadge}
+                      >
                         {entry.field}
                       </Badge>
-                      <span className='text-xs text-muted-foreground'>
+                      <span className={historyStyles.entryMeta}>
                         {format(new Date(entry.changedAt), 'PPp')} by{' '}
                         {entry.changedBy}
                       </span>
                     </div>
-                    <div className='mt-1 flex gap-2'>
-                      <span className='line-through text-muted-foreground'>
+                    <div className={historyStyles.entryValues}>
+                      <span className={historyStyles.oldValue}>
                         {entry.oldValue}
                       </span>
                       <span>→</span>
-                      <span className='font-medium'>{entry.newValue}</span>
+                      <span className={historyStyles.newValue}>
+                        {entry.newValue}
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -208,26 +204,24 @@ export default function EditClubEventForm({ entity, type, products }: Props) {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className='space-y-8'
+          className={editFormStyles.formWrapper}
         >
           {/* Validation Error Summary */}
           {Object.keys(form.formState.errors).length > 0 && (
-            <Card className='border-destructive'>
+            <Card className={editFormStyles.errorCard}>
               <CardHeader>
-                <CardTitle className='text-destructive'>
+                <CardTitle className={editFormStyles.errorTitle}>
                   Please fix the following errors:
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className='list-disc space-y-1 pl-5'>
-                  {Object.entries(form.formState.errors).map(
-                    ([key, error]) => (
-                      <li key={key} className='text-sm text-destructive'>
-                        <strong className='capitalize'>{key}:</strong>{' '}
-                        {error?.message as string}
-                      </li>
-                    ),
-                  )}
+                <ul className={editFormStyles.errorList}>
+                  {Object.entries(form.formState.errors).map(([key, error]) => (
+                    <li key={key} className={editFormStyles.errorItem}>
+                      <strong className='capitalize'>{key}:</strong>{' '}
+                      {error?.message as string}
+                    </li>
+                  ))}
                 </ul>
               </CardContent>
             </Card>
@@ -270,10 +264,7 @@ export default function EditClubEventForm({ entity, type, products }: Props) {
               <FormItem>
                 <FormLabel>Purpose</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder='What is the main goal?'
-                    {...field}
-                  />
+                  <Input placeholder='What is the main goal?' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -307,7 +298,7 @@ export default function EditClubEventForm({ entity, type, products }: Props) {
           />
 
           {/* Dates */}
-          <div className='grid gap-4 sm:grid-cols-2'>
+          <div className={editFormStyles.dateGrid}>
             <FormField
               control={form.control}
               name='startDate'
@@ -320,23 +311,17 @@ export default function EditClubEventForm({ entity, type, products }: Props) {
                 >;
               }) => (
                 <FormItem>
-                  <FormLabel>
-                    {isClub ? 'Start Date' : 'Event Date'}
-                  </FormLabel>
+                  <FormLabel>{isClub ? 'Start Date' : 'Event Date'}</FormLabel>
                   <FormControl>
                     <Input
                       type='datetime-local'
                       {...field}
                       value={
                         field.value
-                          ? new Date(field.value)
-                              .toISOString()
-                              .slice(0, 16)
+                          ? new Date(field.value).toISOString().slice(0, 16)
                           : ''
                       }
-                      onChange={(e) =>
-                        field.onChange(new Date(e.target.value))
-                      }
+                      onChange={(e) => field.onChange(new Date(e.target.value))}
                     />
                   </FormControl>
                   <FormMessage />
@@ -363,16 +348,12 @@ export default function EditClubEventForm({ entity, type, products }: Props) {
                         {...field}
                         value={
                           field.value
-                            ? new Date(field.value)
-                                .toISOString()
-                                .slice(0, 16)
+                            ? new Date(field.value).toISOString().slice(0, 16)
                             : ''
                         }
                         onChange={(e) =>
                           field.onChange(
-                            e.target.value
-                              ? new Date(e.target.value)
-                              : null,
+                            e.target.value ? new Date(e.target.value) : null,
                           )
                         }
                       />
@@ -388,7 +369,7 @@ export default function EditClubEventForm({ entity, type, products }: Props) {
           </div>
 
           {/* Capacity and Session Count */}
-          <div className='grid gap-4 sm:grid-cols-2'>
+          <div className={editFormStyles.dateGrid}>
             <FormField
               control={form.control}
               name='capacity'
@@ -408,9 +389,7 @@ export default function EditClubEventForm({ entity, type, products }: Props) {
                       min={2}
                       max={100}
                       {...field}
-                      onChange={(e) =>
-                        field.onChange(parseInt(e.target.value))
-                      }
+                      onChange={(e) => field.onChange(parseInt(e.target.value))}
                     />
                   </FormControl>
                   <FormDescription>
@@ -445,9 +424,7 @@ export default function EditClubEventForm({ entity, type, products }: Props) {
                         }
                       />
                     </FormControl>
-                    <FormDescription>
-                      Total meetings planned
-                    </FormDescription>
+                    <FormDescription>Total meetings planned</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -466,17 +443,14 @@ export default function EditClubEventForm({ entity, type, products }: Props) {
                   <RadioGroup
                     onValueChange={field.onChange}
                     value={field.value}
-                    className='flex gap-4'
+                    className={editFormStyles.radioRow}
                   >
                     <div className='flex items-center space-x-2'>
                       <RadioGroupItem value='online' id='edit-online' />
                       <Label htmlFor='edit-online'>Online</Label>
                     </div>
                     <div className='flex items-center space-x-2'>
-                      <RadioGroupItem
-                        value='offline'
-                        id='edit-offline'
-                      />
+                      <RadioGroupItem value='offline' id='edit-offline' />
                       <Label htmlFor='edit-offline'>Offline</Label>
                     </div>
                   </RadioGroup>
@@ -553,7 +527,7 @@ export default function EditClubEventForm({ entity, type, products }: Props) {
                 <FormDescription>
                   Choose one or more books to read and discuss
                 </FormDescription>
-                <div className='mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+                <div className={editFormStyles.bookGrid}>
                   {products.map((product) => {
                     const isSelected = field.value.includes(product.id);
 
@@ -562,8 +536,8 @@ export default function EditClubEventForm({ entity, type, products }: Props) {
                         key={product.id}
                         className={`cursor-pointer transition-all ${
                           isSelected
-                            ? 'border-primary ring-2 ring-primary'
-                            : 'hover:border-primary/50'
+                            ? editFormStyles.bookCardSelected
+                            : editFormStyles.bookCardUnselected
                         }`}
                         onClick={() => {
                           const newValue = isSelected
@@ -574,19 +548,19 @@ export default function EditClubEventForm({ entity, type, products }: Props) {
                           field.onChange(newValue);
                         }}
                       >
-                        <CardContent className='p-4'>
-                          <div className='flex items-start gap-3'>
+                        <CardContent className={editFormStyles.bookContent}>
+                          <div className={editFormStyles.bookRow}>
                             <div onClick={(e) => e.stopPropagation()}>
                               <Checkbox
                                 checked={isSelected}
                                 onCheckedChange={() => {}}
                               />
                             </div>
-                            <div className='flex-1'>
-                              <h4 className='font-medium'>
+                            <div className={editFormStyles.bookInfo}>
+                              <h4 className={editFormStyles.bookTitle}>
                                 {product.name}
                               </h4>
-                              <p className='text-sm text-muted-foreground'>
+                              <p className={editFormStyles.bookAuthor}>
                                 by {product.author}
                               </p>
                             </div>
@@ -602,13 +576,17 @@ export default function EditClubEventForm({ entity, type, products }: Props) {
           />
 
           {/* Submit */}
-          <div className='flex gap-4'>
+          <div className={editFormStyles.actionsRow}>
             <Link href='/user/my-clubs'>
               <Button type='button' variant='outline'>
                 Cancel
               </Button>
             </Link>
-            <Button type='submit' disabled={isPending} className='gap-1'>
+            <Button
+              type='submit'
+              disabled={isPending}
+              className={editFormStyles.saveButton}
+            >
               <SaveIcon className='h-4 w-4' />
               {isPending ? 'Saving...' : 'Save Changes'}
             </Button>
