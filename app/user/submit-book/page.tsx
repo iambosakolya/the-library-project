@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import BookSubmissionForm from '@/components/user/book-submission-form';
+import BookSubmissionForm from '@/components/user/book-submission-form/book-submission-form';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 
