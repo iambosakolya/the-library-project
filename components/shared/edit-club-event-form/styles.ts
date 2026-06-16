@@ -1,0 +1,42 @@
+export const editFormStyles = {
+  wrapper: 'space-y-6',
+  topActions:
+    'flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between',
+  backButton: 'gap-1',
+  rightActions: 'flex items-center gap-4',
+  publishBox: 'flex items-center gap-2 rounded-lg border p-3',
+  publishLabel: 'text-sm',
+  historyButton: 'gap-1',
+  formWrapper: 'space-y-8',
+  errorCard: 'border-destructive',
+  errorTitle: 'text-destructive',
+  errorList: 'list-disc space-y-1 pl-5',
+  errorItem: 'text-sm text-destructive',
+  dateGrid: 'grid gap-4 sm:grid-cols-2',
+  radioRow: 'flex gap-4',
+  bookGrid: 'mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3',
+  bookCardSelected:
+    'cursor-pointer transition-all border-primary ring-2 ring-primary',
+  bookCardUnselected: 'cursor-pointer transition-all hover:border-primary/50',
+  bookContent: 'p-4',
+  bookRow: 'flex items-start gap-3',
+  bookInfo: 'flex-1',
+  bookTitle: 'font-medium',
+  bookAuthor: 'text-sm text-muted-foreground',
+  actionsRow: 'flex gap-4',
+  saveButton: 'gap-1',
+};
+
+export const historyStyles = {
+  titleRow: 'flex items-center gap-2 text-base',
+  titleIcon: 'h-4 w-4',
+  emptyText: 'py-4 text-center text-sm text-muted-foreground',
+  list: 'space-y-3',
+  entry: 'flex flex-col gap-1 rounded-lg border p-3 text-sm',
+  entryHeader: 'flex items-center justify-between',
+  entryBadge: 'capitalize',
+  entryMeta: 'text-xs text-muted-foreground',
+  entryValues: 'mt-1 flex gap-2',
+  oldValue: 'line-through text-muted-foreground',
+  newValue: 'font-medium',
+};

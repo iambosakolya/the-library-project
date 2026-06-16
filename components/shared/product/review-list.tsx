@@ -7,7 +7,7 @@ import StarRating from './star-rating';
 import ReviewForm from './review-form';
 import ReplyThread, { ReplyForm } from './reply-thread';
 import ReportDialog from './report-dialog';
-import UserBadges from '@/components/shared/user-badges';
+import UserBadges from '@/components/shared/user-badges/user-badges';
 import { Review } from '@/types';
 import { deleteReview, voteReview } from '@/lib/actions/review.actions';
 import { useToast } from '@/hooks/use-toast';

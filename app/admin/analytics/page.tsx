@@ -1,7 +1,7 @@
 import { auth } from '@/auth';
 import { Metadata } from 'next';
-import AnalyticsDashboard from '@/components/admin/analytics/analytics-dashboard';
-import ReportHistory from '@/components/admin/analytics/report-history';
+import AnalyticsDashboard from '@/components/admin/analytics/analytics-dashboard/analytics-dashboard';
+import ReportHistory from '@/components/admin/analytics/report-history/report-history';
 
 export const metadata: Metadata = {
   title: 'Analytics - Admin Dashboard',

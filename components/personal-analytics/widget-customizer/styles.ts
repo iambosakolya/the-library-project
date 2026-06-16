@@ -1,0 +1,21 @@
+export const widgetCustomizerStyles = {
+  toggleButton: 'gap-2',
+  toggleIcon: 'h-4 w-4',
+  panel: 'rounded-lg border bg-card p-4',
+  panelHeader: 'mb-3 flex items-center justify-between',
+  panelTitle: 'font-semibold',
+  panelActions: 'flex gap-2',
+  saveIcon: 'h-3 w-3',
+  hint: 'mb-3 text-xs text-muted-foreground',
+  itemList: 'space-y-1',
+  itemBase:
+    'flex cursor-grab items-center gap-2 rounded-md border px-3 py-2 transition-all',
+  itemDragging: 'border-primary bg-primary/5 shadow-sm',
+  itemIdle: 'hover:bg-muted/50',
+  itemHidden: 'opacity-50',
+  gripIcon: 'h-4 w-4 text-muted-foreground',
+  itemLabel: 'flex-1 text-sm',
+  visibilityButton: 'h-7 w-7',
+  eyeVisible: 'h-4 w-4 text-green-500',
+  eyeHidden: 'h-4 w-4 text-muted-foreground',
+};

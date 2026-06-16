@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Діаграма Ганта — Деталізована</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @page {
+        size: A4 portrait;
+        margin: 15mm;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+        font-size: 9px;
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0 auto;
+        padding: 15mm;
+        background: white;
+        color: #1a1a1a;
+      }
+      h2 {
+        text-align: center;
+        font-size: 13px;
+        margin-bottom: 12px;
+        font-weight: bold;
+      }
+      .chart-container {
+        width: 100%;
+        overflow: hidden;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+      .header-row th {
+        background: #2c3e50;
+        color: white;
+        padding: 4px 2px;
+        font-size: 8px;
+        font-weight: 600;
+        text-align: center;
+        border: 1px solid #1a252f;
+      }
+      .month-header th {
+        background: #34495e;
+        color: white;
+        padding: 3px 2px;
+        font-size: 8px;
+        font-weight: 600;
+        text-align: center;
+        border: 1px solid #1a252f;
+      }
+      .task-col {
+        width: 200px;
+        min-width: 200px;
+      }
+      .dur-col {
+        width: 35px;
+        min-width: 35px;
+      }
+      .task-row td {
+        padding: 3px 4px;
+        border: 1px solid #ddd;
+        font-size: 8.5px;
+        vertical-align: middle;
+      }
+      .task-row.phase-header td {
+        background: #ecf0f1;
+        font-weight: bold;
+        font-size: 9px;
+        border-bottom: 2px solid #2c3e50;
+      }
+      .task-row.subtask td {
+        padding-left: 12px;
+      }
+      .task-name {
+        text-align: left;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .task-duration {
+        text-align: center;
+        font-size: 8px;
+      }
+      .timeline-cell {
+        padding: 0 !important;
+        position: relative;
+        height: 18px;
+      }
+      .bar-container {
+        position: absolute;
+        top: 3px;
+        bottom: 3px;
+        left: 0;
+        right: 0;
+      }
+      .bar {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        border-radius: 2px;
+        min-width: 2px;
+      }
+      /* Phase colors */
+      .phase1 {
+        background: #3498db;
+      }
+      .phase2 {
+        background: #e67e22;
+      }
+      .phase3 {
+        background: #27ae60;
+      }
+      .phase4 {
+        background: #9b59b6;
+      }
+      .phase5 {
+        background: #e74c3c;
+      }
+      .phase6 {
+        background: #1abc9c;
+      }
+      .phase7 {
+        background: #f39c12;
+      }
+
+      .phase1-light {
+        background: #85c1e9;
+      }
+      .phase2-light {
+        background: #f0b27a;
+      }
+      .phase3-light {
+        background: #7dcea0;
+      }
+      .phase4-light {
+        background: #c39bd3;
+      }
+      .phase5-light {
+        background: #f1948a;
+      }
+      .phase6-light {
+        background: #76d7c4;
+      }
+      .phase7-light {
+        background: #f7dc6f;
+      }
+
+      .phase-summary-bar {
+        opacity: 0.4;
+        border-radius: 2px;
+      }
+
+      .grid-line {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: #eee;
+      }
+      .legend {
+        margin-top: 12px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        font-size: 8px;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .legend-color {
+        width: 14px;
+        height: 8px;
+        border-radius: 2px;
+      }
+      .today-line {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #e74c3c;
+        z-index: 10;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Рисунок 2.X — Діаграма Ганта проєкту LibProj (деталізована)</h2>
+    <div class="chart-container" id="chart"></div>
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-color phase1"></div>
+        Р.1 Специфікація вимог
+      </div>
+      <div class="legend-item">
+        <div class="legend-color phase2"></div>
+        Р.2 Планування
+      </div>
+      <div class="legend-item">
+        <div class="legend-color phase3"></div>
+        Р.3 Проєктування
+      </div>
+      <div class="legend-item">
+        <div class="legend-color phase4"></div>
+        Р.4 Реалізація
+      </div>
+      <div class="legend-item">
+        <div class="legend-color phase5"></div>
+        Р.5 Тестування
+      </div>
+      <div class="legend-item">
+        <div class="legend-color phase6"></div>
+        Р.6 Експлуатація
+      </div>
+      <div class="legend-item">
+        <div class="legend-color phase7"></div>
+        Р.7 Звіт
+      </div>
+    </div>
+
+    <script>
+      const projectStart = new Date(2025, 8, 1); // Sept 1, 2025
+      const projectEnd = new Date(2026, 3, 30); // Apr 30, 2026
+      const totalDays = Math.ceil(
+        (projectEnd - projectStart) / (1000 * 60 * 60 * 24),
+      );
+
+      const months = [
+        { name: 'Вер', year: 2025, days: 30 },
+        { name: 'Жов', year: 2025, days: 31 },
+        { name: 'Лис', year: 2025, days: 30 },
+        { name: 'Гру', year: 2025, days: 31 },
+        { name: 'Січ', year: 2026, days: 31 },
+        { name: 'Лют', year: 2026, days: 28 },
+        { name: 'Бер', year: 2026, days: 31 },
+        { name: 'Кві', year: 2026, days: 30 },
+      ];
+
+      const phases = [
+        {
+          name: '  1: Специфікація вимог',
+          color: 'phase1',
+          colorLight: 'phase1-light',
+          start: '2025-09-01',
+          end: '2025-10-24',
+          tasks: [
+            {
+              name: '1.1 Опис предметної області та аналіз аналогів',
+              start: '2025-09-01',
+              end: '2025-09-19',
+              dur: 15,
+            },
+            {
+              name: '1.2 Опис функціональних вимог',
+              start: '2025-09-15',
+              end: '2025-10-10',
+              dur: 20,
+            },
+            {
+              name: '1.3 Опис нефункціональних вимог',
+              start: '2025-10-06',
+              end: '2025-10-24',
+              dur: 15,
+            },
+          ],
+        },
+        {
+          name: '  2: Планування розробки',
+          color: 'phase2',
+          colorLight: 'phase2-light',
+          start: '2025-10-20',
+          end: '2025-11-28',
+          tasks: [
+            {
+              name: '2.1 Оцінка тривалості (UCP-метод)',
+              start: '2025-10-20',
+              end: '2025-11-07',
+              dur: 15,
+            },
+            {
+              name: '2.2 Розробка плану (WBS)',
+              start: '2025-11-03',
+              end: '2025-11-21',
+              dur: 15,
+            },
+            {
+              name: '2.3 Аналіз ризиків',
+              start: '2025-11-17',
+              end: '2025-11-28',
+              dur: 10,
+            },
+          ],
+        },
+        {
+          name: '  3: Проєктування',
+          color: 'phase3',
+          colorLight: 'phase3-light',
+          start: '2025-11-24',
+          end: '2026-02-06',
+          tasks: [
+            {
+              name: '3.1 Архітектура та проєктування класів',
+              start: '2025-11-24',
+              end: '2025-12-19',
+              dur: 20,
+            },
+            {
+              name: '3.2 Проєктування БД та процесів',
+              start: '2025-12-15',
+              end: '2026-01-16',
+              dur: 20,
+            },
+            {
+              name: '3.3 Проєктування інтерфейсу',
+              start: '2026-01-19',
+              end: '2026-02-06',
+              dur: 15,
+            },
+          ],
+        },
+        {
+          name: '  4: Програмна реалізація',
+          color: 'phase4',
+          colorLight: 'phase4-light',
+          start: '2025-12-01',
+          end: '2026-03-13',
+          tasks: [
+            {
+              name: '4.1 Вибір інструментів розробки',
+              start: '2025-12-01',
+              end: '2025-12-12',
+              dur: 10,
+            },
+            {
+              name: '4.2 Створення вебзастосунку',
+              start: '2025-12-15',
+              end: '2026-02-27',
+              dur: 55,
+            },
+            {
+              name: '4.3 Перевірка роботи вебзастосунку',
+              start: '2026-03-02',
+              end: '2026-03-13',
+              dur: 10,
+            },
+          ],
+        },
+        {
+          name: '  5: Тестування',
+          color: 'phase5',
+          colorLight: 'phase5-light',
+          start: '2026-01-19',
+          end: '2026-03-20',
+          tasks: [
+            {
+              name: '5.1 Юніт тестування',
+              start: '2026-01-19',
+              end: '2026-02-06',
+              dur: 15,
+            },
+            {
+              name: '5.2 Інтеграційне тестування',
+              start: '2026-02-09',
+              end: '2026-03-06',
+              dur: 20,
+            },
+            {
+              name: '5.3 End-to-end тестування',
+              start: '2026-03-02',
+              end: '2026-03-20',
+              dur: 15,
+            },
+          ],
+        },
+        {
+          name: '  6: Експлуатація',
+          color: 'phase6',
+          colorLight: 'phase6-light',
+          start: '2026-03-16',
+          end: '2026-04-17',
+          tasks: [
+            {
+              name: '6.1 Інструкція користувача',
+              start: '2026-03-16',
+              end: '2026-04-03',
+              dur: 15,
+            },
+            {
+              name: '6.2 Опис експериментів та результати',
+              start: '2026-03-30',
+              end: '2026-04-17',
+              dur: 15,
+            },
+          ],
+        },
+        {
+          name: '  7: Підготовка звіту',
+          color: 'phase7',
+          colorLight: 'phase7-light',
+          start: '2026-03-09',
+          end: '2026-04-30',
+          tasks: [
+            {
+              name: '7.1 Оформлення пояснювальної записки',
+              start: '2026-03-09',
+              end: '2026-04-30',
+              dur: 40,
+            },
+          ],
+        },
+      ];
+
+      function parseDate(str) {
+        const [y, m, d] = str.split('-').map(Number);
+        return new Date(y, m - 1, d);
+      }
+
+      function getOffset(dateStr) {
+        const d = parseDate(dateStr);
+        return Math.ceil((d - projectStart) / (1000 * 60 * 60 * 24));
+      }
+
+      function getPercent(dateStr) {
+        return (getOffset(dateStr) / totalDays) * 100;
+      }
+
+      // Build table
+      let html = '<table>';
+
+      // Month headers
+      html +=
+        '<tr class="month-header"><th class="task-col">Задача</th><th class="dur-col">Робочі дні</th>';
+      months.forEach((m) => {
+        html += `<th>${m.name} ${m.year}</th>`;
+      });
+      html += '</tr>';
+
+      // Rows
+      phases.forEach((phase) => {
+        // Phase header row
+        html += `<tr class="task-row phase-header">`;
+        html += `<td class="task-name">${phase.name}</td>`;
+        html += `<td class="task-duration"></td>`;
+        html += `<td colspan="${months.length}" class="timeline-cell">`;
+        html += `<div class="bar-container">`;
+        const phaseLeft = getPercent(phase.start);
+        const phaseRight = getPercent(phase.end);
+        html += `<div class="bar phase-summary-bar ${phase.color}" style="left:${phaseLeft}%;width:${phaseRight - phaseLeft}%"></div>`;
+        html += `</div></td>`;
+        html += '</tr>';
+
+        // Task rows
+        phase.tasks.forEach((task) => {
+          html += `<tr class="task-row subtask">`;
+          html += `<td class="task-name">${task.name}</td>`;
+          html += `<td class="task-duration">${task.dur}</td>`;
+          html += `<td colspan="${months.length}" class="timeline-cell">`;
+          html += `<div class="bar-container">`;
+          const left = getPercent(task.start);
+          const right = getPercent(task.end);
+          html += `<div class="bar ${phase.colorLight}" style="left:${left}%;width:${right - left}%"></div>`;
+          html += `</div></td>`;
+          html += '</tr>';
+        });
+      });
+
+      html += '</table>';
+      document.getElementById('chart').innerHTML = html;
+    </script>
+  </body>
+</html>

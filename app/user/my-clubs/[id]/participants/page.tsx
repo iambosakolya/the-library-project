@@ -6,7 +6,7 @@ import {
   getAttendanceRecords,
   getClubEventForEdit,
 } from '@/lib/actions/organizer.actions';
-import ParticipantListView from '@/components/shared/participant-list-view';
+import ParticipantListView from '@/components/shared/participant-list-view/participant-list-view';
 
 export const metadata: Metadata = {
   title: 'Participant List',
@@ -43,8 +43,7 @@ export default async function ParticipantsPage({
   }
 
   const entity = entityResult.data;
-  const sessionCount =
-    type === 'club' ? entity?.sessionCount || 1 : 1;
+  const sessionCount = type === 'club' ? entity?.sessionCount || 1 : 1;
 
   return (
     <div className='mx-auto max-w-7xl space-y-8 px-4 py-8'>

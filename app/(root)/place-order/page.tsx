@@ -4,7 +4,7 @@ import { getUserById } from '@/lib/actions/user.actions';
 import { CartItem, Shipping } from '@/types';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import CheckOutSteps from '@/components/shared/checkout-steps';
+import CheckOutSteps from '@/components/shared/checkout-steps/checkout-steps';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';

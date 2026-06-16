@@ -1,0 +1,32 @@
+export const goalTrackerStyles = {
+  cardHeader: 'flex flex-row items-center justify-between',
+  headerTitle: 'flex items-center gap-2',
+  headerIcon: 'h-5 w-5 text-rose-500',
+  addButton: 'gap-1',
+  addButtonIcon: 'h-4 w-4',
+  formWrapper: 'mb-4 flex items-end gap-2 rounded-lg border p-3',
+  formLabel: 'mb-1 block text-xs text-muted-foreground',
+  formFieldFull: 'flex-1',
+  formFieldSmall: 'w-24',
+  selectIcon: 'h-4 w-4',
+  emptyState: 'py-8 text-center text-muted-foreground',
+  goalsList: 'space-y-4',
+  goalItem: 'space-y-2',
+  goalHeader: 'flex items-center justify-between',
+  goalLabel: 'flex items-center gap-2 text-sm font-medium',
+  goalLabelIcon: 'h-4 w-4',
+  goalStats: 'flex items-center gap-2',
+  goalCurrent: 'text-sm font-bold',
+  goalTarget: 'text-muted-foreground',
+  deleteButton: 'h-6 w-6',
+  deleteIcon: 'h-3 w-3 text-muted-foreground',
+  progressBar: 'h-3 w-full overflow-hidden rounded-full bg-muted',
+  progressFill: 'h-full rounded-full transition-all duration-500',
+  progressInfo: 'flex justify-between text-xs text-muted-foreground',
+}
+
+export const TYPE_COLORS: Record<string, string> = {
+  books_to_read: 'bg-indigo-500',
+  reviews_to_write: 'bg-emerald-500',
+  events_to_attend: 'bg-amber-500',
+};

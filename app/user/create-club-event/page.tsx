@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import ClubEventForm from '@/components/shared/club-event-form';
+import ClubEventForm from '@/components/shared/club-event-form/club-event-form';
 import { getAllProducts } from '@/lib/actions/product.actions';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';

@@ -1,0 +1,16 @@
+export const activeClubsListStyles = {
+  emptyState: 'py-12 text-center text-muted-foreground',
+  headerTitle: 'flex items-center gap-2',
+  headerIcon: 'h-5 w-5 text-violet-500',
+  grid: 'grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3',
+  clubCard: 'space-y-2 rounded-lg border p-4 transition-shadow hover:shadow-md',
+  clubCardHeader: 'flex items-start justify-between',
+  clubTitle: 'line-clamp-1 text-sm font-semibold',
+  badge: 'ml-2 shrink-0 text-[10px]',
+  badgeIcon: 'mr-0.5 h-2.5 w-2.5',
+  description: 'line-clamp-2 text-xs text-muted-foreground',
+  statsRow: 'flex items-center gap-3 text-xs text-muted-foreground',
+  statItem: 'flex items-center gap-1',
+  statIcon: 'h-3 w-3',
+  creatorText: 'text-[10px] text-muted-foreground',
+};

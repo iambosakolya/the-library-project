@@ -1,0 +1,20 @@
+export const streakTrackerStyles = {
+  headerTitle: 'flex items-center gap-2',
+  headerIcon: 'h-5 w-5 text-orange-500',
+  content: 'flex items-center justify-center gap-8',
+  currentStreak: 'text-center',
+  streakValue: 'text-5xl font-bold',
+  streakLabel: 'mt-1 text-sm text-muted-foreground',
+  flameRow: 'mt-2 flex justify-center gap-1',
+  flameIcon: 'h-4 w-4 text-orange-400',
+  divider: 'h-20 w-px bg-border',
+  bestStreak: 'text-center',
+  bestStreakRow: 'flex items-center justify-center gap-1',
+  trophyIcon: 'h-6 w-6 text-yellow-500',
+  bestStreakValue: 'text-3xl font-bold',
+  bestStreakLabel: 'mt-1 text-sm text-muted-foreground',
+  lastActivity:
+    'mt-4 flex items-center justify-center gap-1 text-xs text-muted-foreground',
+  lastActivityIcon: 'h-3 w-3',
+  motivationalText: 'mt-3 text-center text-sm text-muted-foreground',
+};

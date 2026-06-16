@@ -7,7 +7,7 @@ import { SearchIcon } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 import { ClubEventRequest } from '@/types';
-import RequestDetailModal from '@/components/admin/request-detail-modal';
+import RequestDetailModal from '@/components/admin/request-detail-modal/request-detail-modal';
 import PendingRequestCard from './pending-request-card';
 
 type PendingRequestsListProps = {

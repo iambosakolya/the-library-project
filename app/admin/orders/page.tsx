@@ -12,8 +12,8 @@ import { formatCurrency, formatDateTime, formatId } from '@/lib/utils';
 import { Metadata } from 'next';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import Pagination from '@/components/shared/pagination';
-import DeleteDialog from '@/components/shared/delete-dialog';
+import Pagination from '@/components/shared/pagination/pagination';
+import DeleteDialog from '@/components/shared/delete-dialog/delete-dialog';
 
 export const metadata: Metadata = {
   title: 'Admin Orders',
